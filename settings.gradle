@@ -4,3 +4,6 @@ include 'api'
 
 // data
 include 'data'
+
+// batch
+include 'batch'

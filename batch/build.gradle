@@ -1,0 +1,11 @@
+dependencies {
+    implementation project(':data')
+
+    // batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    implementation 'org.springframework:spring-context-support'
+    implementation "org.quartz-scheduler:quartz:${quartzVersion}"
+
+    // apache commons
+    implementation 'org.apache.commons:commons-lang3'
+}

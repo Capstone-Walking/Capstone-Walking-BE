@@ -11,6 +11,9 @@ buildscript {
         // jsr
         jsr305Version = '3.0.1'
 
+        // quartz
+        quartzVersion = '2.3.0'
+
         // swagger & restdocs
         asciidoctorVersion = '3.3.2'
         epagesRestDocsApiSpecVersion = '0.16.0'

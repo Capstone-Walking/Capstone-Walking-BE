@@ -1,0 +1,25 @@
+server:
+  port: 18888
+spring:
+  config:
+    use-legacy-processing: true
+  profiles:
+    include:
+
+# batch config
+walking:
+  batch:
+    datasource:
+      jdbcUrl: ${DB_HOSTNAME}/batch?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc:
+      initialize-schema: never
+    job:
+      enabled: ${job.name:NONE}
+
+# log config
+log:
+  file:
+    path: ${FILE_LOG_PATH}
