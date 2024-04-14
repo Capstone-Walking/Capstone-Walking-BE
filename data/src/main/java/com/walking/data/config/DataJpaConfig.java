@@ -45,12 +45,9 @@ public class DataJpaConfig {
 
 	@Bean(name = ENTITY_MANAGER_FACTORY_BUILDER)
 	public EntityManagerFactoryBuilder entityManagerFactoryBuilder(
-			JpaVendorAdapter jpaVendorAdapter,
-			JpaProperties jpaProperties,
 			ObjectProvider<PersistenceUnitManager> persistenceUnitManager) {
-
-		Map<String, String> jpaPropertyMap = jpaProperties.getProperties();
+		Map<String, String> jpaPropertyMap = jpaProperties().getProperties();
 		return new EntityManagerFactoryBuilder(
-				jpaVendorAdapter, jpaPropertyMap, persistenceUnitManager.getIfAvailable());
+				jpaVendorAdapter(), jpaPropertyMap, persistenceUnitManager.getIfAvailable());
 	}
 }
