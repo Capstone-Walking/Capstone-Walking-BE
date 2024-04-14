@@ -1,6 +1,6 @@
 version: '3.1'
 services:
-  checkwith-mysql:
+  walking-mysql:
     container_name: walking-mysql8
     image: mysql/mysql-server:8.0.27
     environment:

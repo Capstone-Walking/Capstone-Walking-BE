@@ -8,7 +8,6 @@ spring:
   profiles:
     # add import modules profile
     include:
-      - flyway-api
       - data-local
   datasource:
     jdbc-url: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
@@ -66,7 +65,7 @@ cookie:
 # log config
 log:
   file:
-    path: ./var/log/checkwith/api
+    path: ./var/log/walking/api
 
 # api docs config
 springdoc:

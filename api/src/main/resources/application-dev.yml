@@ -8,7 +8,6 @@ spring:
   profiles:
     # add import modules profile
     include:
-      - flyway-api
       - data-dev
   datasource:
     jdbc-url: ${DB_HOSTNAME}/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
