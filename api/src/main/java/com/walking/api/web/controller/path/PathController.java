@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -81,7 +82,8 @@ public class PathController {
 
 	@GetMapping("/favorite/{favoriteId}")
 	public ApiResponse<ApiResponse.SuccessBody<RouteDetailResponse>> detailFavoriteRoute(
-			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long favoriteId) {
+			@AuthenticationPrincipal TokenUserDetails userDetails,
+			@Min(1) @PathVariable Long favoriteId) {
 		// todo implement
 		// Long memberId = Long.valueOf(userDetails.getUsername());
 		Long memberId = 999L;
@@ -93,7 +95,7 @@ public class PathController {
 	@PatchMapping("/favorite/{favoriteId}")
 	public ApiResponse<ApiResponse.Success> updateFavoriteRoute(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
-			@PathVariable Long favoriteId,
+			@Min(1) @PathVariable Long favoriteId,
 			@Valid @RequestBody PatchFavoritePathNameBody pathNameBody) {
 		// todo implement
 		// Long memberId = Long.valueOf(userDetails.getUsername());
@@ -104,7 +106,8 @@ public class PathController {
 
 	@DeleteMapping("/favorite/{favoriteId}")
 	public ApiResponse<ApiResponse.Success> deleteFavoriteRoute(
-			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long favoriteId) {
+			@AuthenticationPrincipal TokenUserDetails userDetails,
+			@Min(1) @PathVariable Long favoriteId) {
 		// todo implement
 		// Long memberId = Long.valueOf(userDetails.getUsername());
 		Long memberId = 999L;
