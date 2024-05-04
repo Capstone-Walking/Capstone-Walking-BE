@@ -1,5 +1,6 @@
 package com.walking.api.web.dto.request.path;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -17,5 +18,5 @@ import lombok.ToString;
 @Builder
 public class PatchFavoritePathNameBody {
 
-	private String name;
+	@NotBlank private String name;
 }
