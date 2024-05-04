@@ -1,8 +1,10 @@
 package com.walking.api.web.config;
 
 import com.walking.api.security.config.CorsConfigurationSourceProperties;
+import com.walking.api.web.dto.request.OrderFilterConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -23,5 +25,10 @@ public class WebConfig implements WebMvcConfigurer {
 				.allowCredentials(corsProperties.getAllowCredentials())
 				.exposedHeaders(corsProperties.getExposedHeaders())
 				.maxAge(corsProperties.getMaxAge());
+	}
+
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addConverter(new OrderFilterConverter());
 	}
 }
