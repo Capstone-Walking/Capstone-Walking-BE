@@ -51,7 +51,7 @@ public class PathController {
 	@PostMapping("/favorite")
 	public ApiResponse<ApiResponse.Success> addFavoriteRoute(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
-			@Valid FavoritePathBody favoritePathBody) {
+			@Valid @RequestBody FavoritePathBody favoritePathBody) {
 		// todo implement
 		// Long memberId = Long.valueOf(userDetails.getUsername());
 		Long memberId = 999L;
