@@ -4,6 +4,7 @@ import com.walking.api.security.authentication.token.TokenUserDetails;
 import com.walking.api.web.dto.request.point.TrafficPointParam;
 import com.walking.api.web.dto.request.point.ViewPointParam;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
+import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
 import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
 import com.walking.api.web.dto.response.BrowseTrafficsResponse;
 import com.walking.api.web.dto.response.SearchTrafficsResponse;
@@ -17,12 +18,14 @@ import com.walking.api.web.support.MessageCode;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -81,6 +84,21 @@ public class TrafficController {
 		Long memberId = 999L;
 		BrowseFavoriteTrafficsResponse response = getBrowseFavoriteTrafficsResponse();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	@PatchMapping("/favorite/{trafficId}")
+	public ApiResponse<ApiResponse.Success> updateFavoriteTraffic(
+			@AuthenticationPrincipal TokenUserDetails userDetails,
+			@Min(1) @PathVariable Long trafficId,
+			@Valid @RequestBody PatchFavoriteTrafficNameBody patchFavoriteTrafficNameBody) {
+		// todo implement
+		// Long memberId = Long.valueOf(userDetails.getUsername());
+		Long memberId = 999L;
+		log.info(
+				"Update favorite traffic request: trafficId={}, body={}",
+				trafficId,
+				patchFavoriteTrafficNameBody);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_MODIFIED);
 	}
 
 	private static SearchTrafficsResponse getSearchTrafficsResponse() {
