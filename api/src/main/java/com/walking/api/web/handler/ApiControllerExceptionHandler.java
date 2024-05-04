@@ -129,8 +129,10 @@ public class ApiControllerExceptionHandler {
 			return ApiResponseGenerator.fail(
 					requestInvalidCode, REQUEST_INVALID_FORMAT.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+		String requestInvalidCode =
+				String.format(REQUEST_INVALID_FORMAT.getCode(), rex.getBindingResult().getObjectName());
 		return ApiResponseGenerator.fail(
-				FAIL_REQUEST.getCode(), FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
+				requestInvalidCode, FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	private ApiResponse<FailureBody> handleRequestDetail(ValidationException ex) {
