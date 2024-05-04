@@ -22,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -99,6 +100,16 @@ public class PathController {
 		Long memberId = 999L;
 		log.info("Favorite route update request: favoriteId={}, body={}", favoriteId, pathNameBody);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_MODIFIED);
+	}
+
+	@DeleteMapping("/favorite/{favoriteId}")
+	public ApiResponse<ApiResponse.Success> deleteFavoriteRoute(
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long favoriteId) {
+		// todo implement
+		// Long memberId = Long.valueOf(userDetails.getUsername());
+		Long memberId = 999L;
+		log.info("Favorite route delete request: favoriteId={}", favoriteId);
+		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 
 	private static RouteDetailResponse getSampleRouteDetailResponse() {
