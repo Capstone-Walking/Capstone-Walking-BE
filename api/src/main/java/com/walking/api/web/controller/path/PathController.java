@@ -2,7 +2,7 @@ package com.walking.api.web.controller.path;
 
 import com.walking.api.security.authentication.token.TokenUserDetails;
 import com.walking.api.web.dto.request.OrderFilter;
-import com.walking.api.web.dto.request.point.FavoritePathBody;
+import com.walking.api.web.dto.request.path.FavoritePathBody;
 import com.walking.api.web.dto.request.point.RoutePointParam;
 import com.walking.api.web.dto.response.BrowseFavoriteRouteResponse;
 import com.walking.api.web.dto.response.RouteDetailResponse;
