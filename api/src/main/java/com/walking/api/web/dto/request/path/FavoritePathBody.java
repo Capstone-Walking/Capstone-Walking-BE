@@ -1,4 +1,4 @@
-package com.walking.api.web.dto.request.point;
+package com.walking.api.web.dto.request.path;
 
 import com.walking.api.web.dto.request.validator.LatParam;
 import com.walking.api.web.dto.request.validator.LngParam;
