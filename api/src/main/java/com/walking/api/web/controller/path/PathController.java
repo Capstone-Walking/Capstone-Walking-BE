@@ -1,5 +1,7 @@
 package com.walking.api.web.controller.path;
 
+import com.walking.api.security.authentication.token.TokenUserDetails;
+import com.walking.api.web.dto.request.point.FavoritePathBody;
 import com.walking.api.web.dto.request.point.RoutePointParam;
 import com.walking.api.web.dto.response.RouteDetailResponse;
 import com.walking.api.web.dto.response.detail.PointDetail;
@@ -12,8 +14,10 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +35,17 @@ public class PathController {
 		log.info("Route detail request: {}", routePointParam);
 		RouteDetailResponse response = getSampleRouteDetailResponse();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	@PostMapping("/favorite")
+	public ApiResponse<ApiResponse.Success> addFavoriteRoute(
+			@AuthenticationPrincipal TokenUserDetails userDetails,
+			@Valid FavoritePathBody favoritePathBody) {
+		// todo implement
+		// Long memberId = Long.valueOf(userDetails.getUsername());
+		Long memberId = 999L;
+		log.info("Favorite route request: {}", favoritePathBody);
+		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
 
 	private static RouteDetailResponse getSampleRouteDetailResponse() {
