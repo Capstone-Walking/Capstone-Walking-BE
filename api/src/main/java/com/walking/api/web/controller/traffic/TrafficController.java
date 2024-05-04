@@ -1,10 +1,13 @@
 package com.walking.api.web.controller.traffic;
 
+import com.walking.api.security.authentication.token.TokenUserDetails;
 import com.walking.api.web.dto.request.point.TrafficPointParam;
 import com.walking.api.web.dto.request.point.ViewPointParam;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
+import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
 import com.walking.api.web.dto.response.BrowseTrafficsResponse;
 import com.walking.api.web.dto.response.SearchTrafficsResponse;
+import com.walking.api.web.dto.response.detail.FavoriteIntersectionDetail;
 import com.walking.api.web.dto.response.detail.IntersectionDetail;
 import com.walking.api.web.dto.response.detail.IntersectionTrafficDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
@@ -17,6 +20,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -64,6 +68,16 @@ public class TrafficController {
 		// todo implement
 		log.info("Favorite traffic request: {}", favoriteTrafficBody);
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
+	}
+
+	@GetMapping("/favorite")
+	public ApiResponse<ApiResponse.SuccessBody<BrowseFavoriteTrafficsResponse>>
+			browseFavoriteTraffics(@AuthenticationPrincipal TokenUserDetails userDetails) {
+		// todo implement
+		// Long memberId = Long.valueOf(userDetails.getUsername());
+		Long memberId = 999L;
+		BrowseFavoriteTrafficsResponse response = getBrowseFavoriteTrafficsResponse();
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
 	private static SearchTrafficsResponse getSearchTrafficsResponse() {
@@ -128,5 +142,28 @@ public class TrafficController {
 						.build();
 
 		return response;
+	}
+
+	private static BrowseFavoriteTrafficsResponse getBrowseFavoriteTrafficsResponse() {
+		return BrowseFavoriteTrafficsResponse.builder()
+				.intersections(
+						List.of(
+								FavoriteIntersectionDetail.builder()
+										.trafficId(1L)
+										.id(1L)
+										.name("test1")
+										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+										.isFavorite(true)
+										.alias("alias1")
+										.build(),
+								FavoriteIntersectionDetail.builder()
+										.trafficId(2L)
+										.id(2L)
+										.name("test2")
+										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+										.isFavorite(true)
+										.alias("alias2")
+										.build()))
+				.build();
 	}
 }
