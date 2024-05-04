@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -71,6 +72,17 @@ public class PathController {
 		// todo implement: filter 기준 정렬
 		log.info("Favorite route browse request: filter={}", filter);
 		BrowseFavoriteRouteResponse response = getFilterFavoriteRouteResponse();
+		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	@GetMapping("/favorite/{favoriteId}")
+	public ApiResponse<ApiResponse.SuccessBody<RouteDetailResponse>> detailFavoriteRoute(
+			@AuthenticationPrincipal TokenUserDetails userDetails, @PathVariable Long favoriteId) {
+		// todo implement
+		// Long memberId = Long.valueOf(userDetails.getUsername());
+		Long memberId = 999L;
+		log.info("Favorite route detail request: favoriteId={}", favoriteId);
+		RouteDetailResponse response = getSampleRouteDetailResponse();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
