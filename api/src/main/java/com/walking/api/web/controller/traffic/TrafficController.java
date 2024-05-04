@@ -2,6 +2,7 @@ package com.walking.api.web.controller.traffic;
 
 import com.walking.api.web.dto.request.point.TrafficPointParam;
 import com.walking.api.web.dto.request.point.ViewPointParam;
+import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
 import com.walking.api.web.dto.response.BrowseTrafficsResponse;
 import com.walking.api.web.dto.response.SearchTrafficsResponse;
 import com.walking.api.web.dto.response.detail.IntersectionDetail;
@@ -19,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,6 +56,14 @@ public class TrafficController {
 		log.info("Traffic browse trafficId: {}", trafficId);
 		BrowseTrafficsResponse response = getBrowseTrafficsResponse();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
+	}
+
+	@PostMapping()
+	public ApiResponse<ApiResponse.Success> addFavoriteTraffic(
+			@Valid @RequestBody FavoriteTrafficBody favoriteTrafficBody) {
+		// todo implement
+		log.info("Favorite traffic request: {}", favoriteTrafficBody);
+		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
 
 	private static SearchTrafficsResponse getSearchTrafficsResponse() {
