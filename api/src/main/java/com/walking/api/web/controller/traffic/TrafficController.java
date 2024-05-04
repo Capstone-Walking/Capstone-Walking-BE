@@ -62,10 +62,13 @@ public class TrafficController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
-	@PostMapping()
+	@PostMapping("/favorite")
 	public ApiResponse<ApiResponse.Success> addFavoriteTraffic(
+			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody FavoriteTrafficBody favoriteTrafficBody) {
 		// todo implement
+		// Long memberId = Long.valueOf(userDetails.getUsername());
+		Long memberId = 999L;
 		log.info("Favorite traffic request: {}", favoriteTrafficBody);
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
