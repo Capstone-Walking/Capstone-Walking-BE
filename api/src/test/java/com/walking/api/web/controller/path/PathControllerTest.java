@@ -206,7 +206,8 @@ class PathControllerTest {
 								"browseFavoriteRouteFilter",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("즐겨찾기 경로 목록 조회 - 필터링 적용")
+												.summary("즐겨찾기 경로 목록 조회")
+												.description("filter: createAt, name, 기본값: createdAt || name: 이름 검색")
 												.tag(TAG)
 												.requestSchema(Schema.schema("BrowseFavoriteRouteFilterRequest"))
 												.requestHeaders(Description.authHeader())
@@ -272,7 +273,8 @@ class PathControllerTest {
 								"browseFavoriteRouteName",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("즐겨찾기 경로 목록 조회 - 이름 검색")
+												.summary("즐겨찾기 경로 목록 조회")
+												.description("filter: createAt, name, 기본값: createdAt || name: 이름 검색")
 												.tag(TAG)
 												.requestSchema(Schema.schema("BrowseFavoriteRouteNameRequest"))
 												.requestHeaders(Description.authHeader())

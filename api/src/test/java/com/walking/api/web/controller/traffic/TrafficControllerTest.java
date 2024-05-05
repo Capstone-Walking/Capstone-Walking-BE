@@ -59,7 +59,9 @@ class TrafficControllerTest {
 								"searchTrafficsWithViewPointParam",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("신호등 정보 조회 - 화면 좌표로 조회")
+												.summary("신호등 정보 조회")
+												.description(
+														"vblLat, vblLng, vtrLat, vtrLng로 화면 좌표로 신호등 정보 조회 || traLat, traLng로 신호등 좌표로 조회")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SearchTrafficsWithViewPointParamRequest"))
 												.requestParameters(
@@ -141,7 +143,9 @@ class TrafficControllerTest {
 								"searchTrafficsWithTrafficParam",
 								resource(
 										ResourceSnippetParameters.builder()
-												.description("신호등 정보 조회 - 신호등 좌표로 조회")
+												.summary("신호등 정보 조회")
+												.description(
+														"vblLat, vblLng, vtrLat, vtrLng로 화면 좌표로 신호등 정보 조회 || traLat, traLng로 신호등 좌표로 조회")
 												.tag(TAG)
 												.requestSchema(Schema.schema("SearchTrafficsWithTrafficParamRequest"))
 												.requestParameters(
