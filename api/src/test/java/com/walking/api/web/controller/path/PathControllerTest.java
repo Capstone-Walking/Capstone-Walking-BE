@@ -43,7 +43,7 @@ class PathControllerTest {
 	private static final String BASE_URL = "/api/v1/paths";
 
 	@Test
-	@DisplayName("상세 경로를 조회한다.")
+	@DisplayName("GET /detail 상세 경로를 조회한다.")
 	void detailRoute() throws Exception {
 		mockMvc
 				.perform(
@@ -157,7 +157,7 @@ class PathControllerTest {
 	}
 
 	@Test
-	@DisplayName("즐겨찾기 경로를 추가한다.")
+	@DisplayName("POST /favorite 즐겨찾기 경로를 추가한다.")
 	void addFavoriteRoute() throws Exception {
 		FavoritePathBody favoritePathBody =
 				FavoritePathBody.builder()
@@ -192,7 +192,7 @@ class PathControllerTest {
 	}
 
 	@Test
-	@DisplayName("즐겨찾기 경로를 조회한다.")
+	@DisplayName("GET /favorite/{favoriteId} 즐겨찾기 경로를 조회한다.")
 	void detailFavoriteRoute() throws Exception {
 		mockMvc
 				.perform(
@@ -295,7 +295,7 @@ class PathControllerTest {
 	}
 
 	@Test
-	@DisplayName("즐겨찾기 경로를 수정한다 - 이름 수정")
+	@DisplayName("PATCH /favorite/{favoriteId} 즐겨찾기 경로를 수정한다 - 이름 수정")
 	void updateFavoriteRoute() throws Exception {
 		PatchFavoritePathNameBody pathNameBody =
 				PatchFavoritePathNameBody.builder().name("test").build();
@@ -329,7 +329,7 @@ class PathControllerTest {
 	}
 
 	@Test
-	@DisplayName("즐겨찾기 경로를 삭제한다.")
+	@DisplayName("DELETE /favorite/{favoriteId} 즐겨찾기 경로를 삭제한다.")
 	void deleteFavoriteRoute() throws Exception {
 		mockMvc
 				.perform(
