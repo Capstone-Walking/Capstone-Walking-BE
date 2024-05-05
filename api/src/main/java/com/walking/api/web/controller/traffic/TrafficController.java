@@ -1,8 +1,8 @@
 package com.walking.api.web.controller.traffic;
 
 import com.walking.api.security.authentication.token.TokenUserDetails;
-import com.walking.api.web.dto.request.point.TrafficPointParam;
-import com.walking.api.web.dto.request.point.ViewPointParam;
+import com.walking.api.web.dto.request.point.OptionalTrafficPointParam;
+import com.walking.api.web.dto.request.point.OptionalViewPointParam;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
 import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
 import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
@@ -16,7 +16,7 @@ import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +42,9 @@ public class TrafficController {
 
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<SearchTrafficsResponse>> searchTraffics(
-			@Valid Optional<ViewPointParam> viewPointParam,
-			@Valid Optional<TrafficPointParam> trafficPointParam) {
-		if (trafficPointParam.isPresent()) {
+			@Valid OptionalViewPointParam viewPointParam,
+			@Valid OptionalTrafficPointParam trafficPointParam) {
+		if (!Objects.isNull(trafficPointParam) && trafficPointParam.isPresent()) {
 			// todo implement: trafficPointParam를 이용하여 교차로 정보 조회
 			log.info("Search traffics trafficPointParam: {}", trafficPointParam.get());
 			SearchTrafficsResponse response = getSearchTrafficsResponse();
