@@ -192,6 +192,137 @@ class PathControllerTest {
 	}
 
 	@Test
+	@DisplayName("GET /favorite 즐겨찾기 경로 목록을 조회한다. - 필터링 적용")
+	void browseFavoriteRouteFilter() throws Exception {
+		mockMvc
+				.perform(
+						get(BASE_URL + "/favorite")
+								.contentType(MediaType.APPLICATION_JSON)
+								.header("Authorization", "Bearer {{accessToken}}")
+								.param("filter", "createdAt"))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"browseFavoriteRouteFilter",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("즐겨찾기 경로 목록 조회 - 필터링 적용")
+												.tag(TAG)
+												.requestSchema(Schema.schema("BrowseFavoriteRouteFilterRequest"))
+												.requestHeaders(Description.authHeader())
+												.requestParameters(
+														new ParameterDescriptorWithType("filter")
+																.type(SimpleType.STRING)
+																.description("정렬 기준")
+																.optional()
+																.defaultValue("createdAt"))
+												.responseSchema(Schema.schema("BrowseFavoriteRouteFilterResponse"))
+												.responseFields(
+														Description.common(
+																new FieldDescriptor[] {
+																	fieldWithPath("data")
+																			.type(JsonFieldType.OBJECT)
+																			.description("데이터"),
+																	fieldWithPath("data.favoriteRoutes")
+																			.type(JsonFieldType.ARRAY)
+																			.description("즐겨찾기 경로 목록"),
+																	fieldWithPath("data.favoriteRoutes[].id")
+																			.type(JsonFieldType.NUMBER)
+																			.description("즐겨찾기 경로 id"),
+																	fieldWithPath("data.favoriteRoutes[].name")
+																			.type(JsonFieldType.STRING)
+																			.description("즐겨찾기 경로 이름"),
+																	fieldWithPath("data.favoriteRoutes[].startPoint")
+																			.type(JsonFieldType.OBJECT)
+																			.description("출발지"),
+																	fieldWithPath("data.favoriteRoutes[].startPoint.lat")
+																			.type(JsonFieldType.NUMBER)
+																			.description("출발지 위도"),
+																	fieldWithPath("data.favoriteRoutes[].startPoint.lng")
+																			.type(JsonFieldType.NUMBER)
+																			.description("출발지 경도"),
+																	fieldWithPath("data.favoriteRoutes[].endPoint")
+																			.type(JsonFieldType.OBJECT)
+																			.description("도착지"),
+																	fieldWithPath("data.favoriteRoutes[].endPoint.lat")
+																			.type(JsonFieldType.NUMBER)
+																			.description("도착지 위도"),
+																	fieldWithPath("data.favoriteRoutes[].endPoint.lng")
+																			.type(JsonFieldType.NUMBER)
+																			.description("도착지 경도"),
+																	fieldWithPath("data.favoriteRoutes[].createdAt")
+																			.type(JsonFieldType.STRING)
+																			.description("생성일")
+																}))
+												.build())));
+	}
+
+	@Test
+	@DisplayName("GET /favorite 즐겨찾기 경로 목록을 조회한다. - 이름 검색")
+	void browseFavoriteRouteName() throws Exception {
+		mockMvc
+				.perform(
+						get(BASE_URL + "/favorite")
+								.contentType(MediaType.APPLICATION_JSON)
+								.header("Authorization", "Bearer {{accessToken}}")
+								.param("name", "name"))
+				.andExpect(status().is2xxSuccessful())
+				.andDo(
+						document(
+								"browseFavoriteRouteName",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("즐겨찾기 경로 목록 조회 - 이름 검색")
+												.tag(TAG)
+												.requestSchema(Schema.schema("BrowseFavoriteRouteNameRequest"))
+												.requestHeaders(Description.authHeader())
+												.requestParameters(
+														new ParameterDescriptorWithType("name")
+																.type(SimpleType.STRING)
+																.description("검색할 이름")
+																.optional())
+												.responseSchema(Schema.schema("BrowseFavoriteRouteNameResponse"))
+												.responseFields(
+														Description.common(
+																new FieldDescriptor[] {
+																	fieldWithPath("data")
+																			.type(JsonFieldType.OBJECT)
+																			.description("데이터"),
+																	fieldWithPath("data.favoriteRoutes")
+																			.type(JsonFieldType.ARRAY)
+																			.description("즐겨찾기 경로 목록"),
+																	fieldWithPath("data.favoriteRoutes[].id")
+																			.type(JsonFieldType.NUMBER)
+																			.description("즐겨찾기 경로 id"),
+																	fieldWithPath("data.favoriteRoutes[].name")
+																			.type(JsonFieldType.STRING)
+																			.description("즐겨찾기 경로 이름"),
+																	fieldWithPath("data.favoriteRoutes[].startPoint")
+																			.type(JsonFieldType.OBJECT)
+																			.description("출발지"),
+																	fieldWithPath("data.favoriteRoutes[].startPoint.lat")
+																			.type(JsonFieldType.NUMBER)
+																			.description("출발지 위도"),
+																	fieldWithPath("data.favoriteRoutes[].startPoint.lng")
+																			.type(JsonFieldType.NUMBER)
+																			.description("출발지 경도"),
+																	fieldWithPath("data.favoriteRoutes[].endPoint")
+																			.type(JsonFieldType.OBJECT)
+																			.description("도착지"),
+																	fieldWithPath("data.favoriteRoutes[].endPoint.lat")
+																			.type(JsonFieldType.NUMBER)
+																			.description("도착지 위도"),
+																	fieldWithPath("data.favoriteRoutes[].endPoint.lng")
+																			.type(JsonFieldType.NUMBER)
+																			.description("도착지 경도"),
+																	fieldWithPath("data.favoriteRoutes[].createdAt")
+																			.type(JsonFieldType.STRING)
+																			.description("생성일")
+																}))
+												.build())));
+	}
+
+	@Test
 	@DisplayName("GET /favorite/{favoriteId} 즐겨찾기 경로를 조회한다.")
 	void detailFavoriteRoute() throws Exception {
 		mockMvc
