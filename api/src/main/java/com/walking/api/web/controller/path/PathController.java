@@ -7,7 +7,7 @@ import com.walking.api.web.dto.request.path.PatchFavoritePathNameBody;
 import com.walking.api.web.dto.request.point.RoutePointParam;
 import com.walking.api.web.dto.response.BrowseFavoriteRouteResponse;
 import com.walking.api.web.dto.response.RouteDetailResponse;
-import com.walking.api.web.dto.response.detail.FavoritePointDetail;
+import com.walking.api.web.dto.response.detail.FavoriteRouteDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
 import com.walking.api.web.dto.response.detail.TrafficDetail;
 import com.walking.api.web.support.ApiResponse;
@@ -154,9 +154,9 @@ public class PathController {
 
 	private static BrowseFavoriteRouteResponse getSearchFavoriteRouteResponse() {
 		return BrowseFavoriteRouteResponse.builder()
-				.favoritePoints(
+				.favoriteRoutes(
 						List.of(
-								FavoritePointDetail.builder()
+								FavoriteRouteDetail.builder()
 										.id(1L)
 										.name("search")
 										.startPoint(PointDetail.builder().lat(37.123).lng(127.123).build())
@@ -168,16 +168,16 @@ public class PathController {
 
 	private static BrowseFavoriteRouteResponse getFilterFavoriteRouteResponse() {
 		return BrowseFavoriteRouteResponse.builder()
-				.favoritePoints(
+				.favoriteRoutes(
 						List.of(
-								FavoritePointDetail.builder()
+								FavoriteRouteDetail.builder()
 										.id(1L)
 										.name("test1")
 										.startPoint(PointDetail.builder().lat(37.123).lng(127.123).build())
 										.endPoint(PointDetail.builder().lat(37.456).lng(127.456).build())
 										.createdAt(LocalDateTime.of(2021, 1, 1, 0, 0))
 										.build(),
-								FavoritePointDetail.builder()
+								FavoriteRouteDetail.builder()
 										.id(2L)
 										.name("test2")
 										.startPoint(PointDetail.builder().lat(37.123).lng(127.123).build())

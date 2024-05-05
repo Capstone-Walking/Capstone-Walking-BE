@@ -1,6 +1,6 @@
 package com.walking.api.web.dto.response;
 
-import com.walking.api.web.dto.response.detail.FavoritePointDetail;
+import com.walking.api.web.dto.response.detail.FavoriteRouteDetail;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +17,5 @@ import lombok.ToString;
 @Builder
 public class BrowseFavoriteRouteResponse {
 
-	private List<FavoritePointDetail> favoritePoints;
+	private List<FavoriteRouteDetail> favoriteRoutes;
 }
