@@ -1,5 +1,6 @@
 package com.walking.api.web.dto.response.detail;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -13,12 +14,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FavoriteIntersectionDetail {
+public class FavoriteTrafficDetail {
 
-	private Long trafficId;
 	private Long id;
+	private String detail;
 	private String name;
 	private PointDetail point;
-	private Boolean isFavorite;
-	private String alias;
+	private LocalDateTime createdAt;
 }
