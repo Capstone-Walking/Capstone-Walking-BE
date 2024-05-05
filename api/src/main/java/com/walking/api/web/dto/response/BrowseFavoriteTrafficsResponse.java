@@ -1,6 +1,6 @@
 package com.walking.api.web.dto.response;
 
-import com.walking.api.web.dto.response.detail.FavoriteIntersectionDetail;
+import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +17,5 @@ import lombok.ToString;
 @Builder
 public class BrowseFavoriteTrafficsResponse {
 
-	private List<FavoriteIntersectionDetail> intersections;
+	private List<FavoriteTrafficDetail> traffics;
 }
