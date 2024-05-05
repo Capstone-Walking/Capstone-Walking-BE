@@ -8,13 +8,13 @@ import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
 import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
 import com.walking.api.web.dto.response.BrowseTrafficsResponse;
 import com.walking.api.web.dto.response.SearchTrafficsResponse;
-import com.walking.api.web.dto.response.detail.FavoriteIntersectionDetail;
-import com.walking.api.web.dto.response.detail.IntersectionDetail;
-import com.walking.api.web.dto.response.detail.IntersectionTrafficDetail;
+import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
+import com.walking.api.web.dto.response.detail.TrafficDetail;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -115,61 +115,49 @@ public class TrafficController {
 	private static SearchTrafficsResponse getSearchTrafficsResponse() {
 		SearchTrafficsResponse response =
 				SearchTrafficsResponse.builder()
-						.intersections(
+						.traffics(
 								List.of(
-										IntersectionDetail.builder()
+										TrafficDetail.builder()
 												.id(1L)
-												.name("test1")
-												.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+												.detail("intersection-1-detail")
 												.isFavorite(true)
-												.alias("alias1")
-												.traffics(
-														List.of(
-																IntersectionTrafficDetail.builder()
-																		.direction("nt")
-																		.status(true)
-																		.remainTime(10L)
-																		.redCycle(20L)
-																		.greenCycle(30L)
-																		.build(),
-																IntersectionTrafficDetail.builder()
-																		.direction("st")
-																		.status(false)
-																		.remainTime(20L)
-																		.redCycle(30L)
-																		.greenCycle(40L)
-																		.build()))
+												.viewName("test1")
+												.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+												.color("red")
+												.timeLeft(10L)
+												.redCycle(30L)
+												.greenCycle(30L)
+												.build(),
+										TrafficDetail.builder()
+												.id(2L)
+												.detail("intersection-2-detail")
+												.isFavorite(false)
+												.viewName("test2")
+												.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+												.color("green")
+												.timeLeft(20L)
+												.redCycle(30L)
+												.greenCycle(30L)
 												.build()))
 						.build();
+
 		return response;
 	}
 
 	private static BrowseTrafficsResponse getBrowseTrafficsResponse() {
 		BrowseTrafficsResponse response =
 				BrowseTrafficsResponse.builder()
-						.intersection(
-								IntersectionDetail.builder()
+						.traffic(
+								TrafficDetail.builder()
 										.id(1L)
-										.name("test1")
-										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+										.detail("intersection-1-detail")
 										.isFavorite(true)
-										.alias("alias1")
-										.traffics(
-												List.of(
-														IntersectionTrafficDetail.builder()
-																.direction("nt")
-																.status(true)
-																.remainTime(10L)
-																.redCycle(20L)
-																.greenCycle(30L)
-																.build(),
-														IntersectionTrafficDetail.builder()
-																.direction("st")
-																.status(false)
-																.remainTime(20L)
-																.redCycle(30L)
-																.greenCycle(40L)
-																.build()))
+										.viewName("test1")
+										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+										.color("red")
+										.timeLeft(10L)
+										.redCycle(30L)
+										.greenCycle(30L)
 										.build())
 						.build();
 
@@ -178,23 +166,21 @@ public class TrafficController {
 
 	private static BrowseFavoriteTrafficsResponse getBrowseFavoriteTrafficsResponse() {
 		return BrowseFavoriteTrafficsResponse.builder()
-				.intersections(
+				.traffics(
 						List.of(
-								FavoriteIntersectionDetail.builder()
-										.trafficId(1L)
+								FavoriteTrafficDetail.builder()
 										.id(1L)
+										.detail("intersection-1-detail")
 										.name("test1")
 										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
-										.isFavorite(true)
-										.alias("alias1")
+										.createdAt(LocalDateTime.now())
 										.build(),
-								FavoriteIntersectionDetail.builder()
-										.trafficId(2L)
+								FavoriteTrafficDetail.builder()
 										.id(2L)
+										.detail("intersection-2-detail")
 										.name("test2")
 										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
-										.isFavorite(true)
-										.alias("alias2")
+										.createdAt(LocalDateTime.now())
 										.build()))
 				.build();
 	}
