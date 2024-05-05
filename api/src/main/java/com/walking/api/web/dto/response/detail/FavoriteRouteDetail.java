@@ -14,7 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class FavoritePointDetail {
+public class FavoriteRouteDetail {
 
 	private Long id;
 	private String name;
