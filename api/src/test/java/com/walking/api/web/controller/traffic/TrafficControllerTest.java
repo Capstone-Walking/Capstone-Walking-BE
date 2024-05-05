@@ -42,7 +42,7 @@ class TrafficControllerTest {
 	private static final String BASE_URL = "/api/v1/traffics";
 
 	@Test
-	@DisplayName("신호등 정보 조회 - 화면 좌표로 조회")
+	@DisplayName("GET 신호등 정보 조회 - 화면 좌표로 조회")
 	void searchTrafficsWithViewPointParam() throws Exception {
 
 		mockMvc
@@ -65,16 +65,20 @@ class TrafficControllerTest {
 												.requestParameters(
 														new ParameterDescriptorWithType("vblLat")
 																.type(SimpleType.NUMBER)
-																.description("화면 좌측 위도"),
+																.description("화면 좌측 위도")
+																.optional(),
 														new ParameterDescriptorWithType("vblLng")
 																.type(SimpleType.NUMBER)
-																.description("화면 좌측 경도"),
+																.description("화면 좌측 경도")
+																.optional(),
 														new ParameterDescriptorWithType("vtrLat")
 																.type(SimpleType.NUMBER)
-																.description("화면 우측 위도"),
+																.description("화면 우측 위도")
+																.optional(),
 														new ParameterDescriptorWithType("vtrLng")
 																.type(SimpleType.NUMBER)
-																.description("화면 우측 경도"))
+																.description("화면 우측 경도")
+																.optional())
 												.responseSchema(Schema.schema("SearchTrafficsWithViewPointParamResponse"))
 												.responseFields(
 														Description.common(
@@ -123,7 +127,7 @@ class TrafficControllerTest {
 	}
 
 	@Test
-	@DisplayName("신호등 정보 조회 - 신호등 좌표로 조회")
+	@DisplayName("GET 신호등 정보 조회 - 신호등 좌표로 조회")
 	void searchTrafficsWithTrafficParam() throws Exception {
 		mockMvc
 				.perform(
@@ -143,10 +147,12 @@ class TrafficControllerTest {
 												.requestParameters(
 														new ParameterDescriptorWithType("traLat")
 																.type(SimpleType.NUMBER)
-																.description("신호등 위도"),
+																.description("신호등 위도")
+																.optional(),
 														new ParameterDescriptorWithType("traLng")
 																.type(SimpleType.NUMBER)
-																.description("신호등 경도"))
+																.description("신호등 경도")
+																.optional())
 												.responseSchema(Schema.schema("SearchTrafficsWithTrafficParamResponse"))
 												.responseFields(
 														Description.common(
@@ -195,7 +201,7 @@ class TrafficControllerTest {
 	}
 
 	@Test
-	@DisplayName("신호등 정보 조회 - 신호등 ID로 조회")
+	@DisplayName("GET /{trafficId} 신호등 정보 조회 - 신호등 ID로 조회")
 	void browseTraffic() throws Exception {
 		mockMvc
 				.perform(get(BASE_URL + "/{trafficId}", 1).contentType(MediaType.APPLICATION_JSON))
@@ -260,7 +266,7 @@ class TrafficControllerTest {
 	}
 
 	@Test
-	@DisplayName("신호등 즐겨찾기 추가")
+	@DisplayName("POST /favorite 신호등 즐겨찾기 추가")
 	void addFavoriteTraffic() throws Exception {
 		FavoriteTrafficBody body =
 				FavoriteTrafficBody.builder().trafficId(1L).trafficAlias("alias1").build();
@@ -288,7 +294,7 @@ class TrafficControllerTest {
 	}
 
 	@Test
-	@DisplayName("즐겨찾기 신호등 조회")
+	@DisplayName("GET /favorite 즐겨찾기 신호등 조회")
 	void browseFavoriteTraffics() throws Exception {
 		mockMvc
 				.perform(
@@ -341,7 +347,7 @@ class TrafficControllerTest {
 	}
 
 	@Test
-	@DisplayName("즐겨찾기 신호등 수정 - 별칭 수정")
+	@DisplayName("PATCH /favorite/{favoriteId} 즐겨찾기 신호등 수정")
 	void updateFavoriteTraffic() throws Exception {
 		PatchFavoriteTrafficNameBody body =
 				PatchFavoriteTrafficNameBody.builder().trafficAlias("alias2").build();
@@ -374,7 +380,7 @@ class TrafficControllerTest {
 	}
 
 	@Test
-	@DisplayName("즐겨찾기 신호등 삭제")
+	@DisplayName("DELETE /favorite/{favoriteId} 즐겨찾기 신호등 삭제")
 	void deleteFavoriteTraffic() throws Exception {
 		mockMvc
 				.perform(
