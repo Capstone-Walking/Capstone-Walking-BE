@@ -1,6 +1,6 @@
 package com.walking.api.web.dto.response;
 
-import com.walking.api.web.dto.response.detail.IntersectionDetail;
+import com.walking.api.web.dto.response.detail.TrafficDetail;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,5 +17,5 @@ import lombok.ToString;
 @Builder
 public class SearchTrafficsResponse {
 
-	private List<IntersectionDetail> intersections;
+	private List<TrafficDetail> traffics;
 }
