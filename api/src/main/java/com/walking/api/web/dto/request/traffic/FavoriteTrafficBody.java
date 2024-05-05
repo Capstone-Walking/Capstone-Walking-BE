@@ -19,7 +19,6 @@ import lombok.ToString;
 @Builder
 public class FavoriteTrafficBody {
 
-	@NotBlank
 	@Min(1)
 	private Long trafficId;
 
