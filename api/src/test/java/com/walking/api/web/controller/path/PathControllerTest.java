@@ -88,7 +88,7 @@ class PathControllerTest {
 																			.description("총 소요 시간"),
 																	fieldWithPath("data.trafficCount")
 																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 수"),
+																			.description("신호등 개수"),
 																	fieldWithPath("data.startPoint")
 																			.type(JsonFieldType.OBJECT)
 																			.description("출발지"),
@@ -109,37 +109,49 @@ class PathControllerTest {
 																			.description("도착지 경도"),
 																	fieldWithPath("data.traffics")
 																			.type(JsonFieldType.ARRAY)
-																			.description("신호등"),
+																			.description("신호등 목록"),
 																	fieldWithPath("data.traffics[].id")
 																			.type(JsonFieldType.NUMBER)
 																			.description("신호등 id"),
-																	fieldWithPath("data.traffics[].state")
+																	fieldWithPath("data.traffics[].detail")
 																			.type(JsonFieldType.STRING)
-																			.description("신호등 상태"),
-																	fieldWithPath("data.traffics[].remainTime")
-																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 남은 시간"),
-																	fieldWithPath("data.traffics[].greenCycle")
-																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 초록 신호 주기"),
+																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].isFavorite")
+																			.type(JsonFieldType.BOOLEAN)
+																			.description("즐겨찾기 여부"),
+																	fieldWithPath("data.traffics[].viewName")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 이름"),
 																	fieldWithPath("data.traffics[].point")
 																			.type(JsonFieldType.OBJECT)
-																			.description("신호등 위치"),
+																			.description("위치"),
 																	fieldWithPath("data.traffics[].point.lat")
 																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 위치 위도"),
+																			.description("위도"),
 																	fieldWithPath("data.traffics[].point.lng")
 																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 위치 경도"),
+																			.description("경도"),
+																	fieldWithPath("data.traffics[].color")
+																			.type(JsonFieldType.STRING)
+																			.description("색상"),
+																	fieldWithPath("data.traffics[].timeLeft")
+																			.type(JsonFieldType.NUMBER)
+																			.description("남은 시간"),
+																	fieldWithPath("data.traffics[].redCycle")
+																			.type(JsonFieldType.NUMBER)
+																			.description("빨간불 사이클"),
+																	fieldWithPath("data.traffics[].greenCycle")
+																			.type(JsonFieldType.NUMBER)
+																			.description("초록불 사이클"),
 																	fieldWithPath("data.paths")
 																			.type(JsonFieldType.ARRAY)
-																			.description("경로 리스트"),
+																			.description("경로"),
 																	fieldWithPath("data.paths[].lat")
 																			.type(JsonFieldType.NUMBER)
-																			.description("경로 위도"),
+																			.description("위도"),
 																	fieldWithPath("data.paths[].lng")
 																			.type(JsonFieldType.NUMBER)
-																			.description("경로 경도"),
+																			.description("경도")
 																}))
 												.build())));
 	}
@@ -214,7 +226,7 @@ class PathControllerTest {
 																			.description("총 소요 시간"),
 																	fieldWithPath("data.trafficCount")
 																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 수"),
+																			.description("신호등 개수"),
 																	fieldWithPath("data.startPoint")
 																			.type(JsonFieldType.OBJECT)
 																			.description("출발지"),
@@ -235,37 +247,49 @@ class PathControllerTest {
 																			.description("도착지 경도"),
 																	fieldWithPath("data.traffics")
 																			.type(JsonFieldType.ARRAY)
-																			.description("신호등"),
+																			.description("신호등 목록"),
 																	fieldWithPath("data.traffics[].id")
 																			.type(JsonFieldType.NUMBER)
 																			.description("신호등 id"),
-																	fieldWithPath("data.traffics[].state")
+																	fieldWithPath("data.traffics[].detail")
 																			.type(JsonFieldType.STRING)
-																			.description("신호등 상태"),
-																	fieldWithPath("data.traffics[].remainTime")
-																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 남은 시간"),
-																	fieldWithPath("data.traffics[].greenCycle")
-																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 초록 신호 주기"),
+																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].isFavorite")
+																			.type(JsonFieldType.BOOLEAN)
+																			.description("즐겨찾기 여부"),
+																	fieldWithPath("data.traffics[].viewName")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 이름"),
 																	fieldWithPath("data.traffics[].point")
 																			.type(JsonFieldType.OBJECT)
-																			.description("신호등 위치"),
+																			.description("위치"),
 																	fieldWithPath("data.traffics[].point.lat")
 																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 위치 위도"),
+																			.description("위도"),
 																	fieldWithPath("data.traffics[].point.lng")
 																			.type(JsonFieldType.NUMBER)
-																			.description("신호등 위치 경도"),
+																			.description("경도"),
+																	fieldWithPath("data.traffics[].color")
+																			.type(JsonFieldType.STRING)
+																			.description("색상"),
+																	fieldWithPath("data.traffics[].timeLeft")
+																			.type(JsonFieldType.NUMBER)
+																			.description("남은 시간"),
+																	fieldWithPath("data.traffics[].redCycle")
+																			.type(JsonFieldType.NUMBER)
+																			.description("빨간불 사이클"),
+																	fieldWithPath("data.traffics[].greenCycle")
+																			.type(JsonFieldType.NUMBER)
+																			.description("초록불 사이클"),
 																	fieldWithPath("data.paths")
 																			.type(JsonFieldType.ARRAY)
-																			.description("경로 리스트"),
+																			.description("경로"),
 																	fieldWithPath("data.paths[].lat")
 																			.type(JsonFieldType.NUMBER)
-																			.description("경로 위도"),
+																			.description("위도"),
 																	fieldWithPath("data.paths[].lng")
 																			.type(JsonFieldType.NUMBER)
-																			.description("경로 경도"),
+																			.description("경도")
 																}))
 												.build())));
 	}

@@ -29,7 +29,6 @@ import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultHandler;
 
 @ActiveProfiles(value = "test")
 @AutoConfigureRestDocs
@@ -55,7 +54,72 @@ class TrafficControllerTest {
 								.param("vtrLat", "33.5662952")
 								.param("vtrLng", "124.9779451"))
 				.andExpect(status().is2xxSuccessful())
-				.andDo(getSearchTrafficResultHandler("신호등 좌표로 조회 - 화면 좌표로 조회"));
+				.andDo(
+						document(
+								"searchTrafficsWithViewPointParam",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("신호등 정보 조회 - 화면 좌표로 조회")
+												.tag(TAG)
+												.requestSchema(Schema.schema("SearchTrafficsWithViewPointParamRequest"))
+												.requestParameters(
+														new ParameterDescriptorWithType("vblLat")
+																.type(SimpleType.NUMBER)
+																.description("화면 좌측 위도"),
+														new ParameterDescriptorWithType("vblLng")
+																.type(SimpleType.NUMBER)
+																.description("화면 좌측 경도"),
+														new ParameterDescriptorWithType("vtrLat")
+																.type(SimpleType.NUMBER)
+																.description("화면 우측 위도"),
+														new ParameterDescriptorWithType("vtrLng")
+																.type(SimpleType.NUMBER)
+																.description("화면 우측 경도"))
+												.responseSchema(Schema.schema("SearchTrafficsWithViewPointParamResponse"))
+												.responseFields(
+														Description.common(
+																new FieldDescriptor[] {
+																	fieldWithPath("data")
+																			.type(JsonFieldType.OBJECT)
+																			.description("데이터"),
+																	fieldWithPath("data.traffics")
+																			.type(JsonFieldType.ARRAY)
+																			.description("신호등 정보"),
+																	fieldWithPath("data.traffics[].id")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 ID"),
+																	fieldWithPath("data.traffics[].detail")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].isFavorite")
+																			.type(JsonFieldType.BOOLEAN)
+																			.description("즐겨찾기 여부"),
+																	fieldWithPath("data.traffics[].viewName")
+																			.type(JsonFieldType.STRING)
+																			.description("화면 이름"),
+																	fieldWithPath("data.traffics[].point")
+																			.type(JsonFieldType.OBJECT)
+																			.description("신호등 좌표"),
+																	fieldWithPath("data.traffics[].point.lat")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 위도"),
+																	fieldWithPath("data.traffics[].point.lng")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 경도"),
+																	fieldWithPath("data.traffics[].color")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 색상"),
+																	fieldWithPath("data.traffics[].timeLeft")
+																			.type(JsonFieldType.NUMBER)
+																			.description("남은 시간"),
+																	fieldWithPath("data.traffics[].redCycle")
+																			.type(JsonFieldType.NUMBER)
+																			.description("빨간불 주기"),
+																	fieldWithPath("data.traffics[].greenCycle")
+																			.type(JsonFieldType.NUMBER)
+																			.description("초록불 주기")
+																}))
+												.build())));
 	}
 
 	@Test
@@ -68,60 +132,66 @@ class TrafficControllerTest {
 								.param("traLat", "33.5662952")
 								.param("traLng", "124.9779451"))
 				.andExpect(status().is2xxSuccessful())
-				.andDo(getSearchTrafficResultHandler("신호등 좌표로 조회 - 신호등 정보 조회"));
-	}
-
-	private ResultHandler getSearchTrafficResultHandler(String description) {
-		return document(
-				"searchTraffics",
-				resource(
-						ResourceSnippetParameters.builder()
-								.description(description)
-								.tag(TAG)
-								.requestSchema(Schema.schema("SearchTrafficsRequest"))
-								.responseSchema(Schema.schema("SearchTrafficsResponse"))
-								.responseFields(
-										Description.common(
-												new FieldDescriptor[] {
-													fieldWithPath("data").type(JsonFieldType.OBJECT).description("데이터"),
-													fieldWithPath("data.traffics")
-															.type(JsonFieldType.ARRAY)
-															.description("신호등 정보"),
-													fieldWithPath("data.traffics[].id")
-															.type(JsonFieldType.NUMBER)
-															.description("신호등 ID"),
-													fieldWithPath("data.traffics[].detail")
-															.type(JsonFieldType.STRING)
-															.description("신호등 상세 정보"),
-													fieldWithPath("data.traffics[].isFavorite")
-															.type(JsonFieldType.BOOLEAN)
-															.description("즐겨찾기 여부"),
-													fieldWithPath("data.traffics[].viewName")
-															.type(JsonFieldType.STRING)
-															.description("화면 이름"),
-													fieldWithPath("data.traffics[].point")
-															.type(JsonFieldType.OBJECT)
-															.description("신호등 좌표"),
-													fieldWithPath("data.traffics[].point.lat")
-															.type(JsonFieldType.NUMBER)
-															.description("신호등 위도"),
-													fieldWithPath("data.traffics[].point.lng")
-															.type(JsonFieldType.NUMBER)
-															.description("신호등 경도"),
-													fieldWithPath("data.traffics[].color")
-															.type(JsonFieldType.STRING)
-															.description("신호등 색상"),
-													fieldWithPath("data.traffics[].timeLeft")
-															.type(JsonFieldType.NUMBER)
-															.description("남은 시간"),
-													fieldWithPath("data.traffics[].redCycle")
-															.type(JsonFieldType.NUMBER)
-															.description("빨간불 주기"),
-													fieldWithPath("data.traffics[].greenCycle")
-															.type(JsonFieldType.NUMBER)
-															.description("초록불 주기")
-												}))
-								.build()));
+				.andDo(
+						document(
+								"searchTrafficsWithTrafficParam",
+								resource(
+										ResourceSnippetParameters.builder()
+												.description("신호등 정보 조회 - 신호등 좌표로 조회")
+												.tag(TAG)
+												.requestSchema(Schema.schema("SearchTrafficsWithTrafficParamRequest"))
+												.requestParameters(
+														new ParameterDescriptorWithType("traLat")
+																.type(SimpleType.NUMBER)
+																.description("신호등 위도"),
+														new ParameterDescriptorWithType("traLng")
+																.type(SimpleType.NUMBER)
+																.description("신호등 경도"))
+												.responseSchema(Schema.schema("SearchTrafficsWithTrafficParamResponse"))
+												.responseFields(
+														Description.common(
+																new FieldDescriptor[] {
+																	fieldWithPath("data")
+																			.type(JsonFieldType.OBJECT)
+																			.description("데이터"),
+																	fieldWithPath("data.traffics")
+																			.type(JsonFieldType.ARRAY)
+																			.description("신호등 정보"),
+																	fieldWithPath("data.traffics[].id")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 ID"),
+																	fieldWithPath("data.traffics[].detail")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].isFavorite")
+																			.type(JsonFieldType.BOOLEAN)
+																			.description("즐겨찾기 여부"),
+																	fieldWithPath("data.traffics[].viewName")
+																			.type(JsonFieldType.STRING)
+																			.description("화면 이름"),
+																	fieldWithPath("data.traffics[].point")
+																			.type(JsonFieldType.OBJECT)
+																			.description("신호등 좌표"),
+																	fieldWithPath("data.traffics[].point.lat")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 위도"),
+																	fieldWithPath("data.traffics[].point.lng")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 경도"),
+																	fieldWithPath("data.traffics[].color")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 색상"),
+																	fieldWithPath("data.traffics[].timeLeft")
+																			.type(JsonFieldType.NUMBER)
+																			.description("남은 시간"),
+																	fieldWithPath("data.traffics[].redCycle")
+																			.type(JsonFieldType.NUMBER)
+																			.description("빨간불 주기"),
+																	fieldWithPath("data.traffics[].greenCycle")
+																			.type(JsonFieldType.NUMBER)
+																			.description("초록불 주기")
+																}))
+												.build())));
 	}
 
 	@Test
