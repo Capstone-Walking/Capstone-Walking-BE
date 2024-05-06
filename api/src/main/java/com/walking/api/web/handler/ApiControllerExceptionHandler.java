@@ -81,8 +81,27 @@ public class ApiControllerExceptionHandler {
 		if (ex instanceof ValidationException) {
 			return handleRequestDetail((ValidationException) ex);
 		}
+
+		if (ex instanceof BindException) {
+			return handleRequestDetail((BindException) ex);
+		}
 		return ApiResponseGenerator.fail(
 				FAIL_REQUEST.getCode(), FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
+	}
+
+	private static ApiResponse<FailureBody> handleRequestDetail(BindException ex) {
+		BindException rex = ex;
+		List<ObjectError> errors = rex.getAllErrors();
+		if (errors.size() == 1) {
+			String parameter = rex.getFieldError().getField();
+			String requestInvalidCode = String.format(REQUEST_INVALID_FORMAT.getCode(), parameter);
+			return ApiResponseGenerator.fail(
+					requestInvalidCode, REQUEST_INVALID_FORMAT.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+		String requestInvalidCode =
+				String.format(REQUEST_INVALID_FORMAT.getCode(), rex.getBindingResult().getObjectName());
+		return ApiResponseGenerator.fail(
+				requestInvalidCode, FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	private ApiResponse<FailureBody> handleRequestDetail(MethodArgumentTypeMismatchException ex) {
@@ -110,8 +129,10 @@ public class ApiControllerExceptionHandler {
 			return ApiResponseGenerator.fail(
 					requestInvalidCode, REQUEST_INVALID_FORMAT.getMessage(), HttpStatus.BAD_REQUEST);
 		}
+		String requestInvalidCode =
+				String.format(REQUEST_INVALID_FORMAT.getCode(), rex.getBindingResult().getObjectName());
 		return ApiResponseGenerator.fail(
-				FAIL_REQUEST.getCode(), FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
+				requestInvalidCode, FAIL_REQUEST.getMessage(), HttpStatus.BAD_REQUEST);
 	}
 
 	private ApiResponse<FailureBody> handleRequestDetail(ValidationException ex) {
