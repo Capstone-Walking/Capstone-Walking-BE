@@ -36,6 +36,11 @@ public class FavoritePathBody {
 	/* 종료점 경도 */
 	@LngParam private double endLng;
 
+	/**
+	 * 요청에 즐겨찾기 저장을 위한 이름이 있는지 확인합니다.
+	 *
+	 * @return 즐겨찾기 저장을 위한 이름이 없는 경우 true, 그렇지 않은 경우 false
+	 */
 	public boolean hasName() {
 		return Objects.isNull(name) || name.isEmpty();
 	}
