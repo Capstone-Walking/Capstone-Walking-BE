@@ -1,5 +1,7 @@
 package com.walking.api.web.dto.response.detail;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,15 +11,11 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class PointDetail {
 
 	private double lat;
 	private double lng;
-
-	@Builder
-	public PointDetail(double lat, double lng) {
-		this.lat = lat;
-		this.lng = lng;
-	}
 }
