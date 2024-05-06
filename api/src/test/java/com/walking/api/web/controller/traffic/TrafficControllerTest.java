@@ -68,19 +68,23 @@ class TrafficControllerTest {
 														new ParameterDescriptorWithType("vblLat")
 																.type(SimpleType.NUMBER)
 																.description("화면 좌측 위도")
-																.optional(),
+																.optional()
+																.defaultValue(33.5662952),
 														new ParameterDescriptorWithType("vblLng")
 																.type(SimpleType.NUMBER)
 																.description("화면 좌측 경도")
-																.optional(),
+																.optional()
+																.defaultValue(124.9779451),
 														new ParameterDescriptorWithType("vtrLat")
 																.type(SimpleType.NUMBER)
 																.description("화면 우측 위도")
-																.optional(),
+																.optional()
+																.defaultValue(33.5662952),
 														new ParameterDescriptorWithType("vtrLng")
 																.type(SimpleType.NUMBER)
 																.description("화면 우측 경도")
-																.optional())
+																.optional()
+																.defaultValue(124.9779451))
 												.responseSchema(Schema.schema("SearchTrafficsWithViewPointParamResponse"))
 												.responseFields(
 														Description.common(
@@ -152,11 +156,13 @@ class TrafficControllerTest {
 														new ParameterDescriptorWithType("traLat")
 																.type(SimpleType.NUMBER)
 																.description("신호등 위도")
-																.optional(),
+																.optional()
+																.defaultValue(33.5662952),
 														new ParameterDescriptorWithType("traLng")
 																.type(SimpleType.NUMBER)
 																.description("신호등 경도")
-																.optional())
+																.optional()
+																.defaultValue(124.9779451))
 												.responseSchema(Schema.schema("SearchTrafficsWithTrafficParamResponse"))
 												.responseFields(
 														Description.common(
@@ -221,7 +227,8 @@ class TrafficControllerTest {
 												.pathParameters(
 														new ParameterDescriptorWithType("trafficId")
 																.type(SimpleType.NUMBER)
-																.description("신호등 ID"))
+																.description("신호등 ID")
+																.defaultValue(1L))
 												.responseSchema(Schema.schema("BrowseTrafficResponse"))
 												.responseFields(
 														Description.common(
