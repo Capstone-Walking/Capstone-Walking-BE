@@ -93,6 +93,9 @@ subprojects {
         // validation
         implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+        // hibernate spatial
+        implementation 'org.hibernate:hibernate-spatial'
+
         // test
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
     }
