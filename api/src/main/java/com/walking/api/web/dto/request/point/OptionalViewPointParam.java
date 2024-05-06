@@ -24,6 +24,6 @@ public class OptionalViewPointParam {
 	}
 
 	public boolean isPresent() {
-		return Objects.isNull(viewPointParam);
+		return Objects.nonNull(viewPointParam);
 	}
 }

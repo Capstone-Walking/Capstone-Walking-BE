@@ -25,6 +25,6 @@ public class OptionalTrafficPointParam {
 	}
 
 	public boolean isPresent() {
-		return Objects.isNull(trafficPointParam);
+		return Objects.nonNull(trafficPointParam);
 	}
 }
