@@ -8,4 +8,10 @@ dependencies {
 
     // apache commons
     implementation 'org.apache.commons:commons-lang3'
+
+    implementation 'org.apache.httpcomponents:httpcore'
+    implementation 'org.apache.httpcomponents:httpclient'
+
+    implementation 'org.springframework:spring-web'
+
 }
