@@ -1,4 +1,4 @@
-package com.walking.api;
+package com.walking.api.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.walking.api.config.ApiDataSourceConfig;
@@ -38,4 +38,4 @@ import org.springframework.test.context.TestPropertySource;
 			ObjectMapper.class,
 		})
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class RepositoryTest {}
+abstract class RepositoryTest {}
