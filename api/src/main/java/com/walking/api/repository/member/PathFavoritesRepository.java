@@ -1,4 +1,4 @@
-package com.walking.api.web.repository.member;
+package com.walking.api.repository.member;
 
 import com.walking.data.entity.member.PathFavoritesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
