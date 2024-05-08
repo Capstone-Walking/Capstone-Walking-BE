@@ -1,8 +1,10 @@
 package com.walking.data.entity.traffic;
 
+import com.walking.data.entity.support.listener.TrafficEntitySoftDeleteListener;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,11 +18,13 @@ import org.hibernate.annotations.SQLDelete;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
+@EntityListeners({AuditingEntityListener.class, TrafficEntitySoftDeleteListener.class})
 @Builder(toBuilder = true)
 @Table(name = "traffic")
 @SQLDelete(sql = "UPDATE traffic SET deleted=true where id=?")
