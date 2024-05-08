@@ -40,7 +40,7 @@ import org.springframework.test.context.TestPropertySource;
 			BatchLaunchConfig.class,
 			BatchPropertyConfig.class,
 			ObjectMapper.class,
-			TrafficStatusApiService.class
+			TrafficColorApiService.class
 		})
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 abstract class RepositoryTest {}
