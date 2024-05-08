@@ -21,20 +21,21 @@ import org.locationtech.jts.geom.Point;
 public class PathFavoritesEntity extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private MemberEntity memberEntity;
+	@JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private MemberEntity memberFk;
 
-	@Column(columnDefinition = "POINT")
+	@Column(nullable = false, columnDefinition = "POINT SRID 4326")
 	private Point startPoint;
 
-	@Column(columnDefinition = "POINT")
+	@Column(nullable = false, columnDefinition = "POINT SRID 4326")
 	private Point endPoint;
 
-	@Column(columnDefinition = "LINESTRING")
+	@Column(nullable = false, columnDefinition = "LINESTRING SRID 4326")
 	private LineString path;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 50)
 	private String startAlias;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 50)
 	private String endAlias;
 }
