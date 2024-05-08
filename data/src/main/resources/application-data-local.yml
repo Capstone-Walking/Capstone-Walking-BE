@@ -6,4 +6,7 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
-
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 50
