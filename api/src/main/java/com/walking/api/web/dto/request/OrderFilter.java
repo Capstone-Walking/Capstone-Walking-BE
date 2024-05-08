@@ -6,12 +6,17 @@ import lombok.Getter;
 @Getter
 public enum OrderFilter {
 	NAME("name"),
-	CREATEDAT("createdAt");
+	CREATEDAT("createdAt"),
+	;
 
 	private String field;
 
 	OrderFilter(String field) {
 		this.field = field;
+	}
+
+	private static OrderFilter defaultValue() {
+		return CREATEDAT;
 	}
 
 	/**
@@ -22,8 +27,13 @@ public enum OrderFilter {
 	 */
 	public static OrderFilter ofRequest(String source) {
 		if (Objects.isNull(source) || source.isEmpty()) {
-			return CREATEDAT;
+			return defaultValue();
 		}
-		return OrderFilter.valueOf(source.toUpperCase());
+
+		try {
+			return OrderFilter.valueOf(source.toUpperCase());
+		} catch (IllegalArgumentException e) {
+			return defaultValue();
+		}
 	}
 }
