@@ -47,7 +47,7 @@ public class TrafficController {
 		if (!Objects.isNull(trafficPointParam) && trafficPointParam.isPresent()) {
 			// todo implement: trafficPointParam를 이용하여 교차로 정보 조회
 			log.info("Search traffics trafficPointParam: {}", trafficPointParam.get());
-			SearchTrafficsResponse response = getSearchTrafficsResponse();
+			SearchTrafficsResponse response = getSearchViewTrafficsResponse();
 			return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 		}
 
@@ -112,17 +112,17 @@ public class TrafficController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 
-	private static SearchTrafficsResponse getSearchTrafficsResponse() {
+	private static SearchTrafficsResponse getSearchViewTrafficsResponse() {
 		SearchTrafficsResponse response =
 				SearchTrafficsResponse.builder()
 						.traffics(
 								List.of(
 										TrafficDetail.builder()
 												.id(1L)
-												.detail("intersection-1-detail")
+												.detail("traffic-1-detail")
 												.isFavorite(true)
 												.viewName("test1")
-												.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+												.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
 												.color("red")
 												.timeLeft(10L)
 												.redCycle(30L)
@@ -130,12 +130,33 @@ public class TrafficController {
 												.build(),
 										TrafficDetail.builder()
 												.id(2L)
-												.detail("intersection-2-detail")
+												.detail("traffic-2-detail")
 												.isFavorite(false)
 												.viewName("test2")
-												.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+												.point(PointDetail.builder().lat(35.175841).lng(126.912491).build())
 												.color("green")
 												.timeLeft(20L)
+												.redCycle(30L)
+												.greenCycle(30L)
+												.build()))
+						.build();
+
+		return response;
+	}
+
+	private static SearchTrafficsResponse getSearchTrafficsResponse() {
+		SearchTrafficsResponse response =
+				SearchTrafficsResponse.builder()
+						.traffics(
+								List.of(
+										TrafficDetail.builder()
+												.id(1L)
+												.detail("traffic-1-detail")
+												.isFavorite(true)
+												.viewName("test1")
+												.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
+												.color("red")
+												.timeLeft(10L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build()))
@@ -150,10 +171,10 @@ public class TrafficController {
 						.traffic(
 								TrafficDetail.builder()
 										.id(1L)
-										.detail("intersection-1-detail")
+										.detail("traffic-1-detail")
 										.isFavorite(true)
 										.viewName("test1")
-										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+										.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
 										.color("red")
 										.timeLeft(10L)
 										.redCycle(30L)
@@ -170,16 +191,16 @@ public class TrafficController {
 						List.of(
 								FavoriteTrafficDetail.builder()
 										.id(1L)
-										.detail("intersection-1-detail")
+										.detail("traffic-1-detail")
 										.name("test1")
-										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+										.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
 										.createdAt(LocalDateTime.now())
 										.build(),
 								FavoriteTrafficDetail.builder()
 										.id(2L)
-										.detail("intersection-2-detail")
+										.detail("traffic-2-detail")
 										.name("test2")
-										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+										.point(PointDetail.builder().lat(35.175841).lng(126.912491).build())
 										.createdAt(LocalDateTime.now())
 										.build()))
 				.build();

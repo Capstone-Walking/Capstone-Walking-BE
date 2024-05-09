@@ -119,36 +119,26 @@ public class PathController {
 		return RouteDetailResponse.builder()
 				.totalTime(100L)
 				.trafficCount(10L)
-				.startPoint(PointDetail.builder().lat(37.123).lng(127.123).build())
-				.endPoint(PointDetail.builder().lat(37.456).lng(127.456).build())
+				.startPoint(PointDetail.builder().lat(35.1782).lng(126.909).build())
+				.endPoint(PointDetail.builder().lat(35.178600).lng(126.912772).build())
 				.traffics(
 						List.of(
 								TrafficDetail.builder()
 										.id(1L)
-										.detail("intersection-1-detail")
+										.detail("traffic-1-detail")
 										.isFavorite(true)
 										.viewName("test1")
-										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
+										.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
 										.color("red")
 										.timeLeft(10L)
-										.redCycle(30L)
-										.greenCycle(30L)
-										.build(),
-								TrafficDetail.builder()
-										.id(2L)
-										.detail("intersection-1-detail")
-										.isFavorite(false)
-										.viewName("test2")
-										.point(PointDetail.builder().lat(33.123456).lng(124.123456).build())
-										.color("blue")
-										.timeLeft(20L)
 										.redCycle(30L)
 										.greenCycle(30L)
 										.build()))
 				.paths(
 						List.of(
-								PointDetail.builder().lat(37.123).lng(127.123).build(),
-								PointDetail.builder().lat(37.456).lng(127.456).build()))
+								PointDetail.builder().lat(35.1782).lng(126.909).build(),
+								PointDetail.builder().lat(35.178525).lng(124.123456).build(),
+								PointDetail.builder().lat(35.178600).lng(126.912772).build()))
 				.build();
 	}
 
@@ -159,8 +149,8 @@ public class PathController {
 								FavoriteRouteDetail.builder()
 										.id(1L)
 										.name("search")
-										.startPoint(PointDetail.builder().lat(37.123).lng(127.123).build())
-										.endPoint(PointDetail.builder().lat(37.456).lng(127.456).build())
+										.startPoint(PointDetail.builder().lat(35.1782).lng(126.909).build())
+										.endPoint(PointDetail.builder().lat(35.178600).lng(126.912772).build())
 										.createdAt(LocalDateTime.of(2021, 1, 1, 0, 0))
 										.build()))
 				.build();
@@ -173,15 +163,15 @@ public class PathController {
 								FavoriteRouteDetail.builder()
 										.id(1L)
 										.name("test1")
-										.startPoint(PointDetail.builder().lat(37.123).lng(127.123).build())
-										.endPoint(PointDetail.builder().lat(37.456).lng(127.456).build())
+										.startPoint(PointDetail.builder().lat(35.1782).lng(126.909).build())
+										.endPoint(PointDetail.builder().lat(35.178600).lng(126.912772).build())
 										.createdAt(LocalDateTime.of(2021, 1, 1, 0, 0))
 										.build(),
 								FavoriteRouteDetail.builder()
 										.id(2L)
 										.name("test2")
-										.startPoint(PointDetail.builder().lat(37.123).lng(127.123).build())
-										.endPoint(PointDetail.builder().lat(37.456).lng(127.456).build())
+										.startPoint(PointDetail.builder().lat(35.1782).lng(126.909).build())
+										.endPoint(PointDetail.builder().lat(35.179374).lng(126.912270).build())
 										.createdAt(LocalDateTime.of(2021, 1, 2, 0, 0))
 										.build()))
 				.build();
