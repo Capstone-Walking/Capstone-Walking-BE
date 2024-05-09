@@ -49,10 +49,10 @@ class TrafficControllerTest {
 				.perform(
 						get(BASE_URL)
 								.contentType(MediaType.APPLICATION_JSON)
-								.param("vblLat", "33.5662952")
-								.param("vblLng", "124.9779451")
-								.param("vtrLat", "33.5662952")
-								.param("vtrLng", "124.9779451"))
+								.param("vblLat", "35.175840")
+								.param("vblLng", "126.912490")
+								.param("vtrLat", "35.178526")
+								.param("vtrLng", "124.123457"))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -67,24 +67,24 @@ class TrafficControllerTest {
 												.requestParameters(
 														new ParameterDescriptorWithType("vblLat")
 																.type(SimpleType.NUMBER)
-																.description("화면 좌측 위도")
+																.description("화면 좌측 하단 위도")
 																.optional()
-																.defaultValue(33.5662952),
+																.defaultValue(35.175840),
 														new ParameterDescriptorWithType("vblLng")
 																.type(SimpleType.NUMBER)
-																.description("화면 좌측 경도")
+																.description("화면 좌측 하단 경도")
 																.optional()
-																.defaultValue(124.9779451),
+																.defaultValue(126.912490),
 														new ParameterDescriptorWithType("vtrLat")
 																.type(SimpleType.NUMBER)
-																.description("화면 우측 위도")
+																.description("화면 우측 상단 위도")
 																.optional()
-																.defaultValue(33.5662952),
+																.defaultValue(35.178526),
 														new ParameterDescriptorWithType("vtrLng")
 																.type(SimpleType.NUMBER)
-																.description("화면 우측 경도")
+																.description("화면 우측 상단 경도")
 																.optional()
-																.defaultValue(124.9779451))
+																.defaultValue(124.123457))
 												.responseSchema(Schema.schema("SearchTrafficsWithViewPointParamResponse"))
 												.responseFields(
 														Description.common(
@@ -139,8 +139,8 @@ class TrafficControllerTest {
 				.perform(
 						get(BASE_URL)
 								.contentType(MediaType.APPLICATION_JSON)
-								.param("traLat", "33.5662952")
-								.param("traLng", "124.9779451"))
+								.param("traLat", "35.178525")
+								.param("traLng", "124.123456"))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -157,12 +157,12 @@ class TrafficControllerTest {
 																.type(SimpleType.NUMBER)
 																.description("신호등 위도")
 																.optional()
-																.defaultValue(33.5662952),
+																.defaultValue(35.178525),
 														new ParameterDescriptorWithType("traLng")
 																.type(SimpleType.NUMBER)
 																.description("신호등 경도")
 																.optional()
-																.defaultValue(124.9779451))
+																.defaultValue(124.123456))
 												.responseSchema(Schema.schema("SearchTrafficsWithTrafficParamResponse"))
 												.responseFields(
 														Description.common(

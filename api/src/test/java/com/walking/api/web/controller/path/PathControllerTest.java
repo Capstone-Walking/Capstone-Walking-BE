@@ -48,10 +48,10 @@ class PathControllerTest {
 		mockMvc
 				.perform(
 						get(BASE_URL + "/detail")
-								.param("startLat", "37.5662952")
-								.param("startLng", "126.9779451")
-								.param("endLat", "37.5662952")
-								.param("endLng", "126.9779451")
+								.param("startLat", "35.1782")
+								.param("startLng", "126.909")
+								.param("endLat", "35.178600")
+								.param("endLng", "126.912772")
 								.contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
@@ -67,19 +67,19 @@ class PathControllerTest {
 																new ParameterDescriptorWithType("startLat")
 																		.type(SimpleType.NUMBER)
 																		.description("출발지 위도")
-																		.defaultValue(37.5662952),
+																		.defaultValue(35.1782),
 																new ParameterDescriptorWithType("startLng")
 																		.type(SimpleType.NUMBER)
 																		.description("출발지 경도")
-																		.defaultValue(126.9779451),
+																		.defaultValue(126.909),
 																new ParameterDescriptorWithType("endLat")
 																		.type(SimpleType.NUMBER)
 																		.description("도착지 위도")
-																		.defaultValue(37.5662952),
+																		.defaultValue(35.178600),
 																new ParameterDescriptorWithType("endLng")
 																		.type(SimpleType.NUMBER)
 																		.description("도착지 경도")
-																		.defaultValue(126.9779451)))
+																		.defaultValue(126.912772)))
 												.responseSchema(Schema.schema("PathDetailResponse"))
 												.responseFields(
 														Description.common(
@@ -166,10 +166,10 @@ class PathControllerTest {
 		FavoritePathBody favoritePathBody =
 				FavoritePathBody.builder()
 						.name("test")
-						.startLat(33.5662952)
-						.startLng(124.9779451)
-						.endLat(33.5662952)
-						.endLng(124.9779451)
+						.startLat(35.1782)
+						.startLng(126.909)
+						.endLat(35.178600)
+						.endLng(126.912772)
 						.build();
 
 		String content = objectMapper.writeValueAsString(favoritePathBody);
