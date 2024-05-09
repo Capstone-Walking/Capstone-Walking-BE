@@ -2,18 +2,19 @@ package com.walking.api.web.dto.request.point;
 
 import java.util.Objects;
 import java.util.Optional;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
-@Setter
+@Getter
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class OptionalViewPointParam {
 
@@ -24,6 +25,6 @@ public class OptionalViewPointParam {
 	}
 
 	public boolean isPresent() {
-		return Objects.isNull(viewPointParam);
+		return Objects.nonNull(viewPointParam);
 	}
 }

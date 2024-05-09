@@ -66,16 +66,20 @@ class PathControllerTest {
 														List.of(
 																new ParameterDescriptorWithType("startLat")
 																		.type(SimpleType.NUMBER)
-																		.description("출발지 위도"),
+																		.description("출발지 위도")
+																		.defaultValue(37.5662952),
 																new ParameterDescriptorWithType("startLng")
 																		.type(SimpleType.NUMBER)
-																		.description("출발지 경도"),
+																		.description("출발지 경도")
+																		.defaultValue(126.9779451),
 																new ParameterDescriptorWithType("endLat")
 																		.type(SimpleType.NUMBER)
-																		.description("도착지 위도"),
+																		.description("도착지 위도")
+																		.defaultValue(37.5662952),
 																new ParameterDescriptorWithType("endLng")
 																		.type(SimpleType.NUMBER)
-																		.description("도착지 경도")))
+																		.description("도착지 경도")
+																		.defaultValue(126.9779451)))
 												.responseSchema(Schema.schema("PathDetailResponse"))
 												.responseFields(
 														Description.common(
@@ -346,7 +350,8 @@ class PathControllerTest {
 												.requestParameters(
 														new ParameterDescriptorWithType("favoriteId")
 																.type(SimpleType.NUMBER)
-																.description("즐겨찾기 경로 id"))
+																.description("즐겨찾기 경로 id")
+																.defaultValue(1L))
 												.responseSchema(Schema.schema("DetailFavoriteRouteResponse"))
 												.responseFields(
 														Description.common(

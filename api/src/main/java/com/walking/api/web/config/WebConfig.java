@@ -38,7 +38,15 @@ public class WebConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-		resolvers.add(new OptionalViewPointParamArgumentResolver());
-		resolvers.add(new OptionalTrafficPointParamArgumentResolver());
+		resolvers.add(addOptionalViewPointParamArgumentResolver());
+		resolvers.add(addOptionalTrafficPointParamArgumentResolver());
+	}
+
+	private OptionalViewPointParamArgumentResolver addOptionalViewPointParamArgumentResolver() {
+		return new OptionalViewPointParamArgumentResolver();
+	}
+
+	private OptionalTrafficPointParamArgumentResolver addOptionalTrafficPointParamArgumentResolver() {
+		return new OptionalTrafficPointParamArgumentResolver();
 	}
 }
