@@ -8,7 +8,7 @@ public enum TrafficColor {
 		return this.equals(RED);
 	}
 
-	public boolean isGREEN() {
+	public boolean isGreen() {
 		return this.equals(GREEN);
 	}
 }
