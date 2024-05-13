@@ -20,6 +20,9 @@ public class RouteDetailResponse {
 
 	public Long totalTime;
 	public Long trafficCount;
+	public Integer timeToFirstTraffic;
+	public Integer totalDistance;
+	public Integer distanceToFirstTraffic;
 	public PointDetail startPoint;
 	public PointDetail endPoint;
 	public List<TrafficDetail> traffics;

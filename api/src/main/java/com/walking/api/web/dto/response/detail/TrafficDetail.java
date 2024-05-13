@@ -19,5 +19,6 @@ public class TrafficDetail {
 	private String state;
 	private Long remainTime;
 	private Long greenCycle;
+	private Long redCycle;
 	private PointDetail point;
 }
