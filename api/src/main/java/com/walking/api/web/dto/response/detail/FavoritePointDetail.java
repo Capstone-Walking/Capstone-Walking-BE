@@ -21,4 +21,7 @@ public class FavoritePointDetail {
 	private PointDetail startPoint;
 	private PointDetail endPoint;
 	private LocalDateTime createdAt;
+	private String startAlias;
+	private String endAlias;
+	private Long order;
 }
