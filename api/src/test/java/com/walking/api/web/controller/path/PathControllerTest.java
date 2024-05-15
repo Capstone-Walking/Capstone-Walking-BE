@@ -175,8 +175,10 @@ class PathControllerTest {
 		FavoritePathBody favoritePathBody =
 				FavoritePathBody.builder()
 						.name("test")
+						.startName("출발지")
 						.startLat(35.1782)
 						.startLng(126.909)
+						.endName("도착지")
 						.endLat(35.178600)
 						.endLng(126.912772)
 						.build();
