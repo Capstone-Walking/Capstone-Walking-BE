@@ -17,5 +17,5 @@ import lombok.ToString;
 @Builder
 public class BrowseFavoriteRouteResponse {
 
-	private List<FavoritePointDetail> favoritePoints;
+	private List<FavoritePointDetail> favoritePaths;
 }
