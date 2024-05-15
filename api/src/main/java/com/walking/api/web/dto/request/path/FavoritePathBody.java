@@ -24,6 +24,12 @@ public class FavoritePathBody {
 	/* 즐겨찾기 경로 이름 */
 	@Nullable private String name;
 
+	/* 시작점 이름 */
+	@Nullable private String startAlias;
+
+	/* 종료점 이름 */
+	@Nullable private String endAlias;
+
 	/* 시작점 위도 */
 	@LatParam private double startLat;
 
