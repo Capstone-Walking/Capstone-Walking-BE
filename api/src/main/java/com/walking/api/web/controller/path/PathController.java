@@ -10,12 +10,15 @@ import com.walking.api.web.dto.response.RouteDetailResponse;
 import com.walking.api.web.dto.response.detail.FavoritePointDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
 import com.walking.api.web.dto.response.detail.TrafficDetail;
+import com.walking.api.web.service.path.ReadFavoritesPathService;
+import com.walking.api.web.service.path.dto.response.ReadFavoritesPathResponse;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +41,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/paths")
 @RequiredArgsConstructor
 public class PathController {
+
+	private final ReadFavoritesPathService readFavoritesPathService;
 
 	@GetMapping("/detail")
 	public ApiResponse<ApiResponse.SuccessBody<RouteDetailResponse>> detailRoute(
@@ -62,20 +67,26 @@ public class PathController {
 	@GetMapping("/favorite")
 	public ApiResponse<ApiResponse.SuccessBody<BrowseFavoriteRouteResponse>> browseFavoriteRoute(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
-			@RequestParam(required = true, defaultValue = "createdAt") OrderFilter filter,
+			@RequestParam(required = false, defaultValue = "order") OrderFilter filter,
 			@RequestParam(required = false) Optional<String> name) {
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		//		Long memberId = Long.valueOf(userDetails.getUsername());
+		Long memberId = 1L;
+		log.info("컨트롤러 진입");
 		if (name.isPresent()) {
-			// todo implement: name 기준 검색
+
+			List<ReadFavoritesPathResponse> favoritesPaths =
+					readFavoritesPathService.execute(memberId, name.get());
+
 			log.info("Favorite route browse request: name={}", name.get());
-			BrowseFavoriteRouteResponse response = getSearchFavoriteRouteResponse();
+			BrowseFavoriteRouteResponse response = getFavoriteRouteResponse(favoritesPaths);
 			return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 		}
 
-		// todo implement: filter 기준 정렬
+		List<ReadFavoritesPathResponse> favoritesPaths =
+				readFavoritesPathService.execute(memberId, filter);
+
 		log.info("Favorite route browse request: filter={}", filter);
-		BrowseFavoriteRouteResponse response = getFilterFavoriteRouteResponse();
+		BrowseFavoriteRouteResponse response = getFavoriteRouteResponse(favoritesPaths);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -112,6 +123,32 @@ public class PathController {
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 
+	private BrowseFavoriteRouteResponse getFavoriteRouteResponse(
+			List<ReadFavoritesPathResponse> favoritesPaths) {
+		// ReadFavoritesPathResponse 리스트를 FavoritePointDetail 리스트로 변환
+		List<FavoritePointDetail> favoritePoints =
+				favoritesPaths.stream()
+						.map(
+								path ->
+										FavoritePointDetail.builder()
+												.id(path.getId())
+												.name(path.getName())
+												.startPoint(
+														new PointDetail(
+																path.getStartPoint().getX(), path.getStartPoint().getY()))
+												.endPoint(
+														new PointDetail(path.getEndPoint().getX(), path.getEndPoint().getY()))
+												.createdAt(path.getCreatedAt())
+												.startAlias(path.getStartAlias())
+												.endAlias(path.getEndAlias())
+												.order(path.getOrder())
+												.build())
+						.collect(Collectors.toList());
+
+		// BrowseFavoriteRouteResponse 객체 생성 및 반환
+		return BrowseFavoriteRouteResponse.builder().favoritePaths(favoritePoints).build();
+	}
+
 	private static RouteDetailResponse getSampleRouteDetailResponse() {
 		return RouteDetailResponse.builder()
 				.totalTime(100L)
@@ -141,9 +178,9 @@ public class PathController {
 				.build();
 	}
 
-	private static BrowseFavoriteRouteResponse getSearchFavoriteRouteResponse() {
+	private static BrowseFavoriteRouteResponse getFavoriteRouteResponse() {
 		return BrowseFavoriteRouteResponse.builder()
-				.favoritePoints(
+				.favoritePaths(
 						List.of(
 								FavoritePointDetail.builder()
 										.id(1L)
@@ -157,7 +194,7 @@ public class PathController {
 
 	private static BrowseFavoriteRouteResponse getFilterFavoriteRouteResponse() {
 		return BrowseFavoriteRouteResponse.builder()
-				.favoritePoints(
+				.favoritePaths(
 						List.of(
 								FavoritePointDetail.builder()
 										.id(1L)
