@@ -1,4 +1,4 @@
-package com.walking.api.config;
+package com.walking.api.repository.config;
 
 import javax.sql.DataSource;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -15,12 +15,12 @@ import org.springframework.context.annotation.Configuration;
 			DataSourceAutoConfiguration.class,
 			DataSourceTransactionManagerAutoConfiguration.class,
 		})
-public class ApiDataSourceConfig {
+public class ApiRepositoryDataSourceConfig {
 
-	public static final String DATASOURCE_NAME = ApiAppConfig.BEAN_NAME_PREFIX + "DataSource";
+	public static final String DATASOURCE_NAME = ApiRepositoryConfig.BEAN_NAME_PREFIX + "DataSource";
 
 	@Bean(name = DATASOURCE_NAME)
-	@ConfigurationProperties(prefix = "spring.datasource")
+	@ConfigurationProperties(prefix = "api.datasource")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
 	}

@@ -1,4 +1,4 @@
-package com.walking.api.config;
+package com.walking.api.repository.config;
 
 import javax.persistence.EntityManagerFactory;
 import org.springframework.context.annotation.Bean;
@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaAuditing
 @EnableTransactionManagement
 @EnableJpaRepositories(
-		basePackages = ApiAppConfig.BASE_PACKAGE,
-		transactionManagerRef = ApiJpaConfig.TRANSACTION_MANAGER_NAME,
-		entityManagerFactoryRef = ApiEntityConfig.ENTITY_MANAGER_FACTORY_NAME)
-public class ApiJpaConfig {
+		basePackages = ApiRepositoryConfig.BASE_PACKAGE,
+		transactionManagerRef = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME,
+		entityManagerFactoryRef = ApiRepositoryEntityConfig.ENTITY_MANAGER_FACTORY_NAME)
+public class ApiRepositoryJpaConfig {
 
 	public static final String TRANSACTION_MANAGER_NAME =
-			ApiAppConfig.BEAN_NAME_PREFIX + "TransactionalManager";
+			ApiRepositoryConfig.BEAN_NAME_PREFIX + "TransactionalManager";
 
 	@Bean(name = TRANSACTION_MANAGER_NAME)
 	public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {

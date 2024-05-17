@@ -1,6 +1,6 @@
-package com.walking.api.config;
+package com.walking.api.repository.config;
 
-import static com.walking.api.config.ApiDataSourceConfig.DATASOURCE_NAME;
+import static com.walking.api.repository.config.ApiRepositoryDataSourceConfig.DATASOURCE_NAME;
 
 import com.walking.data.DataConfig;
 import com.walking.data.config.HibernatePropertyMapProvider;
@@ -17,10 +17,11 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 @Configuration
 @RequiredArgsConstructor
-public class ApiEntityConfig {
+public class ApiRepositoryEntityConfig {
 	public static final String ENTITY_MANAGER_FACTORY_NAME =
-			ApiAppConfig.BEAN_NAME_PREFIX + "EntityManagerFactory";
-	private static final String PERSIST_UNIT = ApiAppConfig.BEAN_NAME_PREFIX + "PersistenceUnit";
+			ApiRepositoryConfig.BEAN_NAME_PREFIX + "EntityManagerFactory";
+	private static final String PERSIST_UNIT =
+			ApiRepositoryConfig.BEAN_NAME_PREFIX + "PersistenceUnit";
 
 	private final HibernatePropertyMapProvider hibernatePropertyMapProvider;
 
