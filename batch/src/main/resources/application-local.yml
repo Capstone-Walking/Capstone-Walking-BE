@@ -10,6 +10,11 @@ spring:
       - batch-local
         
         log-local
+  datasource:
+    jdbc-url: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
 # batch config
 walking:
@@ -19,11 +24,22 @@ walking:
       username: root
       password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
+    schedular:
+      interval: 70
 
     jdbc:
       initialize-schema: always
     job:
-      enabled: ${job.name:NONE}
+      enabled: false
+      names: ${job.name:NONE}
+
+api:
+  traffic:
+    seoul:
+      apiKey: f6675d12-8dff-42b8-b031-9e1cc55cf39a
+      baseUrl: http://t-data.seoul.go.kr
+      colorPath: /apig/apiman-gateway/tapi/v2xSignalPhaseInformation/1.0
+      timeLeftPath: /apig/apiman-gateway/tapi/v2xSignalPhaseTimingInformation/1.0
 
 # log config
 log:
