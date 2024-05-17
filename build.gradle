@@ -5,6 +5,12 @@ buildscript {
         springBootVersion = '2.7.5'
         dependencyManagementVersion = '1.0.15.RELEASE'
 
+        // kotlin version
+        kotlinVersion = '1.5.31'
+
+        // ktlint version
+        ktlintVersion = '11.3.2'
+
         // jwt
         jsonwebtokenVersion = '0.11.5'
 
@@ -24,6 +30,12 @@ buildscript {
         // spotless
         spotlessVersion = '6.8.0'
 
+        // HTTP client
+        httpclientVersion = '4.5.13'
+
+        // Minio
+        minioVersion = '8.5.5'
+
         // spring cloud
         set('springCloudVersion', "2021.0.1")
     }
@@ -31,6 +43,19 @@ buildscript {
 
 plugins {
     id 'java'
+
+    // kotlin
+    id 'org.jetbrains.kotlin.jvm' version "${kotlinVersion}"
+
+    // plugin kotlin spring
+    id 'org.jetbrains.kotlin.plugin.spring' version "${kotlinVersion}"
+
+    // plugin kotlin jpa
+    id 'org.jetbrains.kotlin.plugin.jpa' version "${kotlinVersion}"
+
+    // plugin kotlin ktlint
+    id 'org.jlleitschuh.gradle.ktlint' version "${ktlintVersion}"
+    id 'org.jlleitschuh.gradle.ktlint-idea' version "${ktlintVersion}"
 
     // spring
     id 'org.springframework.boot' version "${springBootVersion}"
