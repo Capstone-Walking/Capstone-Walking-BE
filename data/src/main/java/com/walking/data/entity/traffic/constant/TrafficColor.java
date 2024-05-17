@@ -11,4 +11,11 @@ public enum TrafficColor {
 	public boolean isGreen() {
 		return this.equals(GREEN);
 	}
+
+	public static TrafficColor apiRequestOf(String request) {
+		if (request.equals("Stop")) {
+			return RED;
+		}
+		return GREEN;
+	}
 }
