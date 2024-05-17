@@ -26,6 +26,8 @@ walking:
       driver-class-name: com.mysql.cj.jdbc.Driver
     schedular:
       interval: 70
+    chunk:
+      size: 1000
 
     jdbc:
       initialize-schema: always
