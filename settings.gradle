@@ -1,9 +1,14 @@
 rootProject.name = 'walking-be'
 // api
 include 'api'
+include 'member-api'
 
 // data
 include 'data'
+include 'api-repository'
+
+// image-store
+include 'image-store'
 
 // batch
 include 'batch'
