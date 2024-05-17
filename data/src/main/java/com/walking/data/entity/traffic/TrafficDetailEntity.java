@@ -1,7 +1,8 @@
 package com.walking.data.entity.traffic;
 
-import com.walking.data.entity.BaseEntity;
+import com.walking.data.entity.traffic.constant.Direction;
 import com.walking.data.entity.traffic.constant.TrafficColor;
+import java.time.OffsetDateTime;
 import javax.persistence.Column;
 import javax.persistence.ConstraintMode;
 import javax.persistence.Entity;
@@ -9,15 +10,17 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.SQLDelete;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,10 +28,13 @@ import org.hibernate.annotations.SQLDelete;
 @Entity
 @SuperBuilder(toBuilder = true)
 @Table(name = "traffic_detail")
-@SQLDelete(sql = "UPDATE traffic_detail SET deleted=true where id=?")
-public class TrafficDetailEntity extends BaseEntity {
+public class TrafficDetailEntity {
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private TrafficEntity traffic;
 
@@ -38,4 +44,11 @@ public class TrafficDetailEntity extends BaseEntity {
 
 	@Column(nullable = false)
 	private Float timeLeft;
+
+	@Enumerated(EnumType.STRING)
+	private Direction direction;
+
+	private OffsetDateTime colorRegDt; // 색상 정보 등록일자
+
+	private OffsetDateTime timeLeftRegDt; // 잔여 시간 등록일자
 }
