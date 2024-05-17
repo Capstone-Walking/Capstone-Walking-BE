@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class TrafficColorDto {
+public class TrafficColorResponseDto {
 	private Long itstId; // 교차로 ID
 	private String ntPdsgStatNm; // 북쪽
 	private String etPdsgStatNm; // 동쪽
