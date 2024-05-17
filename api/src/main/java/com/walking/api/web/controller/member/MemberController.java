@@ -26,6 +26,7 @@ import com.walking.member.api.usecase.dto.response.GetMemberDetailUseCaseRespons
 import com.walking.member.api.usecase.dto.response.GetMemberTokenDetailUseCaseResponse;
 import com.walking.member.api.usecase.dto.response.PatchProfileImageUseCaseResponse;
 import com.walking.member.api.usecase.dto.response.PostMemberUseCaseResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.validation.Valid;
@@ -126,9 +127,12 @@ public class MemberController {
 			@AuthenticationPrincipal TokenUserDetails userDetails, PatchProfileBody patchProfileBody)
 			throws IOException {
 		Long memberId = Long.valueOf(userDetails.getUsername());
+		String suffix = patchProfileBody.getProfile().getOriginalFilename().split("\\.")[1];
+		File tempFile = File.createTempFile("temp_", "." + suffix);
+		patchProfileBody.getProfile().transferTo(tempFile);
 		PatchProfileImageUseCaseResponse useCaseResponse =
-				patchProfileImageUseCase.execute(
-						memberId, patchProfileBody.getProfile().getResource().getFile());
+				patchProfileImageUseCase.execute(memberId, tempFile);
+		tempFile.deleteOnExit();
 		PatchProfileResponse response =
 				PatchProfileResponse.builder()
 						.id(useCaseResponse.getId())
