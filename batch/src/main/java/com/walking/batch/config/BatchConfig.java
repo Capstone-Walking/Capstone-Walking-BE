@@ -14,12 +14,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.util.StringUtils;
 
 @Configuration
 @ComponentScan(basePackages = BatchConfig.BASE_PACKAGE)
 @RequiredArgsConstructor
 @EnableAutoConfiguration(exclude = {BatchAutoConfiguration.class})
+@EnableScheduling
 @Import(value = {DataConfig.class})
 public class BatchConfig {
 
