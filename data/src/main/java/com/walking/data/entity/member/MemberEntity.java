@@ -51,4 +51,20 @@ public class MemberEntity extends BaseEntity {
 	@Builder.Default
 	@Column(nullable = false, columnDefinition = "json")
 	private String resource = "{}";
+
+	public MemberEntity(String nickName, String profile, String certificationId) {
+		this.nickName = nickName;
+		this.profile = profile;
+		this.certificationId = certificationId;
+	}
+
+	public MemberEntity withDrawn() {
+		this.status = MemberStatus.WITHDRAWN;
+		return this;
+	}
+
+	public MemberEntity updateProfile(String profile) {
+		this.profile = profile;
+		return this;
+	}
 }
