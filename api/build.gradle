@@ -8,7 +8,8 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation project(':data')
+    implementation project(':api-repository')
+    implementation project(':member-api')
 
     // web
     implementation 'org.springframework.boot:spring-boot-starter-web'
