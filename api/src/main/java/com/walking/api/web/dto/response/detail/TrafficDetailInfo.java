@@ -1,6 +1,5 @@
 package com.walking.api.web.dto.response.detail;
 
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,11 +14,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class FavoriteTrafficDetail {
-
-	private Long id;
-	private TrafficDetailInfo detail;
-	private String name;
-	private PointDetail point;
-	private LocalDateTime createdAt;
+public class TrafficDetailInfo {
+	private Long trafficId;
+	private String apiSource;
+	private String direction;
 }
