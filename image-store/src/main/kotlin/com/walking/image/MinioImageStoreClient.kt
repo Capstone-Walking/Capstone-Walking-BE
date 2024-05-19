@@ -5,33 +5,48 @@ import io.minio.MinioClient
 import io.minio.PutObjectArgs
 import io.minio.RemoveObjectArgs
 import io.minio.http.Method
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class MinioImageStoreClient(
     private val minIoClient: MinioClient
 ) : ImageStoreClient {
 
-    override fun getPresignedObjectUrl(fileName: ImageGetPresignedObjectUrlArgs): String {
+    val log: Logger = LoggerFactory.getLogger(MinioImageStoreClient::class.java)
+
+    override fun getPresignedObjectUrl(fileName: ImageGetPresignedObjectUrlArgs): String? {
         GetPresignedObjectUrlArgs.builder()
             .bucket(fileName.bucket)
             .`object`(fileName.`object`)
             .method(Method.valueOf(fileName.method))
             .build()
             .let { args ->
-                return minIoClient.getPresignedObjectUrl(args)
+                try {
+                    return minIoClient.getPresignedObjectUrl(args)
+                } catch (e: Exception) {
+                    log.debug("Failed to get presigned url for object: ${fileName.`object`}")
+                    return null
+                }
             }
     }
 
-    override fun removeObject(fileName: ImageRemoveObjectArgs) {
+    override fun removeObject(fileName: ImageRemoveObjectArgs): Boolean {
         RemoveObjectArgs.builder()
             .bucket(fileName.bucket)
             .`object`(fileName.`object`)
             .build()
             .let { args ->
-                minIoClient.removeObject(args)
+                try {
+                    minIoClient.removeObject(args)
+                    return true
+                } catch (e: Exception) {
+                    log.debug("Failed to remove object: ${fileName.`object`}")
+                    return false
+                }
             }
     }
 
-    override fun putObject(fileName: ImagePutObjectArgs): ImageWriteResponse {
+    override fun putObject(fileName: ImagePutObjectArgs): ImageWriteResponse? {
         PutObjectArgs.builder()
             .bucket(fileName.bucket)
             .`object`(fileName.`object`)
@@ -39,14 +54,19 @@ class MinioImageStoreClient(
             .contentType(fileName.contentType)
             .build()
             .let { args ->
-                minIoClient.putObject(args).let { owr ->
-                    return ImageWriteResponse(
-                        owr.bucket(),
-                        owr.region(),
-                        owr.`object`(),
-                        owr.etag(),
-                        owr.versionId()
-                    )
+                try {
+                    minIoClient.putObject(args).let { owr ->
+                        return ImageWriteResponse(
+                            owr.bucket(),
+                            owr.region(),
+                            owr.`object`(),
+                            owr.etag(),
+                            owr.versionId()
+                        )
+                    }
+                } catch (e: Exception) {
+                    log.debug("Failed to put object: ${fileName.`object`}")
+                    return null
                 }
             }
     }
