@@ -49,4 +49,8 @@ class KaKaoUnlinkClient(
 
         return response.body!!
     }
+
+    override fun supports(type: String): Boolean {
+        return "KAKAO" == type.toUpperCase()
+    }
 }
