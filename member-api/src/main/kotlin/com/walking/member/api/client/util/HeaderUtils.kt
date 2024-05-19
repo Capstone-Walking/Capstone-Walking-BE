@@ -9,5 +9,11 @@ class HeaderUtils {
             headers.add("Authorization", "Bearer $token")
             return headers
         }
+
+        fun generateKakaoHeaders(adminKey: String): HttpHeaders {
+            val headers = HttpHeaders()
+            headers.add("Authorization", "KakaoAK $adminKey")
+            return headers
+        }
     }
 }
