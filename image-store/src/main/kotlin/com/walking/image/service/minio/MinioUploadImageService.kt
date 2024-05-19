@@ -17,7 +17,7 @@ class MinioUploadImageService(
 ) : UploadImageService {
     override fun execute(name: String, file: File): ImageWriteResponse {
         ImageArgsGenerator.putImage(bucket, name, file).let { args ->
-            return imageStoreClient.putObject(args)
+            return imageStoreClient.putObject(args) ?: throw Exception("Failed to upload image")
         }
     }
 }

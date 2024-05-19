@@ -15,7 +15,7 @@ class MinioGetPreSignedImageUrlService(
 ) : GetPreSignedImageUrlService {
     override fun execute(image: String): String {
         ImageArgsGenerator.preSignedUrl(bucket, image).let { args ->
-            return imageStoreClient.getPresignedObjectUrl(args)
+            return imageStoreClient.getPresignedObjectUrl(args) ?: throw Exception("Failed to get pre-signed url")
         }
     }
 }
