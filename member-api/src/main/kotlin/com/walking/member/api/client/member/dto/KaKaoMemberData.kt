@@ -1,9 +1,9 @@
 package com.walking.member.api.client.member.dto
 
-data class KaKaoMemberData(private val id: String) : SocialMemberData {
-    private val properties: Properties? = null
+data class KaKaoMemberData(val id: String) : SocialMemberData {
+    val properties: Properties? = null
 
-    private data class Properties(val nickname: String)
+    data class Properties(val nickname: String, val profile_image: String)
 
     override fun getName(): String {
         return properties?.nickname ?: ""
@@ -11,5 +11,9 @@ data class KaKaoMemberData(private val id: String) : SocialMemberData {
 
     override fun getId(): Long {
         return id.toLong()
+    }
+
+    fun getPicture(): String {
+        return properties?.profile_image ?: ""
     }
 }
