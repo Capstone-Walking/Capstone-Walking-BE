@@ -1,10 +1,11 @@
+
 import com.walking.member.api.client.config.property.KaKaoApiProperties
 import com.walking.member.api.client.exception.SocialClientException
 import com.walking.member.api.client.token.SocialTokenClient
 import com.walking.member.api.client.token.dto.KaKaoTokenData
 import com.walking.member.api.client.token.dto.SocialIdToken
 import com.walking.member.api.client.token.dto.SocialToken
-import com.walking.member.api.client.util.HeaderUtils
+import com.walking.member.api.client.util.addBearerHeader
 import lombok.RequiredArgsConstructor
 import lombok.extern.slf4j.Slf4j
 import org.springframework.http.*
@@ -20,7 +21,8 @@ class KaKaoTokenInfoClient(
 ) : SocialTokenClient {
     override fun execute(token: SocialIdToken): SocialToken {
         val accessToken: String = token.getToken()
-        val headers: HttpHeaders = HeaderUtils.generateBearerHeaders(accessToken)
+        val headers = HttpHeaders()
+        headers.addBearerHeader(accessToken)
         headers.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8")
 
         val response: ResponseEntity<KaKaoTokenData> = restTemplate.exchange(
