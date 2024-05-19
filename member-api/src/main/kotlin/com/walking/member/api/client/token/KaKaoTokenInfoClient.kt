@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate
 @Slf4j
 @Component
 @RequiredArgsConstructor
-class KaKaoTokenClient(
+class KaKaoTokenInfoClient(
     private val restTemplate: RestTemplate,
     private val properties: KaKaoApiProperties
 ) : SocialTokenClient {
