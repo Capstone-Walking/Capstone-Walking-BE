@@ -23,6 +23,9 @@ dependencies {
     // spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // spring cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+
     // jackson
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
