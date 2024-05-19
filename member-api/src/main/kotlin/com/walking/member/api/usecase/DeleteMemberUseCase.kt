@@ -4,6 +4,7 @@ import com.walking.data.entity.member.MemberEntity
 import com.walking.image.service.minio.MinioRemoveImageService
 import com.walking.member.api.dao.MemberDao
 import com.walking.member.api.usecase.dto.response.DeleteMemberUseCaseResponse
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -13,6 +14,7 @@ class DeleteMemberUseCase(
     private val removeImageService: MinioRemoveImageService
 ) {
     @Transactional
+    @CacheEvict(key = "#id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile-url"])
     fun execute(id: Long): DeleteMemberUseCaseResponse {
         val member = memberRepository.findById(id) ?: throw IllegalArgumentException("Member not found")
         val deletedMember = withdrawMember(member)
