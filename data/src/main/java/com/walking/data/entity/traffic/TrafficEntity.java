@@ -21,12 +21,12 @@ import org.locationtech.jts.geom.Point;
 @SQLDelete(sql = "UPDATE traffic SET deleted=true where id=?")
 public class TrafficEntity extends BaseEntity {
 
-	@Column(nullable = false, updatable = false)
-	private String detail;
+    @Column(nullable = false, updatable = false)
+    private String detail;
 
-	@Column(nullable = false)
-	private String name;
+    @Column(nullable = false)
+    private String name;
 
-	@Column(columnDefinition = "POINT SRID 4326", nullable = false, name = "point_value")
-	private Point point;
+    @Column(columnDefinition = "POINT SRID 4326", nullable = false, name = "point_value")
+    private Point point;
 }

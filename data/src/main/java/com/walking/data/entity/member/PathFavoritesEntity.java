@@ -30,7 +30,7 @@ public class PathFavoritesEntity extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "POINT SRID 4326")
 	private Point endPoint;
 
-	@Column(nullable = false, columnDefinition = "LINESTRING SRID 0")
+	@Column(nullable = false, columnDefinition = "LINESTRING SRID 4326")
 	private LineString path;
 
 	@Column(nullable = false, length = 50)
@@ -38,10 +38,4 @@ public class PathFavoritesEntity extends BaseEntity {
 
 	@Column(nullable = false, length = 50)
 	private String endAlias;
-
-	@Column(nullable = false, length = 50)
-	private String name;
-
-	@Column(nullable = false, name = "orders")
-	private Long order;
 }

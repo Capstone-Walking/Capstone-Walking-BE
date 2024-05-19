@@ -2,24 +2,22 @@ package com.walking.api.web.dto.request.traffic;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 
 @Getter
-@Setter
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class FavoriteTrafficBody {
 
-	@NotBlank
 	@Min(1)
 	private Long trafficId;
 
