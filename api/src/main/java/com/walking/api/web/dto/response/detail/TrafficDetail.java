@@ -17,7 +17,7 @@ import lombok.ToString;
 public class TrafficDetail {
 
 	private Long id;
-	private String detail;
+	private TrafficDetailInfo detail;
 	private Boolean isFavorite;
 	private String viewName;
 	private PointDetail point;
