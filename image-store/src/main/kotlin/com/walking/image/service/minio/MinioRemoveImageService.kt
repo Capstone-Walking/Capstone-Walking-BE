@@ -14,13 +14,8 @@ class MinioRemoveImageService(
     private val imageStoreClient: MinioImageStoreClient
 ) : RemoveImageService {
     override fun execute(image: String): Boolean {
-        try {
-            ImageArgsGenerator.remove(bucket, image).let { args ->
-                imageStoreClient.removeObject(args)
-                return true
-            }
-        } catch (e: Exception) {
-            return false
+        ImageArgsGenerator.remove(bucket, image).let { args ->
+            return imageStoreClient.removeObject(args)
         }
     }
 }
