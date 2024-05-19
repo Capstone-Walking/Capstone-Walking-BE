@@ -2,6 +2,7 @@ package com.walking.member.api.usecase
 
 import com.walking.image.service.UploadImageService
 import com.walking.member.api.dao.MemberDao
+import com.walking.member.api.service.CacheAbleMemberProfileUpdateDelegator
 import com.walking.member.api.usecase.dto.response.PatchProfileImageUseCaseResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,7 +13,8 @@ import kotlin.random.Random
 @Service
 class PatchProfileImageUseCase(
     private val memberDao: MemberDao,
-    private val uploadImageService: UploadImageService
+    private val uploadImageService: UploadImageService,
+    private val memberProfileUpdateDelegator: CacheAbleMemberProfileUpdateDelegator
 ) {
     @Transactional
     fun execute(id: Long, image: File): PatchProfileImageUseCaseResponse {
@@ -20,7 +22,7 @@ class PatchProfileImageUseCase(
         val imageName = generateImageName()
 
         uploadImageService.execute(imageName, image).let {
-            member.updateProfile(imageName).let { member ->
+            memberProfileUpdateDelegator.execute(member, imageName).let { member ->
                 memberDao.save(member)
                 return PatchProfileImageUseCaseResponse(member.id, member.nickName, imageName)
             }
