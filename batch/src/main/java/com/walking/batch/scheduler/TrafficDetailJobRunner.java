@@ -34,7 +34,7 @@ public class TrafficDetailJobRunner extends JobRunner {
 						.endAt(DateBuilder.todayAt(23, 59, 59)) // 오늘 23:59:59에 종료
 						.withSchedule(
 								SimpleScheduleBuilder.simpleSchedule()
-										.withIntervalInSeconds(17) // 70초 간격으로 실행
+										.withIntervalInSeconds(interval) // 70초 간격으로 실행
 										.repeatForever()) // 무한 반복
 						.build();
 
