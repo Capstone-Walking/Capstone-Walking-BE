@@ -21,13 +21,13 @@ class KaKaoMemberClient(
     private val restTemplate: RestTemplate,
     private val properties: KaKaoApiProperties
 ) : SocialMemberClient {
-    override fun execute(userId: String): SocialMemberData {
+    override fun execute(targetId: String): SocialMemberData {
         val adminKey = properties.adminKey
 
         val headers = HttpHeaders()
         headers.addKakaoHeader(adminKey)
         headers.add(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=utf-8")
-        val queryParameter = "?target_id_type=user_id&target_id=$userId"
+        val queryParameter = "?target_id_type=user_id&target_id=$targetId"
         val response: ResponseEntity<KaKaoMemberData> = restTemplate.exchange(
             properties.uriMeInfo + queryParameter,
             HttpMethod.POST,
