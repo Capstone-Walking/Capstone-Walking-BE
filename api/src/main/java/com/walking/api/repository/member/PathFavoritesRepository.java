@@ -47,4 +47,14 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 
 	@Query("select max(pf.order)" + "from PathFavoritesEntity pf")
 	Long findMaxOrder();
+
+	@Query(
+			"update PathFavoritesEntity pf set pf.name = :name, pf.startAlias = :startAlias, pf.endAlias = :endAlias"
+					+ " where pf.memberFk = :memberFk and pf.id = :pathId")
+	Long updatePathName(
+			@Param("memberFk") MemberEntity memberFk,
+			@Param("pathId") Long pathId,
+			@Param("name") String name,
+			@Param("startAlias") String startAlias,
+			@Param("endAlias") String endAlias);
 }
