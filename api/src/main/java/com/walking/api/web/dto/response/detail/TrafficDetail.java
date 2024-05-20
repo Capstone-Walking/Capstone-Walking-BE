@@ -17,12 +17,10 @@ import lombok.ToString;
 public class TrafficDetail {
 
 	private Long id;
-	private TrafficDetailInfo detail;
-	private Boolean isFavorite;
-	private String viewName;
+	private String state;
+	private Long remainTime;
+	private Long greenCycle;
+	private Long redCycle;
 	private PointDetail point;
 	private String color;
-	private Long timeLeft;
-	private Long redCycle;
-	private Long greenCycle;
 }

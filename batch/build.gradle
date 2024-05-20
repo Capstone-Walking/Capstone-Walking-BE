@@ -8,4 +8,14 @@ dependencies {
 
     // apache commons
     implementation 'org.apache.commons:commons-lang3'
+
+    //rest template
+    implementation 'org.apache.httpcomponents:httpcore'
+    implementation 'org.apache.httpcomponents:httpclient'
+
+    //webflux
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    implementation 'org.springframework:spring-web'
+
 }
