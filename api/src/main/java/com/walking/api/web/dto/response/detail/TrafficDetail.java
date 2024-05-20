@@ -23,4 +23,7 @@ public class TrafficDetail {
 	private Long redCycle;
 	private PointDetail point;
 	private String color;
+	private TrafficDetailInfo detail;
+	private Boolean isFavorite;
+	private String viewName;
 }
