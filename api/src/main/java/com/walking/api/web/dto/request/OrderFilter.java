@@ -7,7 +7,7 @@ import lombok.Getter;
 public enum OrderFilter {
 	NAME("name"),
 	CREATEDAT("createdAt"),
-	;
+	ORDER("order");
 
 	private String field;
 
