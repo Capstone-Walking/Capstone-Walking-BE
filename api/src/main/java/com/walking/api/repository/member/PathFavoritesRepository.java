@@ -47,4 +47,6 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 
 	@Query("select max(pf.order)" + "from PathFavoritesEntity pf")
 	Long findMaxOrder();
+
+	void deleteByMemberFkAndId(MemberEntity memberId, Long pathId);
 }
