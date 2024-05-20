@@ -21,8 +21,8 @@ import org.locationtech.jts.geom.Point;
 @SQLDelete(sql = "UPDATE traffic SET deleted=true where id=?")
 public class TrafficEntity extends BaseEntity {
 
-	@Column(nullable = false, updatable = false)
-	private String detail;
+	@Column(columnDefinition = "JSON", nullable = false)
+	private String detail = "{}";
 
 	@Column(nullable = false)
 	private String name;
