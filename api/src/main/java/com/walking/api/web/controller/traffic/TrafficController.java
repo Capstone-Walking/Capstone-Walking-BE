@@ -151,7 +151,7 @@ public class TrafficController {
 																.lng(TF_BACK_DOOR_LNG)
 																.build())
 												.color("red")
-												.timeLeft(10L)
+												.remainTime(10L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build(),
@@ -171,7 +171,7 @@ public class TrafficController {
 																.lng(TF_BACK_THREE_LNG)
 																.build())
 												.color("green")
-												.timeLeft(20L)
+												.remainTime(20L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build(),
@@ -188,7 +188,7 @@ public class TrafficController {
 												.point(
 														PointDetail.builder().lat(TF_CHANPUNG_LAT).lng(TF_CHANPUNG_LNG).build())
 												.color("red")
-												.timeLeft(10L)
+												.remainTime(10L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build(),
@@ -204,7 +204,7 @@ public class TrafficController {
 												.viewName("쿠쿠")
 												.point(PointDetail.builder().lat(TF_CUCU_LAT).lng(TF_CUCU_LNG).build())
 												.color("green")
-												.timeLeft(20L)
+												.remainTime(20L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build()))
@@ -234,7 +234,7 @@ public class TrafficController {
 																.lng(TF_BACK_DOOR_LNG)
 																.build())
 												.color("red")
-												.timeLeft(10L)
+												.remainTime(10L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build()))
@@ -260,7 +260,7 @@ public class TrafficController {
 										.point(
 												PointDetail.builder().lat(TF_BACK_DOOR_LAT).lng(TF_BACK_DOOR_LNG).build())
 										.color("red")
-										.timeLeft(10L)
+										.remainTime(10L)
 										.redCycle(30L)
 										.greenCycle(30L)
 										.build())
