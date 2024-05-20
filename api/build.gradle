@@ -12,6 +12,9 @@ dependencies {
 
     // web
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    // webflux
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.104.Final:osx-aarch_64'
 
     // swagger & restdocs
     implementation "org.springdoc:springdoc-openapi-ui:${springDocOpenApiUiVersion}"
