@@ -2,9 +2,13 @@ package com.walking.api.web.config;
 
 import com.walking.api.security.config.CorsConfigurationSourceProperties;
 import com.walking.api.web.dto.request.OrderFilterConverter;
+import com.walking.api.web.handler.OptionalTrafficPointParamArgumentResolver;
+import com.walking.api.web.handler.OptionalViewPointParamArgumentResolver;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -30,5 +34,19 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(new OrderFilterConverter());
+	}
+
+	@Override
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+		resolvers.add(addOptionalViewPointParamArgumentResolver());
+		resolvers.add(addOptionalTrafficPointParamArgumentResolver());
+	}
+
+	private OptionalViewPointParamArgumentResolver addOptionalViewPointParamArgumentResolver() {
+		return new OptionalViewPointParamArgumentResolver();
+	}
+
+	private OptionalTrafficPointParamArgumentResolver addOptionalTrafficPointParamArgumentResolver() {
+		return new OptionalTrafficPointParamArgumentResolver();
 	}
 }

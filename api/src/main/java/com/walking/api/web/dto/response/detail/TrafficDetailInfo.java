@@ -1,6 +1,6 @@
 package com.walking.api.web.dto.response.detail;
 
-import java.util.List;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -11,15 +11,11 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class IntersectionDetail {
-
-	private Long id;
-	private String name;
-	private PointDetail point;
-	private Boolean isFavorite;
-	private String alias;
-	private List<IntersectionTrafficDetail> traffics;
+public class TrafficDetailInfo {
+	private Long trafficId;
+	private String apiSource;
+	private String direction;
 }

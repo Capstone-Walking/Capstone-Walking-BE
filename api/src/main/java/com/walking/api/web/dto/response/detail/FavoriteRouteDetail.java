@@ -1,7 +1,6 @@
-package com.walking.api.web.dto.response;
+package com.walking.api.web.dto.response.detail;
 
-import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
-import java.util.List;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +15,14 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class BrowseFavoriteTrafficsResponse {
+public class FavoriteRouteDetail {
 
-	private List<FavoriteTrafficDetail> traffics;
+	private Long id;
+	private String name;
+	private PointDetail startPoint;
+	private PointDetail endPoint;
+	private LocalDateTime createdAt;
+	private String startAlias;
+	private String endAlias;
+	private Long order;
 }

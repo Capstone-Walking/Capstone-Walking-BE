@@ -1,7 +1,7 @@
 package com.walking.api.web.dto.request.point;
 
-import com.walking.api.web.dto.request.validator.LatParam;
-import com.walking.api.web.dto.request.validator.LngParam;
+import java.util.Objects;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +16,15 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class TrafficPointParam {
-	/* 신호등 위도 */
-	@LatParam private double traLat;
+public class OptionalViewPointParam {
 
-	/* 신호등 경도 */
-	@LngParam private double traLng;
+	private ViewPointParam viewPointParam;
+
+	public Optional<ViewPointParam> get() {
+		return Optional.ofNullable(viewPointParam);
+	}
+
+	public boolean isPresent() {
+		return Objects.nonNull(viewPointParam);
+	}
 }
