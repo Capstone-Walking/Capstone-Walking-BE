@@ -27,6 +27,6 @@ public class TrafficEntity extends BaseEntity {
 	@Column(nullable = false)
 	private String name;
 
-	@Column(columnDefinition = "POINT SRID 4326", nullable = false)
+	@Column(columnDefinition = "POINT SRID 4326", nullable = false, name = "point_value")
 	private Point point;
 }

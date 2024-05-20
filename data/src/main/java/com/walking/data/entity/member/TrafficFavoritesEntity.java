@@ -20,11 +20,13 @@ import org.hibernate.annotations.SQLDelete;
 public class TrafficFavoritesEntity extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	private MemberEntity memberEntity;
+	@JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private MemberEntity memberFk;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	private TrafficEntity trafficEntity;
+	@JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private TrafficEntity trafficFk;
 
-	@Column(nullable = false)
+	@Column(nullable = false, length = 50)
 	private String alias;
 }

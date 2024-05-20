@@ -16,7 +16,7 @@ buildscript {
 
         // swagger & restdocs
         asciidoctorVersion = '3.3.2'
-        epagesRestDocsApiSpecVersion = '0.16.0'
+        epagesRestDocsApiSpecVersion = '0.16.4'
         hidetakeSwaggerGeneratorVersion = '2.18.2'
         springDocOpenApiUiVersion = '1.6.9'
         swaggerUIVersion = '4.1.3'
