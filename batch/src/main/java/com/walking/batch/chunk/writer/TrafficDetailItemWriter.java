@@ -49,16 +49,18 @@ public class TrafficDetailItemWriter implements ItemWriter<TrafficDetailDto> {
 					items.stream().map(item -> item.getItstId()).collect(Collectors.toList());
 			SqlParameterSource parameters = new MapSqlParameterSource("trafficIds", trafficIds);
 
-			Map<Long, Long> ids =
+			Map<Long, Map<Long, String>> ids =
 					jdbcTemplate.query(
-							"SELECT t.id, t.detail FROM traffic t WHERE t.detail IN (:trafficIds)",
+							"SELECT t.id, t.detail ->> '$.id' as trafficId, t.detail ->> '$.direction' as direction  FROM traffic t where t.detail ->> '$.id' IN (:trafficIds)",
 							parameters,
-							new ResultSetExtractor<Map<Long, Long>>() {
-								public Map<Long, Long> extractData(ResultSet rs)
+							new ResultSetExtractor<Map<Long, Map<Long, String>>>() {
+								public Map<Long, Map<Long, String>> extractData(ResultSet rs)
 										throws DataAccessException, SQLException {
-									Map<Long, Long> map = new HashMap<>();
+									Map<Long, Map<Long, String>> map = new HashMap<>();
 									while (rs.next()) {
-										map.put(Long.valueOf(rs.getLong("detail")), rs.getLong("id"));
+										map.put(
+												rs.getLong("id"),
+												Map.of(rs.getLong("trafficId"), rs.getString("direction")));
 									}
 									return map;
 								}
@@ -66,18 +68,28 @@ public class TrafficDetailItemWriter implements ItemWriter<TrafficDetailDto> {
 			log.debug("bulk insert 를 위한 파라미터 준비 중...");
 
 			List<SqlParameterSource> bulkInsertParams =
-					items.stream()
+					ids.keySet().stream()
 							.map(
-									item -> {
-										if (ids.get(item.getItstId()) != null) {
+									id -> {
+										Optional<? extends TrafficDetailDto> optionalTrafficDetailDto =
+												items.stream()
+														.filter(
+																item -> item.getItstId().equals(ids.get(id).keySet().toArray()[0]))
+														.filter(
+																item ->
+																		item.getDirection().equals(ids.get(id).values().toArray()[0]))
+														.findFirst();
+										if (optionalTrafficDetailDto.isPresent()) {
+											TrafficDetailDto trafficDetailDto = optionalTrafficDetailDto.get();
 											MapSqlParameterSource paramSource = new MapSqlParameterSource();
-											paramSource.addValue("trafficId", ids.get(item.getItstId()));
-											paramSource.addValue("direction", item.getDirection());
-											paramSource.addValue("color", item.getColor());
+											paramSource.addValue("trafficId", id);
+											paramSource.addValue("direction", trafficDetailDto.getDirection());
+											paramSource.addValue("color", trafficDetailDto.getColor());
 											paramSource.addValue(
-													"timeLeft", item.getTimeLeft() / 10); // 1/10초 단위의 응답 데이터를 1초 단위로 변경
-											paramSource.addValue("color_reg_dt", item.getColorRegDt());
-											paramSource.addValue("time_left_reg_dt", item.getTimeLeftRegDt());
+													"timeLeft",
+													trafficDetailDto.getTimeLeft() / 10); // 1/10초 단위의 응답 데이터를 1초 단위로 변경
+											paramSource.addValue("color_reg_dt", trafficDetailDto.getColorRegDt());
+											paramSource.addValue("time_left_reg_dt", trafficDetailDto.getTimeLeftRegDt());
 											return Optional.of(paramSource);
 										} else {
 											return Optional.<MapSqlParameterSource>empty();
