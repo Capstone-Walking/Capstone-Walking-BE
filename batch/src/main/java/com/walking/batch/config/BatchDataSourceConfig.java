@@ -17,6 +17,7 @@ import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -50,6 +51,7 @@ public class BatchDataSourceConfig {
 	private static final String BATCH_DATA_SOURCE_SCRIPT_DATABASE_INITIALIZER_BEAN_NAME =
 			BEAN_NAME_PREFIX + "BatchDataSourceScriptDatabaseInitializer";
 
+	@Primary
 	@Bean(name = DATASOURCE_NAME)
 	@ConfigurationProperties(prefix = BASE_PROPERTY_PREFIX + ".datasource")
 	public DataSource dataSource() {
@@ -99,6 +101,7 @@ public class BatchDataSourceConfig {
 				.build();
 	}
 
+	@Primary
 	@Bean(name = TRANSACTION_MANAGER_NAME)
 	public PlatformTransactionManager transactionManager(
 			@Qualifier(ENTITY_MANAGER_FACTORY_NAME) EntityManagerFactory emf) {

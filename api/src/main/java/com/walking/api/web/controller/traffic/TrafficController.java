@@ -11,6 +11,7 @@ import com.walking.api.web.dto.response.SearchTrafficsResponse;
 import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
 import com.walking.api.web.dto.response.detail.TrafficDetail;
+import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
@@ -39,6 +40,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/traffics")
 @RequiredArgsConstructor
 public class TrafficController {
+
+	static double TF_BACK_DOOR_LAT = 35.178501;
+	static double TF_BACK_DOOR_LNG = 126.912083;
+	static double TF_BACK_THREE_LAT = 35.175841;
+	static double TF_BACK_THREE_LNG = 126.912491;
+	static double TF_CHANPUNG_LAT = 35.180332;
+	static double TF_CHANPUNG_LNG = 126.912123;
+	static double TF_CUCU_LAT = 35.176495;
+	static double TF_CUCU_LNG = 126.896888;
+
+	static double GONG_SEVEN_LAT = 35.1782;
+	static double GONG_SEVEN_LNG = 126.909;
+	static double GIL_SUNG_UBU_LNG = 35.178600;
+	static double GIL_SUNG_UBU_LAT = 126.912772;
+
+	static double MAC_DONALD_LAT = 35.179374;
+	static double MAC_DONALD_LNG = 126.912270;
 
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<SearchTrafficsResponse>> searchTraffics(
@@ -119,23 +137,74 @@ public class TrafficController {
 								List.of(
 										TrafficDetail.builder()
 												.id(1L)
-												.detail("traffic-1-detail")
+												.detail(
+														TrafficDetailInfo.builder()
+																.trafficId(1L)
+																.apiSource("seoul")
+																.direction("nt")
+																.build())
 												.isFavorite(true)
-												.viewName("test1")
-												.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
+												.viewName("후문")
+												.point(
+														PointDetail.builder()
+																.lat(TF_BACK_DOOR_LAT)
+																.lng(TF_BACK_DOOR_LNG)
+																.build())
 												.color("red")
-												.timeLeft(10L)
+												.remainTime(10L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build(),
 										TrafficDetail.builder()
 												.id(2L)
-												.detail("traffic-2-detail")
+												.detail(
+														TrafficDetailInfo.builder()
+																.trafficId(2L)
+																.apiSource("seoul")
+																.direction("wt")
+																.build())
 												.isFavorite(false)
-												.viewName("test2")
-												.point(PointDetail.builder().lat(35.175841).lng(126.912491).build())
+												.viewName("후문3거리")
+												.point(
+														PointDetail.builder()
+																.lat(TF_BACK_THREE_LAT)
+																.lng(TF_BACK_THREE_LNG)
+																.build())
 												.color("green")
-												.timeLeft(20L)
+												.remainTime(20L)
+												.redCycle(30L)
+												.greenCycle(30L)
+												.build(),
+										TrafficDetail.builder()
+												.id(3L)
+												.detail(
+														TrafficDetailInfo.builder()
+																.trafficId(3L)
+																.apiSource("seoul")
+																.direction("sw")
+																.build())
+												.isFavorite(true)
+												.viewName("창평")
+												.point(
+														PointDetail.builder().lat(TF_CHANPUNG_LAT).lng(TF_CHANPUNG_LNG).build())
+												.color("red")
+												.remainTime(10L)
+												.redCycle(30L)
+												.greenCycle(30L)
+												.build(),
+										TrafficDetail.builder()
+												.id(4L)
+												.detail(
+														TrafficDetailInfo.builder()
+																.trafficId(4L)
+																.apiSource("seoul")
+																.direction("nt")
+																.build())
+												.isFavorite(false)
+												.viewName("쿠쿠")
+												.point(PointDetail.builder().lat(TF_CUCU_LAT).lng(TF_CUCU_LNG).build())
+												.color("green")
+												.remainTime(20L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build()))
@@ -151,12 +220,21 @@ public class TrafficController {
 								List.of(
 										TrafficDetail.builder()
 												.id(1L)
-												.detail("traffic-1-detail")
+												.detail(
+														TrafficDetailInfo.builder()
+																.trafficId(1L)
+																.apiSource("seoul")
+																.direction("nt")
+																.build())
 												.isFavorite(true)
-												.viewName("test1")
-												.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
+												.viewName("후문")
+												.point(
+														PointDetail.builder()
+																.lat(TF_BACK_DOOR_LAT)
+																.lng(TF_BACK_DOOR_LNG)
+																.build())
 												.color("red")
-												.timeLeft(10L)
+												.remainTime(10L)
 												.redCycle(30L)
 												.greenCycle(30L)
 												.build()))
@@ -171,12 +249,18 @@ public class TrafficController {
 						.traffic(
 								TrafficDetail.builder()
 										.id(1L)
-										.detail("traffic-1-detail")
+										.detail(
+												TrafficDetailInfo.builder()
+														.trafficId(1L)
+														.apiSource("seoul")
+														.direction("nt")
+														.build())
 										.isFavorite(true)
-										.viewName("test1")
-										.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
+										.viewName("후문")
+										.point(
+												PointDetail.builder().lat(TF_BACK_DOOR_LAT).lng(TF_BACK_DOOR_LNG).build())
 										.color("red")
-										.timeLeft(10L)
+										.remainTime(10L)
 										.redCycle(30L)
 										.greenCycle(30L)
 										.build())
@@ -191,16 +275,52 @@ public class TrafficController {
 						List.of(
 								FavoriteTrafficDetail.builder()
 										.id(1L)
-										.detail("traffic-1-detail")
-										.name("test1")
-										.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
+										.detail(
+												TrafficDetailInfo.builder()
+														.trafficId(1L)
+														.apiSource("seoul")
+														.direction("nt")
+														.build())
+										.name("후문")
+										.point(
+												PointDetail.builder().lat(TF_BACK_DOOR_LAT).lng(TF_BACK_DOOR_LNG).build())
 										.createdAt(LocalDateTime.now())
 										.build(),
 								FavoriteTrafficDetail.builder()
 										.id(2L)
-										.detail("traffic-2-detail")
-										.name("test2")
-										.point(PointDetail.builder().lat(35.175841).lng(126.912491).build())
+										.detail(
+												TrafficDetailInfo.builder()
+														.trafficId(2L)
+														.apiSource("seoul")
+														.direction("wt")
+														.build())
+										.name("후문3거리")
+										.point(
+												PointDetail.builder().lat(TF_BACK_THREE_LAT).lng(TF_BACK_THREE_LNG).build())
+										.createdAt(LocalDateTime.now())
+										.build(),
+								FavoriteTrafficDetail.builder()
+										.id(3L)
+										.detail(
+												TrafficDetailInfo.builder()
+														.trafficId(3L)
+														.apiSource("seoul")
+														.direction("sw")
+														.build())
+										.name("창평")
+										.point(PointDetail.builder().lat(TF_CHANPUNG_LAT).lng(TF_CHANPUNG_LNG).build())
+										.createdAt(LocalDateTime.now())
+										.build(),
+								FavoriteTrafficDetail.builder()
+										.id(4L)
+										.detail(
+												TrafficDetailInfo.builder()
+														.trafficId(4L)
+														.apiSource("seoul")
+														.direction("nt")
+														.build())
+										.name("쿠쿠")
+										.point(PointDetail.builder().lat(TF_CUCU_LAT).lng(TF_CUCU_LNG).build())
 										.createdAt(LocalDateTime.now())
 										.build()))
 				.build();

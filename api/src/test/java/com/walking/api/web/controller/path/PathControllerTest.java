@@ -118,8 +118,17 @@ class PathControllerTest {
 																			.type(JsonFieldType.NUMBER)
 																			.description("신호등 id"),
 																	fieldWithPath("data.traffics[].detail")
-																			.type(JsonFieldType.STRING)
+																			.type(JsonFieldType.OBJECT)
 																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].detail.trafficId")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 id"),
+																	fieldWithPath("data.traffics[].detail.apiSource")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 api 출처"),
+																	fieldWithPath("data.traffics[].detail.direction")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 방향"),
 																	fieldWithPath("data.traffics[].isFavorite")
 																			.type(JsonFieldType.BOOLEAN)
 																			.description("즐겨찾기 여부"),
@@ -166,8 +175,10 @@ class PathControllerTest {
 		FavoritePathBody favoritePathBody =
 				FavoritePathBody.builder()
 						.name("test")
+						.startName("출발지")
 						.startLat(35.1782)
 						.startLng(126.909)
+						.endName("도착지")
 						.endLat(35.178600)
 						.endLng(126.912772)
 						.build();
@@ -390,8 +401,17 @@ class PathControllerTest {
 																			.type(JsonFieldType.NUMBER)
 																			.description("신호등 id"),
 																	fieldWithPath("data.traffics[].detail")
-																			.type(JsonFieldType.STRING)
+																			.type(JsonFieldType.OBJECT)
 																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].detail.trafficId")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 id"),
+																	fieldWithPath("data.traffics[].detail.apiSource")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 api 출처"),
+																	fieldWithPath("data.traffics[].detail.direction")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 방향"),
 																	fieldWithPath("data.traffics[].isFavorite")
 																			.type(JsonFieldType.BOOLEAN)
 																			.description("즐겨찾기 여부"),

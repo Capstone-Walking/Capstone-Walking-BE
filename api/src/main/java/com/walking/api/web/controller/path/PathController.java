@@ -10,6 +10,7 @@ import com.walking.api.web.dto.response.RouteDetailResponse;
 import com.walking.api.web.dto.response.detail.FavoriteRouteDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
 import com.walking.api.web.dto.response.detail.TrafficDetail;
+import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
@@ -39,6 +40,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/paths")
 @RequiredArgsConstructor
 public class PathController {
+
+	static double GONG_SEVEN_LAT = 35.1782;
+	static double GONG_SEVEN_LNG = 126.909;
+	static double BACK_DOOR_LAT = 35.178501;
+	static double BACK_DOOR_LNG = 126.912083;
+	static double GIL_SUNG_UBU_LNG = 35.178600;
+	static double GIL_SUNG_UBU_LAT = 126.912772;
+
+	static double MAC_DONALD_LAT = 35.179374;
+	static double MAC_DONALD_LNG = 126.912270;
 
 	@GetMapping("/detail")
 	public ApiResponse<ApiResponse.SuccessBody<RouteDetailResponse>> detailRoute(
@@ -119,26 +130,31 @@ public class PathController {
 		return RouteDetailResponse.builder()
 				.totalTime(100L)
 				.trafficCount(10L)
-				.startPoint(PointDetail.builder().lat(35.1782).lng(126.909).build())
-				.endPoint(PointDetail.builder().lat(35.178600).lng(126.912772).build())
+				.startPoint(PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
+				.endPoint(PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build())
 				.traffics(
 						List.of(
 								TrafficDetail.builder()
 										.id(1L)
-										.detail("traffic-1-detail")
+										.detail(
+												TrafficDetailInfo.builder()
+														.trafficId(1L)
+														.apiSource("seoul")
+														.direction("nt")
+														.build())
 										.isFavorite(true)
-										.viewName("test1")
-										.point(PointDetail.builder().lat(35.178525).lng(124.123456).build())
+										.viewName("후문")
+										.point(PointDetail.builder().lat(BACK_DOOR_LAT).lng(BACK_DOOR_LNG).build())
 										.color("red")
-										.timeLeft(10L)
+										.remainTime(10L)
 										.redCycle(30L)
 										.greenCycle(30L)
 										.build()))
 				.paths(
 						List.of(
-								PointDetail.builder().lat(35.1782).lng(126.909).build(),
-								PointDetail.builder().lat(35.178525).lng(124.123456).build(),
-								PointDetail.builder().lat(35.178600).lng(126.912772).build()))
+								PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build(),
+								PointDetail.builder().lat(BACK_DOOR_LAT).lng(BACK_DOOR_LNG).build(),
+								PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build()))
 				.build();
 	}
 
@@ -148,9 +164,11 @@ public class PathController {
 						List.of(
 								FavoriteRouteDetail.builder()
 										.id(1L)
-										.name("search")
-										.startPoint(PointDetail.builder().lat(35.1782).lng(126.909).build())
-										.endPoint(PointDetail.builder().lat(35.178600).lng(126.912772).build())
+										.name("공7-길성우부")
+										.startPoint(
+												PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
+										.endPoint(
+												PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build())
 										.createdAt(LocalDateTime.of(2021, 1, 1, 0, 0))
 										.build()))
 				.build();
@@ -162,16 +180,19 @@ public class PathController {
 						List.of(
 								FavoriteRouteDetail.builder()
 										.id(1L)
-										.name("test1")
-										.startPoint(PointDetail.builder().lat(35.1782).lng(126.909).build())
-										.endPoint(PointDetail.builder().lat(35.178600).lng(126.912772).build())
+										.name("공7-길성우부")
+										.startPoint(
+												PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
+										.endPoint(
+												PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build())
 										.createdAt(LocalDateTime.of(2021, 1, 1, 0, 0))
 										.build(),
 								FavoriteRouteDetail.builder()
 										.id(2L)
-										.name("test2")
-										.startPoint(PointDetail.builder().lat(35.1782).lng(126.909).build())
-										.endPoint(PointDetail.builder().lat(35.179374).lng(126.912270).build())
+										.name("공7-맥도날드")
+										.startPoint(
+												PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
+										.endPoint(PointDetail.builder().lat(MAC_DONALD_LAT).lng(MAC_DONALD_LNG).build())
 										.createdAt(LocalDateTime.of(2021, 1, 2, 0, 0))
 										.build()))
 				.build();

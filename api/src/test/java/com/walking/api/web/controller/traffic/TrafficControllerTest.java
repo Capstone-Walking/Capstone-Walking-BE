@@ -99,8 +99,17 @@ class TrafficControllerTest {
 																			.type(JsonFieldType.NUMBER)
 																			.description("신호등 ID"),
 																	fieldWithPath("data.traffics[].detail")
-																			.type(JsonFieldType.STRING)
+																			.type(JsonFieldType.OBJECT)
 																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].detail.trafficId")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 id"),
+																	fieldWithPath("data.traffics[].detail.apiSource")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 api 출처"),
+																	fieldWithPath("data.traffics[].detail.direction")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 방향"),
 																	fieldWithPath("data.traffics[].isFavorite")
 																			.type(JsonFieldType.BOOLEAN)
 																			.description("즐겨찾기 여부"),
@@ -139,8 +148,8 @@ class TrafficControllerTest {
 				.perform(
 						get(BASE_URL)
 								.contentType(MediaType.APPLICATION_JSON)
-								.param("traLat", "35.178525")
-								.param("traLng", "124.123456"))
+								.param("traLat", "35.178501")
+								.param("traLng", "126.912083"))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -157,12 +166,12 @@ class TrafficControllerTest {
 																.type(SimpleType.NUMBER)
 																.description("신호등 위도")
 																.optional()
-																.defaultValue(35.178525),
+																.defaultValue(35.178501),
 														new ParameterDescriptorWithType("traLng")
 																.type(SimpleType.NUMBER)
 																.description("신호등 경도")
 																.optional()
-																.defaultValue(124.123456))
+																.defaultValue(126.912083))
 												.responseSchema(Schema.schema("SearchTrafficsWithTrafficParamResponse"))
 												.responseFields(
 														Description.common(
@@ -177,8 +186,17 @@ class TrafficControllerTest {
 																			.type(JsonFieldType.NUMBER)
 																			.description("신호등 ID"),
 																	fieldWithPath("data.traffics[].detail")
-																			.type(JsonFieldType.STRING)
+																			.type(JsonFieldType.OBJECT)
 																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].detail.trafficId")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 id"),
+																	fieldWithPath("data.traffics[].detail.apiSource")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 api 출처"),
+																	fieldWithPath("data.traffics[].detail.direction")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 방향"),
 																	fieldWithPath("data.traffics[].isFavorite")
 																			.type(JsonFieldType.BOOLEAN)
 																			.description("즐겨찾기 여부"),
@@ -243,8 +261,17 @@ class TrafficControllerTest {
 																			.type(JsonFieldType.NUMBER)
 																			.description("신호등 ID"),
 																	fieldWithPath("data.traffic.detail")
-																			.type(JsonFieldType.STRING)
+																			.type(JsonFieldType.OBJECT)
 																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffic.detail.trafficId")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 id"),
+																	fieldWithPath("data.traffic.detail.apiSource")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 api 출처"),
+																	fieldWithPath("data.traffic.detail.direction")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 방향"),
 																	fieldWithPath("data.traffic.isFavorite")
 																			.type(JsonFieldType.BOOLEAN)
 																			.description("즐겨찾기 여부"),
@@ -336,8 +363,17 @@ class TrafficControllerTest {
 																			.type(JsonFieldType.NUMBER)
 																			.description("신호등 ID"),
 																	fieldWithPath("data.traffics[].detail")
-																			.type(JsonFieldType.STRING)
+																			.type(JsonFieldType.OBJECT)
 																			.description("신호등 상세 정보"),
+																	fieldWithPath("data.traffics[].detail.trafficId")
+																			.type(JsonFieldType.NUMBER)
+																			.description("신호등 id"),
+																	fieldWithPath("data.traffics[].detail.apiSource")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 api 출처"),
+																	fieldWithPath("data.traffics[].detail.direction")
+																			.type(JsonFieldType.STRING)
+																			.description("신호등 방향"),
 																	fieldWithPath("data.traffics[].name")
 																			.type(JsonFieldType.STRING)
 																			.description("신호등 별칭"),

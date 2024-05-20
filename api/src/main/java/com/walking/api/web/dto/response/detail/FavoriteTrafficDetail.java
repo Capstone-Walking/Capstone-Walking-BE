@@ -18,7 +18,7 @@ import lombok.ToString;
 public class FavoriteTrafficDetail {
 
 	private Long id;
-	private String detail;
+	private TrafficDetailInfo detail;
 	private String name;
 	private PointDetail point;
 	private LocalDateTime createdAt;
