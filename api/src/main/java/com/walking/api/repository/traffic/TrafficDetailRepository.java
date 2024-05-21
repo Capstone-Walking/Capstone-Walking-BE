@@ -22,7 +22,7 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 	@Query(
 			value =
 					"WITH sorted_data AS ( "
-							+ "    SELECT *, ROW_NUMBER() OVER (PARTITION BY traffic_id ORDER BY create_at DESC) AS row_num "
+							+ "    SELECT *, ROW_NUMBER() OVER (PARTITION BY traffic_id ORDER BY time_left_reg_dt DESC) AS row_num "
 							+ "    FROM traffic_detail "
 							+ "    WHERE traffic_id IN :traffics "
 							+ " )"
