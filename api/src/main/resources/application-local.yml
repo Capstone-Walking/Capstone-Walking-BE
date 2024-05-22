@@ -21,6 +21,7 @@ walking:
       interval: 70
   predict:
     dataInterval: 20
+    maximumSearchCount: 5
 
 # logging config
 logging:
