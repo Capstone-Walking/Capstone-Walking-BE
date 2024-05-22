@@ -30,8 +30,20 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 							+ " FROM sorted_data "
 							+ " WHERE row_num BETWEEN :start AND :end ",
 			nativeQuery = true)
-	List<TrafficDetailEntity> getRecentlyData(
+	List<TrafficDetailEntity> findRecentlyData(
 			@Param("traffics") List<TrafficEntity> traffics,
 			@Param("start") Integer start,
 			@Param("end") Integer end);
+
+	@Query(
+			value =
+					"SELECT * FROM traffic_detail td "
+							+ "INNER JOIN (SELECT t.traffic_id, MAX(t.time_left_reg_dt) AS maxTimeLeftRegDt "
+							+ "	FROM traffic_detail t "
+							+ "	WHERE t.traffic_id IN :trafficIds "
+							+ "	GROUP BY t.traffic_id) maxTd "
+							+ "ON td.traffic_id = maxTd.traffic_id AND td.time_left_reg_dt = maxTd.maxTimeLeftRegDt "
+							+ "WHERE td.traffic_id IN :trafficIds",
+			nativeQuery = true)
+	List<TrafficDetailEntity> findMostRecenlyData(@Param("trafficIds") List<Long> trafficIds);
 }
