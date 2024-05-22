@@ -2,8 +2,8 @@ package com.walking.api.service;
 
 import com.walking.api.repository.traffic.TrafficDetailRepository;
 import com.walking.api.repository.traffic.TrafficRepository;
-import com.walking.api.service.dto.PredictData;
-import com.walking.api.service.dto.PredictionServiceDto;
+import com.walking.api.service.dto.PredictedData;
+import com.walking.api.service.dto.request.CyclePredictionRequestDto;
 import com.walking.api.util.OffsetDateTimeCalculator;
 import com.walking.data.entity.traffic.TrafficDetailEntity;
 import com.walking.data.entity.traffic.TrafficEntity;
@@ -29,35 +29,54 @@ public class TrafficCyclePredictServiceImpl {
 	private final TrafficDetailRepository trafficDetailRepository;
 
 	@Value("${walking.batch.schedular.interval}")
-	private int schedularInterval = 70;
+	private int schedularInterval;
+
+	@Value("${walking.predict.maximumSearchCount}")
+	private int MAXIMUM_SEARCH_COUNT;
+
+	/**
+	 * 파라미터로 전달 받은 신호등 리스트와, 데이터를 가져오는 간격을 가지고 예측을 수행합니다.
+	 *
+	 * @param dto 예측 파라미터
+	 * @return 예측 결과
+	 */
+	@Transactional(readOnly = true)
+	public Map<TrafficEntity, PredictedData> execute(CyclePredictionRequestDto dto) {
+		List<Long> ids = dto.getTrafficIds();
+		List<TrafficEntity> traffics = trafficRepository.findByIds(ids);
+
+		// 예측 정보를 담고 반환될 변수(리턴값)
+		Map<TrafficEntity, PredictedData> result = new HashMap<>();
+		for (TrafficEntity traffic : traffics) {
+			result.put(traffic, new PredictedData(traffic));
+		}
+
+		return doPredict(dto, result);
+	}
 
 	/**
 	 * 최신 순으로 interval 개 만큼 씩 데이터를 가지고 와서 계산을 수행 예를 들어, interval이 5인 경우 한 번 예측을 시도할 때마다 5개의 데이터를 가져와
 	 * 예측을 수행합니다.
 	 *
-	 * @param traffics 신호 주기를 예측하고자 하는 신호등 리스트
-	 * @param interval 예측을 위해 가져올 데이터의 크기
+	 * @param result key가 신호등, value가 예측 데이터인 Map
 	 */
-	@Transactional(readOnly = true)
-	public Map<TrafficEntity, PredictData> execute(PredictionServiceDto dto) {
+	private Map<TrafficEntity, PredictedData> doPredict(
+			CyclePredictionRequestDto dto, Map<TrafficEntity, PredictedData> result) {
+		int searchCount = 0;
 		int start = 0;
 		int end = start + dto.getDataInterval();
-		List<Long> ids = dto.getTrafficIds();
 		int dataInterval = dto.getDataInterval();
-		List<TrafficEntity> traffics = trafficRepository.findByIds(ids);
-
-		// 예측 정보를 담고 반환될 변수(리턴값)
-		Map<TrafficEntity, PredictData> result = new HashMap<>();
-		for (TrafficEntity traffic : traffics) {
-			result.put(traffic, new PredictData(traffic));
-		}
-
-		// 예측이 끝나지 않은 신호등 리스트
-		List<TrafficEntity> unpredictedList = getUnpredictedList(result);
+		List<TrafficEntity> unpredictedList = getUnpredictedList(result); // 예측이 끝나지 않은 신호등 리스트
 
 		while (!unpredictedList.isEmpty()) {
+
+			if (isNotExceedSearchCount(searchCount++)) {
+				log.debug("수행횟수 " + MAXIMUM_SEARCH_COUNT + "를 초과하여 예측을 중단합니다.");
+				break;
+			}
+
 			List<TrafficDetailEntity> recentlyData =
-					trafficDetailRepository.getRecentlyData(unpredictedList, start, end);
+					trafficDetailRepository.findRecentlyData(unpredictedList, start, end);
 
 			Map<TrafficEntity, List<TrafficDetailEntity>> separatedData = separateByTraffic(recentlyData);
 			logging(separatedData);
@@ -77,6 +96,16 @@ public class TrafficCyclePredictServiceImpl {
 		}
 
 		return result;
+	}
+
+	/**
+	 * 최대 예측 수행 범위에 벗어나지 않았는지 검증합니다.
+	 *
+	 * @param searchCount 현재까지 수행한 예측 횟수
+	 * @return 예측 횟수를 초과하지 않으면 true, 그렇지 않으면 false
+	 */
+	private boolean isNotExceedSearchCount(int searchCount) {
+		return searchCount >= MAXIMUM_SEARCH_COUNT;
 	}
 
 	/**
@@ -105,10 +134,10 @@ public class TrafficCyclePredictServiceImpl {
 	 * @param result 예측을 수행한 결과
 	 * @return 신호등 리스트
 	 */
-	private List<TrafficEntity> getUnpredictedList(Map<TrafficEntity, PredictData> result) {
+	private List<TrafficEntity> getUnpredictedList(Map<TrafficEntity, PredictedData> result) {
 		List<TrafficEntity> unpredictedList = new ArrayList<>();
 		for (TrafficEntity traffic : result.keySet()) {
-			if (!result.get(traffic).isComplete()) {
+			if (!result.get(traffic).isPredictCycleSuccessful()) {
 				unpredictedList.add(traffic);
 			}
 		}
@@ -120,19 +149,19 @@ public class TrafficCyclePredictServiceImpl {
 	 * 최근 데이터와 예측하고 있는 정보를 가지고 신호등 사이클을 계산합니다.
 	 *
 	 * @param data 예측하고자 하는 신호등의 최근 데이터
-	 * @param predictData 예측된 정보
+	 * @param predictedData 예측된 정보
 	 * @return 인자로 전달 받은 predictData 에 예측 가능한 값을 채워 반환합니다.
 	 */
 	// R -> G, G -> R 따로 찾지말고 한 번 순회할 때 모두 찾아내면 좋겠다
-	private PredictData predict(List<TrafficDetailEntity> data, PredictData predictData) {
-		if (!predictData.isPredictedGreenCycle()) {
-			predictData.updateGreenCycle(getGreenCycle(data));
+	private PredictedData predict(List<TrafficDetailEntity> data, PredictedData predictedData) {
+		if (!predictedData.isPredictedGreenCycle()) {
+			predictedData.updateGreenCycle(predictGreenCycle(data));
 		}
-		if (!predictData.isPredictedRedCycle()) {
-			predictData.updateRedCycle(getRedCycle(data));
+		if (!predictedData.isPredictedRedCycle()) {
+			predictedData.updateRedCycle(predictRedCycle(data));
 		}
 
-		return predictData;
+		return predictedData;
 	}
 
 	/**
@@ -141,7 +170,7 @@ public class TrafficCyclePredictServiceImpl {
 	 * @param data 계산하고자 하는 신호등의 데이터 리스트
 	 * @return 빨간불의 사이클
 	 */
-	private Optional<Float> getRedCycle(List<TrafficDetailEntity> data) {
+	private Optional<Float> predictRedCycle(List<TrafficDetailEntity> data) {
 		Optional<Float> redCycle = Optional.empty();
 
 		Iterator<TrafficDetailEntity> iterator = data.iterator();
@@ -168,6 +197,13 @@ public class TrafficCyclePredictServiceImpl {
 		return redCycle;
 	}
 
+	/**
+	 * 연속된 두 traffic_detail 레코드 사이에 누락된 데이터가 존재하는지 검증합니다.
+	 *
+	 * @param afterData 이후 데이터
+	 * @param before 이전 데이터
+	 * @return 누락된 데이터가 없으면 True, 있으면 False
+	 */
 	private boolean checkNoMissingData(TrafficDetailEntity afterData, TrafficDetailEntity before) {
 		int bias = 10;
 		float differenceInSeconds =
@@ -187,7 +223,7 @@ public class TrafficCyclePredictServiceImpl {
 	 * @param data 계산하고자 하는 신호등의 데이터 리스트
 	 * @return 초록불의 사이클
 	 */
-	private Optional<Float> getGreenCycle(List<TrafficDetailEntity> data) {
+	private Optional<Float> predictGreenCycle(List<TrafficDetailEntity> data) {
 		Optional<Float> greenCycle = Optional.empty();
 
 		Iterator<TrafficDetailEntity> iterator = data.iterator();
