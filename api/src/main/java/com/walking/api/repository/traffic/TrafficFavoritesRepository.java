@@ -1,4 +1,4 @@
-package com.walking.api.repository.member;
+package com.walking.api.repository.traffic;
 
 import com.walking.data.entity.member.TrafficFavoritesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
