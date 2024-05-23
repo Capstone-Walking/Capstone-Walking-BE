@@ -4,14 +4,14 @@ import lombok.Getter;
 
 @Getter
 public enum Direction {
-	NT("북쪽"),
-	ET("동쪽"),
-	ST("남쪽"),
-	WT("서쪽"),
-	NE("북동"),
-	SE("남동"),
-	SW("남서"),
-	NW("북서");
+	nt("북쪽"),
+	et("동쪽"),
+	st("남쪽"),
+	wt("서쪽"),
+	ne("북동"),
+	se("남동"),
+	sw("남서"),
+	nw("북서");
 
 	private String description;
 

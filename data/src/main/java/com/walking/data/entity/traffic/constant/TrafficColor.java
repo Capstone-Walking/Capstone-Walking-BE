@@ -2,7 +2,8 @@ package com.walking.data.entity.traffic.constant;
 
 public enum TrafficColor {
 	RED,
-	GREEN;
+	GREEN,
+	DARK;
 
 	public boolean isRed() {
 		return this.equals(RED);
@@ -10,6 +11,14 @@ public enum TrafficColor {
 
 	public boolean isGreen() {
 		return this.equals(GREEN);
+	}
+
+	public static TrafficColor getNextColor(TrafficColor now) {
+		if (now.isGreen()) {
+			return RED;
+		} else {
+			return GREEN;
+		}
 	}
 
 	public static TrafficColor apiRequestOf(String request) {

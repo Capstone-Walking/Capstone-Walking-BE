@@ -20,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @Getter
@@ -28,6 +29,7 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @SuperBuilder(toBuilder = true)
 @Table(name = "traffic_detail")
+@ToString
 public class TrafficDetailEntity {
 
 	@Id

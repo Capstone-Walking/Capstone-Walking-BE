@@ -15,6 +15,14 @@ spring:
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+walking:
+  batch:
+    schedular:
+      interval: 70
+  predict:
+    dataInterval: 20
+    maximumSearchCount: 5
+
 # logging config
 logging:
   level:
