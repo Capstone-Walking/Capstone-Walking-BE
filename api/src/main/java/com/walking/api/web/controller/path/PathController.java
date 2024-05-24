@@ -146,9 +146,9 @@ public class PathController {
 										.viewName("후문")
 										.point(PointDetail.builder().lat(BACK_DOOR_LAT).lng(BACK_DOOR_LNG).build())
 										.color("red")
-										.remainTime(10L)
-										.redCycle(30L)
-										.greenCycle(30L)
+										.timeLeft(10f)
+										.redCycle(30f)
+										.greenCycle(30f)
 										.build()))
 				.paths(
 						List.of(
