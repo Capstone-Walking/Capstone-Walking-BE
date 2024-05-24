@@ -24,9 +24,9 @@ public final class TrafficDetailInfoConverter {
 			trafficDetailInfo =
 					objectMapper.readValue(trafficEntity.getDetail(), TrafficDetailInfo.class);
 		} catch (JsonMappingException e) {
-			throw new RuntimeException("Convert to TrafficDetailInfo fail");
+			throw new RuntimeException("Convert to TrafficDetailInfo fail", e);
 		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Convert to TrafficDetailInfo fail");
+			throw new RuntimeException("Convert to TrafficDetailInfo fail", e);
 		}
 
 		return trafficDetailInfo;
