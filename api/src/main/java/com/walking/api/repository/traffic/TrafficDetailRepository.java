@@ -1,7 +1,6 @@
 package com.walking.api.repository.traffic;
 
 import com.walking.data.entity.traffic.TrafficDetailEntity;
-import com.walking.data.entity.traffic.TrafficEntity;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,14 +23,14 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 					"WITH sorted_data AS ( "
 							+ "    SELECT *, ROW_NUMBER() OVER (PARTITION BY traffic_id ORDER BY time_left_reg_dt DESC) AS row_num "
 							+ "    FROM traffic_detail "
-							+ "    WHERE traffic_id IN :traffics "
+							+ "    WHERE traffic_id IN :trafficIds "
 							+ " )"
 							+ " SELECT * "
 							+ " FROM sorted_data "
 							+ " WHERE row_num BETWEEN :start AND :end ",
 			nativeQuery = true)
 	List<TrafficDetailEntity> findRecentlyData(
-			@Param("traffics") List<TrafficEntity> traffics,
+			@Param("trafficIds") List<Long> trafficIds,
 			@Param("start") Integer start,
 			@Param("end") Integer end);
 

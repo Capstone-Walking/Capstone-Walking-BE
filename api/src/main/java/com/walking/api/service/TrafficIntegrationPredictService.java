@@ -6,7 +6,6 @@ import com.walking.api.service.dto.request.CyclePredictionRequestDto;
 import com.walking.api.service.dto.request.IntegrationPredictRequestDto;
 import com.walking.api.service.dto.response.CurrentDetailResponseDto;
 import com.walking.api.service.dto.response.IntegrationPredictResponseDto;
-import com.walking.data.entity.traffic.TrafficEntity;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -30,17 +29,17 @@ public class TrafficIntegrationPredictService {
 		List<Long> trafficIds = requestDto.getTrafficIds();
 		CyclePredictionRequestDto cyclePredictionRequestDto =
 				new CyclePredictionRequestDto(trafficIds, dataInterval);
-		Map<TrafficEntity, PredictedData> predictDataMap =
+		Map<Long, PredictedData> predictedCycleMap =
 				trafficCyclePredictService.execute(cyclePredictionRequestDto);
 
 		CurrentDetailRequestDto currentDetailRequestDto =
-				CurrentDetailRequestDto.builder().predictedCycleMap(predictDataMap).build();
-		CurrentDetailResponseDto responseDto =
+				CurrentDetailRequestDto.builder().predictedCycleMap(predictedCycleMap).build();
+		CurrentDetailResponseDto currentDetailResponseDto =
 				trafficCurrentDetailPredictService.execute(currentDetailRequestDto);
 
 		// 사이클 예측값과 현재시간에 대한 예측값을 모아서 리턴하도록
 		return IntegrationPredictResponseDto.builder()
-				.predictedDataMap(responseDto.getCurrentDetails())
+				.predictedDataMap(currentDetailResponseDto.getCurrentDetails())
 				.build();
 	}
 }
