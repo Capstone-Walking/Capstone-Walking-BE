@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,15 +42,17 @@ public class TrafficCyclePredictServiceImpl {
 	 * @return 예측 결과
 	 */
 	@Transactional(readOnly = true)
-	public Map<TrafficEntity, PredictedData> execute(CyclePredictionRequestDto dto) {
+	public Map<Long, PredictedData> execute(CyclePredictionRequestDto dto) {
 		List<Long> ids = dto.getTrafficIds();
 		List<TrafficEntity> traffics = trafficRepository.findByIds(ids);
 
 		// 예측 정보를 담고 반환될 변수(리턴값)
-		Map<TrafficEntity, PredictedData> result = new HashMap<>();
-		for (TrafficEntity traffic : traffics) {
-			result.put(traffic, new PredictedData(traffic));
-		}
+		Map<Long, PredictedData> result =
+				traffics.stream()
+						.filter(traffic -> ids.contains(traffic.getId()))
+						.collect(
+								Collectors.toMap(
+										TrafficEntity::getId, trafficEntity -> new PredictedData(trafficEntity)));
 
 		return doPredict(dto, result);
 	}
@@ -60,13 +63,13 @@ public class TrafficCyclePredictServiceImpl {
 	 *
 	 * @param result key가 신호등, value가 예측 데이터인 Map
 	 */
-	private Map<TrafficEntity, PredictedData> doPredict(
-			CyclePredictionRequestDto dto, Map<TrafficEntity, PredictedData> result) {
+	private Map<Long, PredictedData> doPredict(
+			CyclePredictionRequestDto dto, Map<Long, PredictedData> result) {
 		int searchCount = 0;
 		int start = 0;
 		int end = start + dto.getDataInterval();
 		int dataInterval = dto.getDataInterval();
-		List<TrafficEntity> unpredictedList = getUnpredictedList(result); // 예측이 끝나지 않은 신호등 리스트
+		List<Long> unpredictedList = getUnpredictedList(result); // 예측이 끝나지 않은 신호등 아이디 리스트
 
 		while (!unpredictedList.isEmpty()) {
 
@@ -78,7 +81,7 @@ public class TrafficCyclePredictServiceImpl {
 			List<TrafficDetailEntity> recentlyData =
 					trafficDetailRepository.findRecentlyData(unpredictedList, start, end);
 
-			Map<TrafficEntity, List<TrafficDetailEntity>> separatedData = separateByTraffic(recentlyData);
+			Map<Long, List<TrafficDetailEntity>> separatedData = separateByTraffic(recentlyData);
 			logging(separatedData);
 
 			// 여기서 예측이 불가능한 신호등인지 구분되고 루프가 종료됩니다.
@@ -86,8 +89,8 @@ public class TrafficCyclePredictServiceImpl {
 				break;
 			}
 
-			for (TrafficEntity traffic : separatedData.keySet()) {
-				predict(separatedData.get(traffic), result.get(traffic));
+			for (Long id : separatedData.keySet()) {
+				predict(separatedData.get(id), result.get(id));
 			}
 
 			unpredictedList = getUnpredictedList(result);
@@ -114,13 +117,14 @@ public class TrafficCyclePredictServiceImpl {
 	 * @param recentlyData 데이터
 	 * @return 신호등을 key 로 갖는 Map
 	 */
-	private Map<TrafficEntity, List<TrafficDetailEntity>> separateByTraffic(
+	private Map<Long, List<TrafficDetailEntity>> separateByTraffic(
 			List<TrafficDetailEntity> recentlyData) {
-		Map<TrafficEntity, List<TrafficDetailEntity>> separatedData = new HashMap<>();
+		Map<Long, List<TrafficDetailEntity>> separatedData = new HashMap<>();
 
 		for (TrafficDetailEntity recentlyDatum : recentlyData) {
 			List<TrafficDetailEntity> group =
-					separatedData.computeIfAbsent(recentlyDatum.getTraffic(), data -> new ArrayList<>());
+					separatedData.computeIfAbsent(
+							recentlyDatum.getTraffic().getId(), data -> new ArrayList<>());
 
 			group.add(recentlyDatum);
 		}
@@ -134,11 +138,11 @@ public class TrafficCyclePredictServiceImpl {
 	 * @param result 예측을 수행한 결과
 	 * @return 신호등 리스트
 	 */
-	private List<TrafficEntity> getUnpredictedList(Map<TrafficEntity, PredictedData> result) {
-		List<TrafficEntity> unpredictedList = new ArrayList<>();
-		for (TrafficEntity traffic : result.keySet()) {
-			if (!result.get(traffic).isPredictCycleSuccessful()) {
-				unpredictedList.add(traffic);
+	private List<Long> getUnpredictedList(Map<Long, PredictedData> result) {
+		List<Long> unpredictedList = new ArrayList<>();
+		for (Long id : result.keySet()) {
+			if (!result.get(id).isPredictCycleSuccessful()) {
+				unpredictedList.add(id);
 			}
 		}
 
@@ -264,14 +268,14 @@ public class TrafficCyclePredictServiceImpl {
 	 *
 	 * @param separatedData 신호등 단위로 구분된 데이터 리스트
 	 */
-	private void logging(Map<TrafficEntity, List<TrafficDetailEntity>> separatedData) {
+	private void logging(Map<Long, List<TrafficDetailEntity>> separatedData) {
 		log.debug(
 				"==================== 총 "
 						+ separatedData.size()
 						+ "개의 신호등에 대하여 가져온 데이터 ====================");
-		for (TrafficEntity traffic : separatedData.keySet()) {
-			log.debug("key == " + traffic.getId());
-			List<TrafficDetailEntity> data = separatedData.get(traffic);
+		for (Long id : separatedData.keySet()) {
+			log.debug("key == " + id);
+			List<TrafficDetailEntity> data = separatedData.get(id);
 			for (TrafficDetailEntity datum : data) {
 				log.debug(datum.toString());
 			}
