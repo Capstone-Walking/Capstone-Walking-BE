@@ -232,7 +232,7 @@ class TrafficControllerTest {
 	@DisplayName("GET /{trafficId} 신호등 정보 조회 - 신호등 ID로 조회")
 	void browseTraffic() throws Exception {
 		mockMvc
-				.perform(get(BASE_URL + "/{trafficId}", 1).contentType(MediaType.APPLICATION_JSON))
+				.perform(get(BASE_URL + "/{trafficId}", 3).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -246,7 +246,7 @@ class TrafficControllerTest {
 														new ParameterDescriptorWithType("trafficId")
 																.type(SimpleType.NUMBER)
 																.description("신호등 ID")
-																.defaultValue(1L))
+																.defaultValue(3L))
 												.responseSchema(Schema.schema("BrowseTrafficResponse"))
 												.responseFields(
 														Description.common(
