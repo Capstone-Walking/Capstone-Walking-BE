@@ -65,6 +65,12 @@ public class PredictedData {
 				&& currentTimeLeft > 0;
 	}
 
+	/**
+	 * 색상에 따른 사이클을 반환합니다.
+	 *
+	 * @param color 사이클을 알고자 하는 신호등의 색상
+	 * @return 파라미터로 전달받은 색상의 사이클
+	 */
 	public Float getCycleByColor(TrafficColor color) {
 		if (color.isGreen()) {
 			return greenCycle;

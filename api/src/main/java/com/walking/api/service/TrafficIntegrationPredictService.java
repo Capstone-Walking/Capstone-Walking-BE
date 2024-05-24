@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /** 신호등의 현재 잔여 시간, 현재 색상, 각 색상별 사이클을 예측한 결과를 리턴합니다. */
 @Service
@@ -25,6 +26,7 @@ public class TrafficIntegrationPredictService {
 	@Value("${walking.predict.dataInterval}")
 	private int dataInterval;
 
+	@Transactional(readOnly = true)
 	public IntegrationPredictResponseDto execute(IntegrationPredictRequestDto requestDto) {
 		List<Long> trafficIds = requestDto.getTrafficIds();
 		CyclePredictionRequestDto cyclePredictionRequestDto =

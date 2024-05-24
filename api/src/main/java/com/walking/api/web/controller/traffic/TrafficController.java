@@ -1,6 +1,11 @@
 package com.walking.api.web.controller.traffic;
 
+import com.walking.api.converter.TrafficDetailConverter;
 import com.walking.api.security.authentication.token.TokenUserDetails;
+import com.walking.api.service.TrafficIntegrationPredictService;
+import com.walking.api.service.dto.PredictedData;
+import com.walking.api.service.dto.request.IntegrationPredictRequestDto;
+import com.walking.api.service.dto.response.IntegrationPredictResponseDto;
 import com.walking.api.web.dto.request.point.OptionalTrafficPointParam;
 import com.walking.api.web.dto.request.point.OptionalViewPointParam;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
@@ -17,6 +22,7 @@ import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -24,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +47,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/traffics")
 @RequiredArgsConstructor
 public class TrafficController {
+
+	private final TrafficIntegrationPredictService integrationPredictService;
 
 	static double TF_BACK_DOOR_LAT = 35.178501;
 	static double TF_BACK_DOOR_LNG = 126.912083;
@@ -76,11 +85,20 @@ public class TrafficController {
 	}
 
 	@GetMapping("/{trafficId}")
+	@Transactional
 	public ApiResponse<ApiResponse.SuccessBody<BrowseTrafficsResponse>> browseTraffic(
 			@PathVariable Long trafficId) {
 		// todo implement
 		log.info("Traffic browse trafficId: {}", trafficId);
-		BrowseTrafficsResponse response = getBrowseTrafficsResponse();
+		IntegrationPredictResponseDto integrationPredictedResponse =
+				integrationPredictService.execute(
+						IntegrationPredictRequestDto.builder().trafficIds(List.of(trafficId)).build());
+
+		Map<Long, PredictedData> predictedDataMap = integrationPredictedResponse.getPredictedDataMap();
+		PredictedData predictedData = predictedDataMap.get(trafficId);
+		TrafficDetail trafficDetail = TrafficDetailConverter.execute(predictedData);
+		BrowseTrafficsResponse response =
+				BrowseTrafficsResponse.builder().traffic(trafficDetail).build();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -151,9 +169,9 @@ public class TrafficController {
 																.lng(TF_BACK_DOOR_LNG)
 																.build())
 												.color("red")
-												.remainTime(10L)
-												.redCycle(30L)
-												.greenCycle(30L)
+												.timeLeft(10f)
+												.redCycle(30f)
+												.greenCycle(30f)
 												.build(),
 										TrafficDetail.builder()
 												.id(2L)
@@ -171,9 +189,9 @@ public class TrafficController {
 																.lng(TF_BACK_THREE_LNG)
 																.build())
 												.color("green")
-												.remainTime(20L)
-												.redCycle(30L)
-												.greenCycle(30L)
+												.timeLeft(20f)
+												.redCycle(30f)
+												.greenCycle(30f)
 												.build(),
 										TrafficDetail.builder()
 												.id(3L)
@@ -188,9 +206,9 @@ public class TrafficController {
 												.point(
 														PointDetail.builder().lat(TF_CHANPUNG_LAT).lng(TF_CHANPUNG_LNG).build())
 												.color("red")
-												.remainTime(10L)
-												.redCycle(30L)
-												.greenCycle(30L)
+												.timeLeft(10f)
+												.redCycle(30f)
+												.greenCycle(30f)
 												.build(),
 										TrafficDetail.builder()
 												.id(4L)
@@ -204,9 +222,9 @@ public class TrafficController {
 												.viewName("쿠쿠")
 												.point(PointDetail.builder().lat(TF_CUCU_LAT).lng(TF_CUCU_LNG).build())
 												.color("green")
-												.remainTime(20L)
-												.redCycle(30L)
-												.greenCycle(30L)
+												.timeLeft(20f)
+												.redCycle(30f)
+												.greenCycle(30f)
 												.build()))
 						.build();
 
@@ -234,9 +252,9 @@ public class TrafficController {
 																.lng(TF_BACK_DOOR_LNG)
 																.build())
 												.color("red")
-												.remainTime(10L)
-												.redCycle(30L)
-												.greenCycle(30L)
+												.timeLeft(10f)
+												.redCycle(30f)
+												.greenCycle(30f)
 												.build()))
 						.build();
 
@@ -260,9 +278,9 @@ public class TrafficController {
 										.point(
 												PointDetail.builder().lat(TF_BACK_DOOR_LAT).lng(TF_BACK_DOOR_LNG).build())
 										.color("red")
-										.remainTime(10L)
-										.redCycle(30L)
-										.greenCycle(30L)
+										.timeLeft(10f)
+										.redCycle(30f)
+										.greenCycle(30f)
 										.build())
 						.build();
 

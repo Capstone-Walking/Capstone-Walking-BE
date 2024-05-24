@@ -17,10 +17,9 @@ import lombok.ToString;
 public class TrafficDetail {
 
 	private Long id;
-	private String state;
-	private Long remainTime;
-	private Long greenCycle;
-	private Long redCycle;
+	private Float timeLeft;
+	private Float greenCycle;
+	private Float redCycle;
 	private PointDetail point;
 	private String color;
 	private TrafficDetailInfo detail;
