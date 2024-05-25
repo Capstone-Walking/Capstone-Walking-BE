@@ -29,4 +29,12 @@ public class TrafficEntity extends BaseEntity {
 
 	@Column(columnDefinition = "POINT SRID 4326", nullable = false, name = "point_value")
 	private Point point;
+
+	public double getLat() {
+		return point.getY();
+	}
+
+	public double getLng() {
+		return point.getX();
+	}
 }
