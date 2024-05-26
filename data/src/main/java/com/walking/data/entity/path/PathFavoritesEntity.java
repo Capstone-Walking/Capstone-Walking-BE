@@ -46,4 +46,9 @@ public class PathFavoritesEntity extends BaseEntity {
 
 	@Column(nullable = false, name = "orders")
 	private Long order;
+
+	private Integer untilFirstTrafficTime;
+
+	private Integer totalTime;
+
 }

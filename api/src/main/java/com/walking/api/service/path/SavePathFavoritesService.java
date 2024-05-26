@@ -38,22 +38,28 @@ public class SavePathFavoritesService {
         TMapResponseDto tMapPathData = getTMapPathData(favoritePathRequestDto.getStartLat(), favoritePathRequestDto.getStartLng(),
                 favoritePathRequestDto.getEndLat(), favoritePathRequestDto.getEndLng());
 
+        //total 시간 추출
+        Integer totalTime = getTotalTime(tMapPathData);
+        Integer untilFirstTraffic = getUntilFirstTraffic(tMapPathData);
+
         // 신호등 좌표 추출
         TMapPathFavoritesTrafficInfo tMapPathFavoritesTrafficInfo = extractAllTrafficPoints(tMapPathData);
 
 
-
+        // LineString 추출
         LineString lineString = extractLineString(tMapPathData);
 
-        // PathFavoritesEntity 생성
-        savePathFavoritesAndTrafficInFavorites(favoritePathRequestDto, MemberId, tMapPathFavoritesTrafficInfo, lineString);
+        // 저장
+        savePathFavoritesAndTrafficInFavorites(favoritePathRequestDto, MemberId,
+                tMapPathFavoritesTrafficInfo, lineString, totalTime, untilFirstTraffic);
 
 
     }
 
     //todo 다른 객체로 분리
     @Transactional
-    public void savePathFavoritesAndTrafficInFavorites(FavoritePathRequestDto favoritePathRequestDto, Long MemberId,TMapPathFavoritesTrafficInfo  trafficPoints, LineString lineString) {
+    public void savePathFavoritesAndTrafficInFavorites(FavoritePathRequestDto favoritePathRequestDto, Long MemberId,TMapPathFavoritesTrafficInfo  trafficPoints, LineString lineString,
+                                                       Integer totalTime, Integer untilFirstTrafficTime){
         PathFavoritesEntity savedPathFavorites = pathFavoritesRepository.save(PathFavoritesEntity.builder().path(lineString).memberFk(MemberEntity.builder().id(MemberId).build())
                 .startPoint(createPoint(favoritePathRequestDto.getStartLng(), favoritePathRequestDto.getStartLat()))
                 .endPoint(createPoint(favoritePathRequestDto.getEndLng(), favoritePathRequestDto.getEndLat()))
@@ -61,6 +67,8 @@ public class SavePathFavoritesService {
                 .endAlias(favoritePathRequestDto.getEndName())
                 .name(favoritePathRequestDto.getName())
                 .order(pathFavoritesRepository.findMaxOrder() + 1)
+                .totalTime(totalTime)
+                .untilFirstTrafficTime(untilFirstTrafficTime)
                 .build());
 
         trafficInPathFavoritesRepository.save(TrafficInPathFavoritesEntity.builder().
@@ -68,6 +76,28 @@ public class SavePathFavoritesService {
                 .trafficPoints(trafficPoints.getPoints())
                 .trafficTypes(trafficPoints.getTrafficTypes()).build());
 
+    }
+
+    private Integer getTotalTime(TMapResponseDto tMapPathData){
+
+        return tMapPathData.getFeatures().get(0).getProperties().getTotalTime();
+
+    }
+
+    private Integer getUntilFirstTraffic(TMapResponseDto tMapPathData){
+        Integer untilFirstTraffic = 0;
+
+        for (int i = 1; i <tMapPathData.getFeatures().size() ; i++) {
+            Feature nowFeature = tMapPathData.getFeatures().get(i);
+            untilFirstTraffic += nowFeature.getProperties().getTime();
+            if (nowFeature.getProperties().getFacilityType().equals("15")) { //신호등일경우
+
+                return untilFirstTraffic;
+            }
+
+        }
+
+        return untilFirstTraffic;
     }
 
     private TMapResponseDto getTMapPathData(double startLat, double startLng, double endLat, double endLng){
