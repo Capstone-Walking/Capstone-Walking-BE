@@ -2,7 +2,7 @@ package com.walking.api.web.service.path;
 
 import com.walking.api.repository.dto.response.PathFavoritesVo;
 import com.walking.api.repository.member.MemberRepository;
-import com.walking.api.repository.member.PathFavoritesRepository;
+import com.walking.api.repository.path.PathFavoritesRepository;
 import com.walking.api.web.dto.request.OrderFilter;
 import com.walking.api.web.service.path.dto.response.ReadFavoritesPathResponse;
 import java.util.List;
