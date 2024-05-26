@@ -1,7 +1,9 @@
-package com.walking.data.entity.member;
+package com.walking.data.entity.path;
 
 import com.walking.data.entity.BaseEntity;
 import javax.persistence.*;
+
+import com.walking.data.entity.member.MemberEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

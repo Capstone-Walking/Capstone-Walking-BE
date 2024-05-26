@@ -1,8 +1,8 @@
-package com.walking.api.repository.member;
+package com.walking.api.repository.path;
 
 import com.walking.api.repository.dto.response.PathFavoritesVo;
 import com.walking.data.entity.member.MemberEntity;
-import com.walking.data.entity.member.PathFavoritesEntity;
+import com.walking.data.entity.path.PathFavoritesEntity;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
