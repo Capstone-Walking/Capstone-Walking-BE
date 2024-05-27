@@ -4,6 +4,8 @@ import com.walking.api.repository.dto.response.PathFavoritesVo;
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.path.PathFavoritesEntity;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -47,4 +49,6 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 
 	@Query("select max(pf.order)" + "from PathFavoritesEntity pf")
 	Long findMaxOrder();
+
+	Optional<PathFavoritesEntity> findById(Long id);
 }
