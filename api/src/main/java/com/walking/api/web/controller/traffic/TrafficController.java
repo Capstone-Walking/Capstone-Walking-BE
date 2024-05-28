@@ -6,8 +6,9 @@ import com.walking.api.service.TrafficIntegrationPredictService;
 import com.walking.api.service.dto.PredictedData;
 import com.walking.api.service.dto.request.IntegrationPredictRequestDto;
 import com.walking.api.service.dto.response.IntegrationPredictResponseDto;
-import com.walking.api.web.dto.request.point.OptionalTrafficPointParam;
+import com.walking.api.service.traffic.ReadTrafficService;
 import com.walking.api.web.dto.request.point.OptionalViewPointParam;
+import com.walking.api.web.dto.request.point.ViewPointParam;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
 import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
 import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
@@ -20,17 +21,18 @@ import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
+import com.walking.data.entity.BaseEntity;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrafficController {
 
 	private final TrafficIntegrationPredictService integrationPredictService;
+	private final ReadTrafficService readTrafficService;
 
 	static double TF_BACK_DOOR_LAT = 35.178501;
 	static double TF_BACK_DOOR_LNG = 126.912083;
@@ -69,23 +72,39 @@ public class TrafficController {
 
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<SearchTrafficsResponse>> searchTraffics(
-			@Valid OptionalViewPointParam viewPointParam,
-			@Valid OptionalTrafficPointParam trafficPointParam) {
-		if (!Objects.isNull(trafficPointParam) && trafficPointParam.isPresent()) {
-			// todo implement: trafficPointParam를 이용하여 교차로 정보 조회
-			log.info("Search traffics trafficPointParam: {}", trafficPointParam.get());
-			SearchTrafficsResponse response = getSearchViewTrafficsResponse();
-			return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
-		}
+			@Valid OptionalViewPointParam viewPointParam) {
 
-		// todo implement: viewPointParam을 이용하여 교차로 정보 조회
+		// viewPointParam을 이용하여 교차로 정보 조회
 		log.info("Search traffics viewPointParam: {}", viewPointParam.get());
-		SearchTrafficsResponse response = getSearchTrafficsResponse();
+		ViewPointParam viewPoint = viewPointParam.getViewPointParam();
+		float vblLng = viewPoint.getVblLng();
+		float vblLat = viewPoint.getVblLat();
+		float vtrLng = viewPoint.getVtrLng();
+		float vtrLat = viewPoint.getVtrLat();
+
+		List<Long> trafficIds =
+				readTrafficService.executeWithinBounds(vblLng, vblLat, vtrLng, vtrLat).stream()
+						.map(BaseEntity::getId)
+						.collect(Collectors.toList());
+
+		// trafficDetail 생성
+		List<PredictedData> predictedData =
+				new ArrayList<>(
+						integrationPredictService
+								.execute(IntegrationPredictRequestDto.builder().trafficIds(trafficIds).build())
+								.getPredictedDataMap()
+								.values());
+
+		List<TrafficDetail> traffics = TrafficDetailConverter.execute(predictedData);
+		SearchTrafficsResponse response = SearchTrafficsResponse.builder().traffics(traffics).build();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
+	// todo: HttpServletRequest 파라미터로 설정하고 여기서 header에 있는 Authentication 을 가지고 토큰을 가져오도록
+	// 직접 header에서 token을 가져오는 이유 -> spring security를 사용하게되면 로그인하지 않은 사용자의 경우 토큰이 전달되지 않으므로
+	// filter에서 걸러져서 요청이 안들어옴
+	// Security package 안에 토큰 필터 -> request를 어떻게 가져오는지 보고 그냥 가져다 쓰면 된다.
 	@GetMapping("/{trafficId}")
-	@Transactional
 	public ApiResponse<ApiResponse.SuccessBody<BrowseTrafficsResponse>> browseTraffic(
 			@PathVariable Long trafficId) {
 		// todo implement
