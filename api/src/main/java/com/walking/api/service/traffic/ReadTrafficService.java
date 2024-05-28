@@ -19,4 +19,13 @@ public class ReadTrafficService {
 	public List<TrafficEntity> executeByIds(List<Long> trafficIds) {
 		return trafficRepository.findByIds(trafficIds);
 	}
+
+	public List<TrafficEntity> executeByLocationAndDistance(Float lat, Float lng, Integer distance) {
+		return trafficRepository.findByLocationAndDistance(lat, lng, distance);
+	}
+
+	public List<TrafficEntity> executeWithinBounds(
+			Float blLng, Float blLat, Float trLng, Float trLat) {
+		return trafficRepository.findTrafficWithinBounds(blLng, blLat, trLng, trLat);
+	}
 }
