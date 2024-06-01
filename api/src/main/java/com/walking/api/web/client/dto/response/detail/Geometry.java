@@ -6,5 +6,5 @@ import lombok.Data;
 @Data
 public class Geometry {
 	private String type;
-	private List<List<Double>> coordinates; // LineString은 2차원 배열을 사용, Point는 1차원이지만 2차원으로 통일
+	private List<?> coordinates; // LineString은 2차원 배열을 사용, Point는 1차원이지만 2차원으로 통일
 }
