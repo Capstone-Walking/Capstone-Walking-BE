@@ -49,10 +49,10 @@ class TrafficControllerTest {
 				.perform(
 						get(BASE_URL)
 								.contentType(MediaType.APPLICATION_JSON)
-								.param("vblLat", "35.175840")
-								.param("vblLng", "126.912490")
-								.param("vtrLat", "35.178526")
-								.param("vtrLng", "124.123457"))
+								.param("vblLat", "37.595000")
+								.param("vblLng", "127.07870")
+								.param("vtrLat", "37.605372")
+								.param("vtrLng", "127.080309"))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
