@@ -1,6 +1,10 @@
 package com.walking.api.web.controller.path;
 
 import com.walking.api.security.authentication.token.TokenUserDetails;
+import com.walking.api.service.dto.request.FavoritePathRequestDto;
+import com.walking.api.service.path.CalculatePathFavoritesTimeService;
+import com.walking.api.service.path.CalculatePathTimeService;
+import com.walking.api.service.path.SavePathFavoritesService;
 import com.walking.api.web.dto.request.OrderFilter;
 import com.walking.api.web.dto.request.path.FavoritePathBody;
 import com.walking.api.web.dto.request.path.PatchFavoritePathNameBody;
@@ -24,22 +28,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/api/v1/paths")
+@RequestMapping("/api/v2/paths")
 @RequiredArgsConstructor
-public class PathController {
+public class PathControllerV2 {
+
+	private final CalculatePathTimeService calculatePathTimeService;
+	private final SavePathFavoritesService savePathFavoritesService;
+	private final CalculatePathFavoritesTimeService calculatePathFavoritesTimeService;
 
 	static double GONG_SEVEN_LAT = 35.1782;
 	static double GONG_SEVEN_LNG = 126.909;
@@ -56,7 +56,13 @@ public class PathController {
 			@Valid RoutePointParam routePointParam) {
 		// todo implement
 		log.info("Route detail request: {}", routePointParam);
-		RouteDetailResponse response = getSampleRouteDetailResponse();
+		RouteDetailResponse response =
+				calculatePathTimeService.execute(
+						routePointParam.getStartLat(),
+						routePointParam.getStartLng(),
+						routePointParam.getEndLat(),
+						routePointParam.getEndLng());
+
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -66,8 +72,20 @@ public class PathController {
 			@Valid @RequestBody FavoritePathBody favoritePathBody) {
 		// todo implement
 		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = 1L;
 		log.info("Favorite route request: {}", favoritePathBody);
+		savePathFavoritesService.execute(
+				FavoritePathRequestDto.builder()
+						.name(favoritePathBody.getName())
+						.startLat(favoritePathBody.getStartLat())
+						.startLng(favoritePathBody.getStartLng())
+						.endLat(favoritePathBody.getEndLat())
+						.endLng(favoritePathBody.getEndLng())
+						.startName(favoritePathBody.getStartName())
+						.endName(favoritePathBody.getEndName())
+						.build(),
+				memberId);
+
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
 
@@ -99,7 +117,10 @@ public class PathController {
 		// Long memberId = Long.valueOf(userDetails.getUsername());
 		Long memberId = 999L;
 		log.info("Favorite route detail request: favoriteId={}", favoriteId);
-		RouteDetailResponse response = getSampleRouteDetailResponse();
+		//		RouteDetailResponse response = getSampleRouteDetailResponse();
+
+		RouteDetailResponse response = calculatePathFavoritesTimeService.execute(favoriteId);
+
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
