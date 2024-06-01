@@ -126,3 +126,6 @@ LOAD DATA INFILE '/var/lib/mysql-files/base-traffic-info.csv'
         point_value = ST_SRID(POINT(@lng, @lat), 4326),
         created_at = STR_TO_DATE(@regDt, '%Y-%m-%dT%H:%i:%s.000+00:00'),
         updated_at = STR_TO_DATE(@regDt, '%Y-%m-%dT%H:%i:%s.000+00:00');
+
+
+CREATE SPATIAL INDEX idx_coordinates ON traffic (point_value);
