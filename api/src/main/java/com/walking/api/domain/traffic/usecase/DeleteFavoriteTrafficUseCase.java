@@ -1,7 +1,7 @@
 package com.walking.api.domain.traffic.usecase;
 
 import com.walking.api.domain.traffic.dto.DeleteFavoriteTrafficUseCaseRequest;
-import com.walking.api.repository.traffic.TrafficFavoritesRepository;
+import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.member.TrafficFavoritesEntity;
 import lombok.RequiredArgsConstructor;

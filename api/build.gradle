@@ -40,6 +40,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305Version}"
 
+    implementation 'org.json:json:20200518'
+
 
     // security
     implementation 'org.springframework.boot:spring-boot-starter-security'

@@ -1,6 +1,6 @@
 package com.walking.api.service;
 
-import com.walking.api.repository.traffic.TrafficDetailRepository;
+import com.walking.api.repository.dao.traffic.TrafficDetailRepository;
 import com.walking.api.service.dto.ColorAndTimeLeft;
 import com.walking.api.service.dto.PredictedData;
 import com.walking.api.service.dto.request.CurrentDetailRequestDto;

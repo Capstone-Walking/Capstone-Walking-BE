@@ -1,4 +1,4 @@
-package com.walking.api.repository.traffic;
+package com.walking.api.repository.dao.traffic;
 
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.member.TrafficFavoritesEntity;

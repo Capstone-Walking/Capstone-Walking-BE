@@ -1,4 +1,4 @@
-package com.walking.api.repository.traffic;
+package com.walking.api.repository.dao.traffic;
 
 import com.walking.data.entity.traffic.TrafficDetailEntity;
 import java.util.List;

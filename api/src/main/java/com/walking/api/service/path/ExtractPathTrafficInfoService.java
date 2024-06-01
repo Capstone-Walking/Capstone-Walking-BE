@@ -1,6 +1,6 @@
 package com.walking.api.service.path;
 
-import com.walking.api.repository.traffic.TrafficRepository;
+import com.walking.api.repository.dao.traffic.TrafficRepository;
 import com.walking.api.service.dto.PathTrafficData;
 import com.walking.api.util.JsonParser;
 import com.walking.data.entity.path.TrafficDirection;

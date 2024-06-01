@@ -1,7 +1,7 @@
 package com.walking.api.service;
 
-import com.walking.api.repository.traffic.TrafficDetailRepository;
-import com.walking.api.repository.traffic.TrafficRepository;
+import com.walking.api.repository.dao.traffic.TrafficDetailRepository;
+import com.walking.api.repository.dao.traffic.TrafficRepository;
 import com.walking.api.service.dto.PredictedData;
 import com.walking.api.service.dto.request.CyclePredictionRequestDto;
 import com.walking.api.util.OffsetDateTimeCalculator;

@@ -1,7 +1,7 @@
 package com.walking.api.service.path;
 
 import com.walking.api.converter.TrafficDetailConverter;
-import com.walking.api.repository.traffic.TrafficRepository;
+import com.walking.api.repository.dao.traffic.TrafficRepository;
 import com.walking.api.service.TrafficIntegrationPredictService;
 import com.walking.api.service.dto.PathPrimaryData;
 import com.walking.api.service.dto.PathTrafficData;
