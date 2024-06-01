@@ -1,11 +1,13 @@
 package com.walking.api.repository.path;
 
-
 import com.walking.data.entity.path.TrafficInPathFavoritesEntity;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TrafficInPathFavoritesRepository extends JpaRepository<TrafficInPathFavoritesEntity, Long> {
+public interface TrafficInPathFavoritesRepository
+		extends JpaRepository<TrafficInPathFavoritesEntity, Long> {
 
+	Optional<TrafficInPathFavoritesEntity> findById(Long pathFavoritesId);
 }
