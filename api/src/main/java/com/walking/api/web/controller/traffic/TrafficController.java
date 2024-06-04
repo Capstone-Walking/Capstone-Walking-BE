@@ -10,6 +10,8 @@ import com.walking.api.domain.traffic.usecase.BrowseFavoriteTrafficsUseCase;
 import com.walking.api.domain.traffic.usecase.DeleteFavoriteTrafficUseCase;
 import com.walking.api.domain.traffic.usecase.UpdateFavoriteTrafficUseCase;
 import com.walking.api.security.authentication.token.TokenUserDetails;
+import com.walking.api.security.authentication.token.TokenUserDetailsService;
+import com.walking.api.security.filter.token.AccessTokenResolver;
 import com.walking.api.service.TrafficIntegrationPredictService;
 import com.walking.api.service.dto.PredictedData;
 import com.walking.api.service.dto.request.IntegrationPredictRequestDto;
@@ -34,13 +36,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -60,6 +66,8 @@ public class TrafficController {
 
 	private final TrafficIntegrationPredictService integrationPredictService;
 	private final ReadTrafficService readTrafficService;
+	private final TokenUserDetailsService tokenUserDetailsService;
+
 	private final AddFavoriteTrafficUseCase addFavoriteTrafficUseCase;
 	private final BrowseFavoriteTrafficsUseCase browseFavoriteTrafficsUseCase;
 	private final DeleteFavoriteTrafficUseCase deleteFavoriteTrafficUseCase;
@@ -112,14 +120,9 @@ public class TrafficController {
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
-	// todo: HttpServletRequest 파라미터로 설정하고 여기서 header에 있는 Authentication 을 가지고 토큰을 가져오도록
-	// 직접 header에서 token을 가져오는 이유 -> spring security를 사용하게되면 로그인하지 않은 사용자의 경우 토큰이 전달되지 않으므로
-	// filter에서 걸러져서 요청이 안들어옴
-	// Security package 안에 토큰 필터 -> request를 어떻게 가져오는지 보고 그냥 가져다 쓰면 된다.
 	@GetMapping("/{trafficId}")
 	public ApiResponse<ApiResponse.SuccessBody<BrowseTrafficsResponse>> browseTraffic(
-			@PathVariable Long trafficId) {
-		// todo implement
+			HttpServletRequest request, @PathVariable Long trafficId) {
 		log.info("Traffic browse trafficId: {}", trafficId);
 		IntegrationPredictResponseDto integrationPredictedResponse =
 				integrationPredictService.execute(
@@ -127,7 +130,28 @@ public class TrafficController {
 
 		Map<Long, PredictedData> predictedDataMap = integrationPredictedResponse.getPredictedDataMap();
 		PredictedData predictedData = predictedDataMap.get(trafficId);
-		TrafficDetail trafficDetail = TrafficDetailConverter.execute(predictedData);
+
+		// 인증 토큰이 헤더에 들어있는지
+		String authorization = request.getHeader("Authorization");
+		Optional<FavoriteTrafficDetail> favoriteTrafficDetail = Optional.empty();
+		if (Objects.nonNull(authorization)) {
+
+			String token = AccessTokenResolver.resolve(authorization);
+			UserDetails userDetails = tokenUserDetailsService.loadUserByUsername(token);
+			Long memberId = Long.valueOf(userDetails.getUsername());
+
+			BrowseFavoriteTrafficsResponse favoriteTraffics =
+					browseFavoriteTrafficsUseCase.execute(
+							BrowseFavoriteTrafficsUseCaseRequest.builder().memberId(memberId).build());
+
+			favoriteTrafficDetail =
+					favoriteTraffics.getTraffics().stream()
+							.filter(traffic -> traffic.getId().equals(trafficId))
+							.findFirst();
+		}
+
+		TrafficDetail trafficDetail =
+				TrafficDetailConverter.execute(predictedData, favoriteTrafficDetail);
 		BrowseTrafficsResponse response =
 				BrowseTrafficsResponse.builder().traffic(trafficDetail).build();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
