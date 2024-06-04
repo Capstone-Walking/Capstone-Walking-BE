@@ -1,6 +1,14 @@
 package com.walking.api.web.controller.traffic;
 
 import com.walking.api.converter.TrafficDetailConverter;
+import com.walking.api.domain.traffic.dto.AddFavoriteTrafficUseCaseRequest;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseRequest;
+import com.walking.api.domain.traffic.dto.DeleteFavoriteTrafficUseCaseRequest;
+import com.walking.api.domain.traffic.dto.UpdateFavoriteTrafficUseCaseRequest;
+import com.walking.api.domain.traffic.usecase.AddFavoriteTrafficUseCase;
+import com.walking.api.domain.traffic.usecase.BrowseFavoriteTrafficsUseCase;
+import com.walking.api.domain.traffic.usecase.DeleteFavoriteTrafficUseCase;
+import com.walking.api.domain.traffic.usecase.UpdateFavoriteTrafficUseCase;
 import com.walking.api.security.authentication.token.TokenUserDetails;
 import com.walking.api.service.TrafficIntegrationPredictService;
 import com.walking.api.service.dto.PredictedData;
@@ -52,6 +60,10 @@ public class TrafficController {
 
 	private final TrafficIntegrationPredictService integrationPredictService;
 	private final ReadTrafficService readTrafficService;
+	private final AddFavoriteTrafficUseCase addFavoriteTrafficUseCase;
+	private final BrowseFavoriteTrafficsUseCase browseFavoriteTrafficsUseCase;
+	private final DeleteFavoriteTrafficUseCase deleteFavoriteTrafficUseCase;
+	private final UpdateFavoriteTrafficUseCase updateFavoriteTrafficUseCase;
 
 	static double TF_BACK_DOOR_LAT = 35.178501;
 	static double TF_BACK_DOOR_LNG = 126.912083;
@@ -125,9 +137,14 @@ public class TrafficController {
 	public ApiResponse<ApiResponse.Success> addFavoriteTraffic(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody FavoriteTrafficBody favoriteTrafficBody) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		boolean response =
+				addFavoriteTrafficUseCase.execute(
+						AddFavoriteTrafficUseCaseRequest.builder()
+								.memberId(memberId)
+								.trafficId(favoriteTrafficBody.getTrafficId())
+								.trafficAlias(favoriteTrafficBody.getTrafficAlias())
+								.build());
 		log.info("Favorite traffic request: {}", favoriteTrafficBody);
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
@@ -135,10 +152,10 @@ public class TrafficController {
 	@GetMapping("/favorite")
 	public ApiResponse<ApiResponse.SuccessBody<BrowseFavoriteTrafficsResponse>>
 			browseFavoriteTraffics(@AuthenticationPrincipal TokenUserDetails userDetails) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
-		BrowseFavoriteTrafficsResponse response = getBrowseFavoriteTrafficsResponse();
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		BrowseFavoriteTrafficsResponse response =
+				browseFavoriteTrafficsUseCase.execute(
+						BrowseFavoriteTrafficsUseCaseRequest.builder().memberId(memberId).build());
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -147,9 +164,14 @@ public class TrafficController {
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Min(1) @PathVariable Long trafficId,
 			@Valid @RequestBody PatchFavoriteTrafficNameBody patchFavoriteTrafficNameBody) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		boolean response =
+				updateFavoriteTrafficUseCase.execute(
+						UpdateFavoriteTrafficUseCaseRequest.builder()
+								.memberId(memberId)
+								.favoriteTrafficId(trafficId)
+								.trafficAlias(patchFavoriteTrafficNameBody.getTrafficAlias())
+								.build());
 		log.info(
 				"Update favorite traffic request: trafficId={}, body={}",
 				trafficId,
@@ -160,9 +182,13 @@ public class TrafficController {
 	@DeleteMapping("/favorite/{trafficId}")
 	public ApiResponse<ApiResponse.Success> deleteFavoriteTraffic(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @Min(1) @PathVariable Long trafficId) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		boolean response =
+				deleteFavoriteTrafficUseCase.execute(
+						DeleteFavoriteTrafficUseCaseRequest.builder()
+								.memberId(memberId)
+								.favoriteTrafficId(trafficId)
+								.build());
 		log.info("Delete favorite traffic request: trafficId={}", trafficId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
