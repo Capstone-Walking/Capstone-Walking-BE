@@ -49,6 +49,7 @@ public class RouteDetailResponseService {
 		// todo
 		if (traffics.isEmpty()) {
 			return RouteDetailResponse.builder()
+					.nowTime(LocalDateTime.now())
 					.totalTime(primaryData.getTotalTime())
 					.trafficCount(0)
 					.departureTimes(new ArrayList<>())
@@ -95,15 +96,18 @@ public class RouteDetailResponseService {
 
 		Map<Long, PredictedData> AllPredictedDataMap = allPredictResponse.getPredictedDataMap();
 
+		LocalDateTime now = LocalDateTime.now();
 		// 처음 내가 지나가는 신호등의 예측 출발시간 3개
 		List<LocalDateTime> departureTimes =
-				calDepartureTimes(firestPredictedDataMap, firstTraffic, primaryData.getUntilTrafficTime());
+				calDepartureTimes(
+						firestPredictedDataMap, firstTraffic, primaryData.getUntilTrafficTime(), now);
 
 		removeNullInPredictedDataMap(firestPredictedDataMap);
 
 		removeNullInPredictedDataMap(AllPredictedDataMap);
 
 		return RouteDetailResponse.builder()
+				.nowTime(now)
 				.totalTime(primaryData.getTotalTime())
 				.trafficCount(traffics.size())
 				.departureTimes(departureTimes)
@@ -157,7 +161,8 @@ public class RouteDetailResponseService {
 	private List<LocalDateTime> calDepartureTimes(
 			Map<Long, PredictedData> predictedDataMap,
 			TrafficEntity firstTraffic,
-			Integer untilFirstTrafficTime) {
+			Integer untilFirstTrafficTime,
+			LocalDateTime now) {
 
 		PredictedData predictedData = predictedDataMap.get(firstTraffic.getId());
 		predictedData.isAllPredicted();
@@ -166,8 +171,6 @@ public class RouteDetailResponseService {
 		Float currentTimeLeft = predictedData.getCurrentTimeLeft();
 		Float redCycle = predictedData.getRedCycle();
 		Float greenCycle = predictedData.getGreenCycle();
-
-		LocalDateTime now = LocalDateTime.now();
 
 		LocalDateTime firstGreenTime =
 				getFirstGreenTime(currentColor, currentTimeLeft, redCycle, greenCycle, now);

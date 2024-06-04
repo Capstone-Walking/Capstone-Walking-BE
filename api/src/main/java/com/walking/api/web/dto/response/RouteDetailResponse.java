@@ -20,6 +20,7 @@ import lombok.ToString;
 @Builder
 public class RouteDetailResponse {
 
+	public LocalDateTime nowTime;
 	public Integer totalTime;
 	public Integer trafficCount;
 	public List<LocalDateTime> departureTimes;
