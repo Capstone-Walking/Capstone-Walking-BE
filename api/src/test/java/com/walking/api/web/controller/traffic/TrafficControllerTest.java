@@ -2,6 +2,8 @@ package com.walking.api.web.controller.traffic;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
@@ -15,15 +17,26 @@ import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.walking.api.ApiApp;
+import com.walking.api.domain.traffic.usecase.AddFavoriteTrafficUseCase;
+import com.walking.api.domain.traffic.usecase.BrowseFavoriteTrafficsUseCase;
+import com.walking.api.domain.traffic.usecase.DeleteFavoriteTrafficUseCase;
+import com.walking.api.domain.traffic.usecase.UpdateFavoriteTrafficUseCase;
 import com.walking.api.web.controller.description.Description;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
 import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
+import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
+import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
+import com.walking.api.web.dto.response.detail.PointDetail;
+import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -38,8 +51,22 @@ class TrafficControllerTest {
 
 	@Autowired private MockMvc mockMvc;
 	@Autowired private ObjectMapper objectMapper;
+
+	@MockBean AddFavoriteTrafficUseCase addFavoriteTrafficUseCase;
+	@MockBean BrowseFavoriteTrafficsUseCase browseFavoriteTrafficsUseCase;
+	@MockBean DeleteFavoriteTrafficUseCase deleteFavoriteTrafficUseCase;
+	@MockBean UpdateFavoriteTrafficUseCase updateFavoriteTrafficUseCase;
 	private static final String TAG = "TrafficControllerTest";
 	private static final String BASE_URL = "/api/v1/traffics";
+
+	static double TF_BACK_DOOR_LAT = 35.178501;
+	static double TF_BACK_DOOR_LNG = 126.912083;
+	static double TF_BACK_THREE_LAT = 35.175841;
+	static double TF_BACK_THREE_LNG = 126.912491;
+	static double TF_CHANPUNG_LAT = 35.180332;
+	static double TF_CHANPUNG_LNG = 126.912123;
+	static double TF_CUCU_LAT = 35.176495;
+	static double TF_CUCU_LNG = 126.896888;
 
 	@Test
 	@DisplayName("GET 신호등 정보 조회 - 화면 좌표로 조회")
@@ -49,10 +76,10 @@ class TrafficControllerTest {
 				.perform(
 						get(BASE_URL)
 								.contentType(MediaType.APPLICATION_JSON)
-								.param("vblLat", "35.175840")
-								.param("vblLng", "126.912490")
-								.param("vtrLat", "35.178526")
-								.param("vtrLng", "124.123457"))
+								.param("vblLat", "37.595000")
+								.param("vblLng", "127.07870")
+								.param("vtrLat", "37.605372")
+								.param("vtrLng", "127.080309"))
 				.andExpect(status().is2xxSuccessful())
 				.andDo(
 						document(
@@ -310,6 +337,8 @@ class TrafficControllerTest {
 				FavoriteTrafficBody.builder().trafficId(1L).trafficAlias("alias1").build();
 		String content = objectMapper.writeValueAsString(body);
 
+		when(addFavoriteTrafficUseCase.execute(any())).thenReturn(true);
+
 		mockMvc
 				.perform(
 						post(BASE_URL + "/favorite")
@@ -334,6 +363,74 @@ class TrafficControllerTest {
 	@Test
 	@DisplayName("GET /favorite 즐겨찾기 신호등 조회")
 	void browseFavoriteTraffics() throws Exception {
+
+		when(browseFavoriteTrafficsUseCase.execute(any()))
+				.thenReturn(
+						BrowseFavoriteTrafficsResponse.builder()
+								.traffics(
+										List.of(
+												FavoriteTrafficDetail.builder()
+														.id(1L)
+														.detail(
+																TrafficDetailInfo.builder()
+																		.trafficId(1L)
+																		.apiSource("seoul")
+																		.direction("nt")
+																		.build())
+														.name("후문")
+														.point(
+																PointDetail.builder()
+																		.lat(TF_BACK_DOOR_LAT)
+																		.lng(TF_BACK_DOOR_LNG)
+																		.build())
+														.createdAt(LocalDateTime.now())
+														.build(),
+												FavoriteTrafficDetail.builder()
+														.id(2L)
+														.detail(
+																TrafficDetailInfo.builder()
+																		.trafficId(2L)
+																		.apiSource("seoul")
+																		.direction("wt")
+																		.build())
+														.name("후문3거리")
+														.point(
+																PointDetail.builder()
+																		.lat(TF_BACK_THREE_LAT)
+																		.lng(TF_BACK_THREE_LNG)
+																		.build())
+														.createdAt(LocalDateTime.now())
+														.build(),
+												FavoriteTrafficDetail.builder()
+														.id(3L)
+														.detail(
+																TrafficDetailInfo.builder()
+																		.trafficId(3L)
+																		.apiSource("seoul")
+																		.direction("sw")
+																		.build())
+														.name("창평")
+														.point(
+																PointDetail.builder()
+																		.lat(TF_CHANPUNG_LAT)
+																		.lng(TF_CHANPUNG_LNG)
+																		.build())
+														.createdAt(LocalDateTime.now())
+														.build(),
+												FavoriteTrafficDetail.builder()
+														.id(4L)
+														.detail(
+																TrafficDetailInfo.builder()
+																		.trafficId(4L)
+																		.apiSource("seoul")
+																		.direction("nt")
+																		.build())
+														.name("쿠쿠")
+														.point(PointDetail.builder().lat(TF_CUCU_LAT).lng(TF_CUCU_LNG).build())
+														.createdAt(LocalDateTime.now())
+														.build()))
+								.build());
+
 		mockMvc
 				.perform(
 						get(BASE_URL + "/favorite")
@@ -400,6 +497,8 @@ class TrafficControllerTest {
 				PatchFavoriteTrafficNameBody.builder().trafficAlias("alias2").build();
 		String content = objectMapper.writeValueAsString(body);
 
+		when(updateFavoriteTrafficUseCase.execute(any())).thenReturn(true);
+
 		mockMvc
 				.perform(
 						patch(BASE_URL + "/favorite/{favoriteId}", 1)
@@ -429,6 +528,9 @@ class TrafficControllerTest {
 	@Test
 	@DisplayName("DELETE /favorite/{favoriteId} 즐겨찾기 신호등 삭제")
 	void deleteFavoriteTraffic() throws Exception {
+
+		when(deleteFavoriteTrafficUseCase.execute(any())).thenReturn(true);
+
 		mockMvc
 				.perform(
 						delete(BASE_URL + "/favorite/{favoriteId}", 1)

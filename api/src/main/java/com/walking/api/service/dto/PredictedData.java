@@ -32,7 +32,7 @@ public class PredictedData {
 	 * @return redCycle 이 존재하면 true
 	 */
 	public boolean isPredictedRedCycle() {
-		return Objects.nonNull(getRedCycle());
+		return getRedCycle().isPresent();
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class PredictedData {
 	 * @return greenCycle 이 존재하면 true
 	 */
 	public boolean isPredictedGreenCycle() {
-		return Objects.nonNull(getGreenCycle());
+		return getGreenCycle().isPresent();
 	}
 
 	/**
@@ -103,5 +103,28 @@ public class PredictedData {
 
 	public void updateCurrentTimeLeft(Float timeLeft) {
 		this.currentTimeLeft = timeLeft;
+	}
+
+	public Optional<Float> getRedCycle() {
+		return Optional.ofNullable(redCycle);
+	}
+
+	public Optional<Float> getGreenCycle() {
+		return Optional.ofNullable(greenCycle);
+	}
+
+	public Optional<TrafficColor> getCurrentColor() {
+		return Optional.ofNullable(currentColor);
+	}
+
+	public Optional<Float> getCurrentTimeLeft() {
+		return Optional.ofNullable(currentTimeLeft);
+	}
+
+	public String getCurrentColorDescription() {
+		if (getCurrentColor().isPresent()) {
+			return getCurrentColor().get().toString();
+		}
+		return "";
 	}
 }

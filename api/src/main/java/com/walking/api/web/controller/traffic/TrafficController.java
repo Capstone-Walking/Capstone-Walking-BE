@@ -1,13 +1,24 @@
 package com.walking.api.web.controller.traffic;
 
 import com.walking.api.converter.TrafficDetailConverter;
+import com.walking.api.domain.traffic.dto.AddFavoriteTrafficUseCaseRequest;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseRequest;
+import com.walking.api.domain.traffic.dto.DeleteFavoriteTrafficUseCaseRequest;
+import com.walking.api.domain.traffic.dto.UpdateFavoriteTrafficUseCaseRequest;
+import com.walking.api.domain.traffic.usecase.AddFavoriteTrafficUseCase;
+import com.walking.api.domain.traffic.usecase.BrowseFavoriteTrafficsUseCase;
+import com.walking.api.domain.traffic.usecase.DeleteFavoriteTrafficUseCase;
+import com.walking.api.domain.traffic.usecase.UpdateFavoriteTrafficUseCase;
 import com.walking.api.security.authentication.token.TokenUserDetails;
+import com.walking.api.security.authentication.token.TokenUserDetailsService;
+import com.walking.api.security.filter.token.AccessTokenResolver;
 import com.walking.api.service.TrafficIntegrationPredictService;
 import com.walking.api.service.dto.PredictedData;
 import com.walking.api.service.dto.request.IntegrationPredictRequestDto;
 import com.walking.api.service.dto.response.IntegrationPredictResponseDto;
-import com.walking.api.web.dto.request.point.OptionalTrafficPointParam;
+import com.walking.api.service.traffic.ReadTrafficService;
 import com.walking.api.web.dto.request.point.OptionalViewPointParam;
+import com.walking.api.web.dto.request.point.ViewPointParam;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
 import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
 import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
@@ -20,17 +31,22 @@ import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
+import com.walking.data.entity.BaseEntity;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +65,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TrafficController {
 
 	private final TrafficIntegrationPredictService integrationPredictService;
+	private final ReadTrafficService readTrafficService;
+	private final TokenUserDetailsService tokenUserDetailsService;
+
+	private final AddFavoriteTrafficUseCase addFavoriteTrafficUseCase;
+	private final BrowseFavoriteTrafficsUseCase browseFavoriteTrafficsUseCase;
+	private final DeleteFavoriteTrafficUseCase deleteFavoriteTrafficUseCase;
+	private final UpdateFavoriteTrafficUseCase updateFavoriteTrafficUseCase;
 
 	static double TF_BACK_DOOR_LAT = 35.178501;
 	static double TF_BACK_DOOR_LNG = 126.912083;
@@ -69,26 +92,37 @@ public class TrafficController {
 
 	@GetMapping()
 	public ApiResponse<ApiResponse.SuccessBody<SearchTrafficsResponse>> searchTraffics(
-			@Valid OptionalViewPointParam viewPointParam,
-			@Valid OptionalTrafficPointParam trafficPointParam) {
-		if (!Objects.isNull(trafficPointParam) && trafficPointParam.isPresent()) {
-			// todo implement: trafficPointParam를 이용하여 교차로 정보 조회
-			log.info("Search traffics trafficPointParam: {}", trafficPointParam.get());
-			SearchTrafficsResponse response = getSearchViewTrafficsResponse();
-			return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
-		}
+			@Valid OptionalViewPointParam viewPointParam) {
 
-		// todo implement: viewPointParam을 이용하여 교차로 정보 조회
+		// viewPointParam을 이용하여 교차로 정보 조회
 		log.info("Search traffics viewPointParam: {}", viewPointParam.get());
-		SearchTrafficsResponse response = getSearchTrafficsResponse();
+		ViewPointParam viewPoint = viewPointParam.getViewPointParam();
+		float vblLng = viewPoint.getVblLng();
+		float vblLat = viewPoint.getVblLat();
+		float vtrLng = viewPoint.getVtrLng();
+		float vtrLat = viewPoint.getVtrLat();
+
+		List<Long> trafficIds =
+				readTrafficService.executeWithinBounds(vblLng, vblLat, vtrLng, vtrLat).stream()
+						.map(BaseEntity::getId)
+						.collect(Collectors.toList());
+
+		// trafficDetail 생성
+		List<PredictedData> predictedData =
+				new ArrayList<>(
+						integrationPredictService
+								.execute(IntegrationPredictRequestDto.builder().trafficIds(trafficIds).build())
+								.getPredictedDataMap()
+								.values());
+
+		List<TrafficDetail> traffics = TrafficDetailConverter.execute(predictedData);
+		SearchTrafficsResponse response = SearchTrafficsResponse.builder().traffics(traffics).build();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
 	@GetMapping("/{trafficId}")
-	@Transactional
 	public ApiResponse<ApiResponse.SuccessBody<BrowseTrafficsResponse>> browseTraffic(
-			@PathVariable Long trafficId) {
-		// todo implement
+			HttpServletRequest request, @PathVariable Long trafficId) {
 		log.info("Traffic browse trafficId: {}", trafficId);
 		IntegrationPredictResponseDto integrationPredictedResponse =
 				integrationPredictService.execute(
@@ -96,7 +130,28 @@ public class TrafficController {
 
 		Map<Long, PredictedData> predictedDataMap = integrationPredictedResponse.getPredictedDataMap();
 		PredictedData predictedData = predictedDataMap.get(trafficId);
-		TrafficDetail trafficDetail = TrafficDetailConverter.execute(predictedData);
+
+		// 인증 토큰이 헤더에 들어있는지
+		String authorization = request.getHeader("Authorization");
+		Optional<FavoriteTrafficDetail> favoriteTrafficDetail = Optional.empty();
+		if (Objects.nonNull(authorization)) {
+
+			String token = AccessTokenResolver.resolve(authorization);
+			UserDetails userDetails = tokenUserDetailsService.loadUserByUsername(token);
+			Long memberId = Long.valueOf(userDetails.getUsername());
+
+			BrowseFavoriteTrafficsResponse favoriteTraffics =
+					browseFavoriteTrafficsUseCase.execute(
+							BrowseFavoriteTrafficsUseCaseRequest.builder().memberId(memberId).build());
+
+			favoriteTrafficDetail =
+					favoriteTraffics.getTraffics().stream()
+							.filter(traffic -> traffic.getId().equals(trafficId))
+							.findFirst();
+		}
+
+		TrafficDetail trafficDetail =
+				TrafficDetailConverter.execute(predictedData, favoriteTrafficDetail);
 		BrowseTrafficsResponse response =
 				BrowseTrafficsResponse.builder().traffic(trafficDetail).build();
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
@@ -106,9 +161,14 @@ public class TrafficController {
 	public ApiResponse<ApiResponse.Success> addFavoriteTraffic(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody FavoriteTrafficBody favoriteTrafficBody) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		boolean response =
+				addFavoriteTrafficUseCase.execute(
+						AddFavoriteTrafficUseCaseRequest.builder()
+								.memberId(memberId)
+								.trafficId(favoriteTrafficBody.getTrafficId())
+								.trafficAlias(favoriteTrafficBody.getTrafficAlias())
+								.build());
 		log.info("Favorite traffic request: {}", favoriteTrafficBody);
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
@@ -116,10 +176,10 @@ public class TrafficController {
 	@GetMapping("/favorite")
 	public ApiResponse<ApiResponse.SuccessBody<BrowseFavoriteTrafficsResponse>>
 			browseFavoriteTraffics(@AuthenticationPrincipal TokenUserDetails userDetails) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
-		BrowseFavoriteTrafficsResponse response = getBrowseFavoriteTrafficsResponse();
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		BrowseFavoriteTrafficsResponse response =
+				browseFavoriteTrafficsUseCase.execute(
+						BrowseFavoriteTrafficsUseCaseRequest.builder().memberId(memberId).build());
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -128,9 +188,14 @@ public class TrafficController {
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Min(1) @PathVariable Long trafficId,
 			@Valid @RequestBody PatchFavoriteTrafficNameBody patchFavoriteTrafficNameBody) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		boolean response =
+				updateFavoriteTrafficUseCase.execute(
+						UpdateFavoriteTrafficUseCaseRequest.builder()
+								.memberId(memberId)
+								.favoriteTrafficId(trafficId)
+								.trafficAlias(patchFavoriteTrafficNameBody.getTrafficAlias())
+								.build());
 		log.info(
 				"Update favorite traffic request: trafficId={}, body={}",
 				trafficId,
@@ -141,9 +206,13 @@ public class TrafficController {
 	@DeleteMapping("/favorite/{trafficId}")
 	public ApiResponse<ApiResponse.Success> deleteFavoriteTraffic(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @Min(1) @PathVariable Long trafficId) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		boolean response =
+				deleteFavoriteTrafficUseCase.execute(
+						DeleteFavoriteTrafficUseCaseRequest.builder()
+								.memberId(memberId)
+								.favoriteTrafficId(trafficId)
+								.build());
 		log.info("Delete favorite traffic request: trafficId={}", trafficId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}

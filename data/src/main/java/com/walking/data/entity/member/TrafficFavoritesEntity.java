@@ -29,4 +29,10 @@ public class TrafficFavoritesEntity extends BaseEntity {
 
 	@Column(nullable = false, length = 50)
 	private String alias;
+
+	// todo delete
+	public TrafficFavoritesEntity updateAlias(String alias) {
+		this.alias = alias;
+		return this;
+	}
 }
