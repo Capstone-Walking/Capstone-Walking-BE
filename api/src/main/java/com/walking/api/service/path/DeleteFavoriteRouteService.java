@@ -1,6 +1,6 @@
-package com.walking.api.web.service.path;
+package com.walking.api.service.path;
 
-import com.walking.api.repository.member.PathFavoritesRepository;
+import com.walking.api.repository.path.PathFavoritesRepository;
 import com.walking.data.entity.member.MemberEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

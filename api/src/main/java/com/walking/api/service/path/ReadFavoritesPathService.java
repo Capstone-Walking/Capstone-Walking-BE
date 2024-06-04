@@ -1,10 +1,10 @@
-package com.walking.api.web.service.path;
+package com.walking.api.service.path;
 
 import com.walking.api.repository.dto.response.PathFavoritesVo;
 import com.walking.api.repository.member.MemberRepository;
 import com.walking.api.repository.path.PathFavoritesRepository;
+import com.walking.api.service.dto.response.ReadFavoritesPathResponse;
 import com.walking.api.web.dto.request.OrderFilter;
-import com.walking.api.web.service.path.dto.response.ReadFavoritesPathResponse;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;

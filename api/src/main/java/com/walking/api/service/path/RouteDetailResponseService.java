@@ -47,6 +47,20 @@ public class RouteDetailResponseService {
 			LineString lineString) {
 		// case 1 길에 신호등이 없는 경우
 		// todo
+		if (traffics.isEmpty()) {
+			return RouteDetailResponse.builder()
+					.totalTime(primaryData.getTotalTime())
+					.trafficCount(0)
+					.departureTimes(new ArrayList<>())
+					.timeToFirstTraffic(primaryData.getUntilTrafficTime())
+					.totalDistance(primaryData.getTotalDistance())
+					.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
+					.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
+					.traffics(new ArrayList<>())
+					.trafficIdsInPath(new ArrayList<>())
+					.paths(convertLineStringToPointDetailList(lineString))
+					.build();
+		}
 
 		// case 2 길에 신호등이 있는 경우
 		// 1. 처음 신호등의 위도 경도를 통해 교차로의 신호등 리스트를 찾는다.

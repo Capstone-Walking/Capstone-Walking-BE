@@ -1,4 +1,4 @@
-package com.walking.api.web.service.path.dto.request;
+package com.walking.api.service.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import lombok.*;
