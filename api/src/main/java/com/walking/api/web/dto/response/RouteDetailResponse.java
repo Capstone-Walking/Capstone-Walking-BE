@@ -2,6 +2,7 @@ package com.walking.api.web.dto.response;
 
 import com.walking.api.web.dto.response.detail.PointDetail;
 import com.walking.api.web.dto.response.detail.TrafficDetail;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,10 +20,15 @@ import lombok.ToString;
 @Builder
 public class RouteDetailResponse {
 
-	public Long totalTime;
-	public Long trafficCount;
+	public LocalDateTime nowTime;
+	public Integer totalTime;
+	public Integer trafficCount;
+	public List<LocalDateTime> departureTimes;
+	public Integer timeToFirstTraffic;
+	public Integer totalDistance;
 	public PointDetail startPoint;
 	public PointDetail endPoint;
 	public List<TrafficDetail> traffics;
+	public List<Long> trafficIdsInPath;
 	public List<PointDetail> paths;
 }

@@ -37,10 +37,10 @@ public class OptionalViewPointParamArgumentResolver implements HandlerMethodArgu
 		return OptionalViewPointParam.builder()
 				.viewPointParam(
 						ViewPointParam.builder()
-								.vblLat(Double.parseDouble(vblLat))
-								.vblLng(Double.parseDouble(vblLng))
-								.vtrLat(Double.parseDouble(vtrLat))
-								.vtrLng(Double.parseDouble(vtrLng))
+								.vblLat(Float.parseFloat(vblLat))
+								.vblLng(Float.parseFloat(vblLng))
+								.vtrLat(Float.parseFloat(vtrLat))
+								.vtrLng(Float.parseFloat(vtrLng))
 								.build())
 				.build();
 	}

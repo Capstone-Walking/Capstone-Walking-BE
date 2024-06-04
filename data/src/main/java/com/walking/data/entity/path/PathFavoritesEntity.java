@@ -1,6 +1,7 @@
-package com.walking.data.entity.member;
+package com.walking.data.entity.path;
 
 import com.walking.data.entity.BaseEntity;
+import com.walking.data.entity.member.MemberEntity;
 import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,7 +31,7 @@ public class PathFavoritesEntity extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "POINT SRID 4326")
 	private Point endPoint;
 
-	@Column(nullable = false, columnDefinition = "LINESTRING SRID 4326")
+	@Column(nullable = false, columnDefinition = "LINESTRING SRID 0")
 	private LineString path;
 
 	@Column(nullable = false, length = 50)
@@ -38,4 +39,15 @@ public class PathFavoritesEntity extends BaseEntity {
 
 	@Column(nullable = false, length = 50)
 	private String endAlias;
+
+	@Column(nullable = false, length = 50)
+	private String name;
+
+	@Column(nullable = false, name = "orders")
+	private Long order;
+
+	private Integer untilFirstTrafficTime;
+
+	private Integer totalTime;
+	private Integer totalDistance;
 }

@@ -128,8 +128,8 @@ public class PathController {
 
 	private static RouteDetailResponse getSampleRouteDetailResponse() {
 		return RouteDetailResponse.builder()
-				.totalTime(100L)
-				.trafficCount(10L)
+				.totalTime(100)
+				.trafficCount(10)
 				.startPoint(PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
 				.endPoint(PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build())
 				.traffics(
@@ -146,9 +146,9 @@ public class PathController {
 										.viewName("후문")
 										.point(PointDetail.builder().lat(BACK_DOOR_LAT).lng(BACK_DOOR_LNG).build())
 										.color("red")
-										.timeLeft(10L)
-										.redCycle(30L)
-										.greenCycle(30L)
+										.timeLeft(10f)
+										.redCycle(30f)
+										.greenCycle(30f)
 										.build()))
 				.paths(
 						List.of(
