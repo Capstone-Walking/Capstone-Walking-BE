@@ -1,10 +1,12 @@
 package com.walking.api.converter;
 
 import com.walking.api.service.dto.PredictedData;
+import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
 import com.walking.api.web.dto.response.detail.TrafficDetail;
 import com.walking.data.entity.traffic.TrafficEntity;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class TrafficDetailConverter {
@@ -17,9 +19,18 @@ public final class TrafficDetailConverter {
 	 * @param predictedData 사이클 정보 와 현재 색상 및 잔여시간을 예측한 데이터
 	 * @return 예측 값을 바탕으로 만든 TrafficDetail
 	 */
-	public static TrafficDetail execute(PredictedData predictedData) {
+	public static TrafficDetail execute(
+			PredictedData predictedData, Optional<FavoriteTrafficDetail> favoriteTrafficDetail) {
 
 		TrafficEntity trafficEntity = predictedData.getTraffic();
+		boolean isFavorite = false;
+		String viewName = trafficEntity.getName();
+
+		if (favoriteTrafficDetail.isPresent()
+				&& favoriteTrafficDetail.get().getId().equals(trafficEntity.getId())) {
+			isFavorite = true;
+			viewName = favoriteTrafficDetail.get().getName();
+		}
 
 		return TrafficDetail.builder()
 				.id(trafficEntity.getId())
@@ -30,8 +41,8 @@ public final class TrafficDetailConverter {
 				.redCycle(predictedData.getRedCycle().orElse(null))
 				.greenCycle(predictedData.getGreenCycle().orElse(null))
 				.detail(TrafficDetailInfoConverter.execute(trafficEntity))
-				.isFavorite(false)
-				.viewName(trafficEntity.getName())
+				.isFavorite(isFavorite)
+				.viewName(viewName)
 				.build();
 	}
 
