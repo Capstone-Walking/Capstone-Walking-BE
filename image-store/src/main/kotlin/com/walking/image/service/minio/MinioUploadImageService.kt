@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.io.File
 
-@Profile("minio")
+@Profile("local")
 @Service
 class MinioUploadImageService(
     @Value("\${minio.bucket-name}") val bucket: String,
