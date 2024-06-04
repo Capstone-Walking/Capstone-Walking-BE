@@ -18,4 +18,7 @@ dependencies {
 
     // minio
     implementation "io.minio:minio:${minioVersion}"
+
+    // s3
+    implementation "com.amazonaws:aws-java-sdk-s3:${awsS3Version}"
 }

@@ -36,6 +36,9 @@ buildscript {
         // Minio
         minioVersion = '8.5.5'
 
+        // aws s3
+        awsS3Version = "1.12.220"
+
         // spring cloud
         set('springCloudVersion', "2021.0.1")
     }
