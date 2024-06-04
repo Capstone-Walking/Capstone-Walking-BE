@@ -1,9 +1,10 @@
-package com.walking.api.repository.member;
+package com.walking.api.repository.path;
 
 import com.walking.api.repository.dto.response.PathFavoritesVo;
 import com.walking.data.entity.member.MemberEntity;
-import com.walking.data.entity.member.PathFavoritesEntity;
+import com.walking.data.entity.path.PathFavoritesEntity;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -45,6 +46,20 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 	List<PathFavoritesVo> findPathFavoritesByMemberFkAndFilterName(
 			@Param("memberFk") MemberEntity memberFk, @Param("name") String name);
 
-	@Query("select max(pf.order)" + "from PathFavoritesEntity pf")
+	@Query("select coalesce(max(pf.order) ,0)" + "from PathFavoritesEntity pf")
 	Long findMaxOrder();
+
+	Optional<PathFavoritesEntity> findById(Long id);
+
+	@Query(
+			"update PathFavoritesEntity pf set pf.name = :name, pf.startAlias = :startAlias, pf.endAlias = :endAlias"
+					+ " where pf.memberFk = :memberFk and pf.id = :pathId")
+	Long updatePathName(
+			@Param("memberFk") MemberEntity memberFk,
+			@Param("pathId") Long pathId,
+			@Param("name") String name,
+			@Param("startAlias") String startAlias,
+			@Param("endAlias") String endAlias);
+
+	void deleteByMemberFkAndId(MemberEntity memberId, Long pathId);
 }

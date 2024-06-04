@@ -128,8 +128,8 @@ public class PathController {
 
 	private static RouteDetailResponse getSampleRouteDetailResponse() {
 		return RouteDetailResponse.builder()
-				.totalTime(100L)
-				.trafficCount(10L)
+				.totalTime(100)
+				.trafficCount(10)
 				.startPoint(PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
 				.endPoint(PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build())
 				.traffics(

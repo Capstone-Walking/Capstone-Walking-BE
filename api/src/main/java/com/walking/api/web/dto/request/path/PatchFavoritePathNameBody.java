@@ -18,4 +18,7 @@ import lombok.ToString;
 public class PatchFavoritePathNameBody {
 
 	@NotBlank private String name;
+
+	@NotBlank private String startAlias;
+	@NotBlank private String endAlias;
 }

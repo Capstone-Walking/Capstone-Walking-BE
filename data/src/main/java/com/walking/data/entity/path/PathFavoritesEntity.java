@@ -1,6 +1,7 @@
-package com.walking.data.entity.member;
+package com.walking.data.entity.path;
 
 import com.walking.data.entity.BaseEntity;
+import com.walking.data.entity.member.MemberEntity;
 import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -44,4 +45,9 @@ public class PathFavoritesEntity extends BaseEntity {
 
 	@Column(nullable = false, name = "orders")
 	private Long order;
+
+	private Integer untilFirstTrafficTime;
+
+	private Integer totalTime;
+	private Integer totalDistance;
 }
