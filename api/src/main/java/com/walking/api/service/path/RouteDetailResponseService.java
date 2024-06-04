@@ -115,11 +115,7 @@ public class RouteDetailResponseService {
 				.totalDistance(primaryData.getTotalDistance())
 				.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
 				.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
-				.traffics(
-						AllPredictedDataMap.keySet().stream()
-								.map(
-										trafficId -> TrafficDetailConverter.execute(AllPredictedDataMap.get(trafficId)))
-								.collect(Collectors.toList()))
+				.traffics(TrafficDetailConverter.execute(new ArrayList<>(firestPredictedDataMap.values())))
 				.trafficIdsInPath(
 						pathTrafficData.getTrafficsInPath().stream()
 								.map(TrafficEntity::getId)
@@ -135,7 +131,7 @@ public class RouteDetailResponseService {
 		while (iterator.hasNext()) {
 			Map.Entry<Long, PredictedData> entry = iterator.next();
 			PredictedData predictedData = entry.getValue();
-			if (predictedData.getRedCycle() == null) {
+			if (predictedData.getRedCycle().isEmpty()) {
 				iterator.remove(); // redCycle이 null인 경우, 해당 Entry를 Map에서 제거
 			}
 		}
@@ -167,10 +163,10 @@ public class RouteDetailResponseService {
 		PredictedData predictedData = predictedDataMap.get(firstTraffic.getId());
 		predictedData.isAllPredicted();
 
-		TrafficColor currentColor = predictedData.getCurrentColor();
-		Float currentTimeLeft = predictedData.getCurrentTimeLeft();
-		Float redCycle = predictedData.getRedCycle();
-		Float greenCycle = predictedData.getGreenCycle();
+		TrafficColor currentColor = predictedData.getCurrentColor().orElseThrow();
+		Float currentTimeLeft = predictedData.getCurrentTimeLeft().orElseThrow();
+		Float redCycle = predictedData.getRedCycle().orElseThrow();
+		Float greenCycle = predictedData.getGreenCycle().orElseThrow();
 
 		LocalDateTime firstGreenTime =
 				getFirstGreenTime(currentColor, currentTimeLeft, redCycle, greenCycle, now);
