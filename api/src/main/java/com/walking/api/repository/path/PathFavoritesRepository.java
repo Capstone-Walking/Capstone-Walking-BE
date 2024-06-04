@@ -60,4 +60,6 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 			@Param("name") String name,
 			@Param("startAlias") String startAlias,
 			@Param("endAlias") String endAlias);
+
+	void deleteByMemberFkAndId(MemberEntity memberId, Long pathId);
 }
