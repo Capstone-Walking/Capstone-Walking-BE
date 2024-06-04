@@ -2,9 +2,9 @@ package com.walking.api.web.controller.path;
 
 import com.walking.api.security.authentication.token.TokenUserDetails;
 import com.walking.api.service.dto.request.FavoritePathRequestDto;
-import com.walking.api.service.path.CalculatePathFavoritesTimeService;
-import com.walking.api.service.path.CalculatePathTimeService;
-import com.walking.api.service.path.SavePathFavoritesService;
+import com.walking.api.service.dto.request.PathFavoriteNameRequest;
+import com.walking.api.service.dto.response.ReadFavoritesPathResponse;
+import com.walking.api.service.path.*;
 import com.walking.api.web.dto.request.OrderFilter;
 import com.walking.api.web.dto.request.path.FavoritePathBody;
 import com.walking.api.web.dto.request.path.PatchFavoritePathNameBody;
@@ -13,14 +13,12 @@ import com.walking.api.web.dto.response.BrowseFavoriteRouteResponse;
 import com.walking.api.web.dto.response.RouteDetailResponse;
 import com.walking.api.web.dto.response.detail.FavoriteRouteDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
-import com.walking.api.web.dto.response.detail.TrafficDetail;
-import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +38,9 @@ public class PathControllerV2 {
 	private final CalculatePathTimeService calculatePathTimeService;
 	private final SavePathFavoritesService savePathFavoritesService;
 	private final CalculatePathFavoritesTimeService calculatePathFavoritesTimeService;
+	private final ReadFavoritesPathService readFavoritesPathService;
+	private final UpdateRoutePathNameService updateRoutePathNameService;
+	private final DeleteFavoriteRouteService deleteFavoriteRouteService;
 
 	static double GONG_SEVEN_LAT = 35.1782;
 	static double GONG_SEVEN_LNG = 126.909;
@@ -70,9 +71,9 @@ public class PathControllerV2 {
 	public ApiResponse<ApiResponse.Success> addFavoriteRoute(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Valid @RequestBody FavoritePathBody favoritePathBody) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 1L;
+
+		Long memberId = Long.valueOf(userDetails.getUsername());
+
 		log.info("Favorite route request: {}", favoritePathBody);
 		savePathFavoritesService.execute(
 				FavoritePathRequestDto.builder()
@@ -94,18 +95,22 @@ public class PathControllerV2 {
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@RequestParam(required = true, defaultValue = "createdAt") OrderFilter filter,
 			@RequestParam(required = false) Optional<String> name) {
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = Long.valueOf(userDetails.getUsername());
 		if (name.isPresent()) {
 			// todo implement: name 기준 검색
 			log.info("Favorite route browse request: name={}", name.get());
-			BrowseFavoriteRouteResponse response = getSearchFavoriteRouteResponse();
+			List<ReadFavoritesPathResponse> favoritesPaths =
+					readFavoritesPathService.execute(memberId, name.get());
+
+			BrowseFavoriteRouteResponse response = getFavoriteRouteResponse(favoritesPaths);
 			return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 		}
 
 		// todo implement: filter 기준 정렬
+		List<ReadFavoritesPathResponse> favoritesPaths =
+				readFavoritesPathService.execute(memberId, filter);
 		log.info("Favorite route browse request: filter={}", filter);
-		BrowseFavoriteRouteResponse response = getFilterFavoriteRouteResponse();
+		BrowseFavoriteRouteResponse response = getFavoriteRouteResponse(favoritesPaths);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -113,11 +118,7 @@ public class PathControllerV2 {
 	public ApiResponse<ApiResponse.SuccessBody<RouteDetailResponse>> detailFavoriteRoute(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Min(1) @PathVariable Long favoriteId) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
 		log.info("Favorite route detail request: favoriteId={}", favoriteId);
-		//		RouteDetailResponse response = getSampleRouteDetailResponse();
 
 		RouteDetailResponse response = calculatePathFavoritesTimeService.execute(favoriteId);
 
@@ -129,9 +130,15 @@ public class PathControllerV2 {
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Min(1) @PathVariable Long favoriteId,
 			@Valid @RequestBody PatchFavoritePathNameBody pathNameBody) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		updateRoutePathNameService.execute(
+				memberId,
+				favoriteId,
+				PathFavoriteNameRequest.builder()
+						.name(pathNameBody.getName())
+						.startAlias(pathNameBody.getStartAlias())
+						.endAlias(pathNameBody.getEndAlias())
+						.build());
 		log.info("Favorite route update request: favoriteId={}, body={}", favoriteId, pathNameBody);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_MODIFIED);
 	}
@@ -140,82 +147,41 @@ public class PathControllerV2 {
 	public ApiResponse<ApiResponse.Success> deleteFavoriteRoute(
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Min(1) @PathVariable Long favoriteId) {
-		// todo implement
-		// Long memberId = Long.valueOf(userDetails.getUsername());
-		Long memberId = 999L;
+
+		Long memberId = Long.valueOf(userDetails.getUsername());
+		deleteFavoriteRouteService.execute(memberId, favoriteId);
+
 		log.info("Favorite route delete request: favoriteId={}", favoriteId);
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 
-	private static RouteDetailResponse getSampleRouteDetailResponse() {
-		return RouteDetailResponse.builder()
-				.totalTime(100)
-				.trafficCount(10)
-				.startPoint(PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
-				.endPoint(PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build())
-				.traffics(
-						List.of(
-								TrafficDetail.builder()
-										.id(1L)
-										.detail(
-												TrafficDetailInfo.builder()
-														.trafficId(1L)
-														.apiSource("seoul")
-														.direction("nt")
-														.build())
-										.isFavorite(true)
-										.viewName("후문")
-										.point(PointDetail.builder().lat(BACK_DOOR_LAT).lng(BACK_DOOR_LNG).build())
-										.color("red")
-										.timeLeft(10f)
-										.redCycle(30f)
-										.greenCycle(30f)
-										.build()))
-				.paths(
-						List.of(
-								PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build(),
-								PointDetail.builder().lat(BACK_DOOR_LAT).lng(BACK_DOOR_LNG).build(),
-								PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build()))
-				.build();
-	}
+	private BrowseFavoriteRouteResponse getFavoriteRouteResponse(
+			List<ReadFavoritesPathResponse> favoritesPaths) {
+		List<FavoriteRouteDetail> favoritePoints =
+				favoritesPaths.stream()
+						.map(
+								path ->
+										FavoriteRouteDetail.builder()
+												.id(path.getId())
+												.name(path.getName())
+												.startPoint(
+														PointDetail.builder()
+																.lat(path.getStartPoint().getX())
+																.lng(path.getStartPoint().getY())
+																.build())
+												.endPoint(
+														PointDetail.builder()
+																.lat(path.getEndPoint().getX())
+																.lng(path.getEndPoint().getY())
+																.build())
+												.createdAt(path.getCreatedAt())
+												.startAlias(path.getStartAlias())
+												.endAlias(path.getEndAlias())
+												.order(path.getOrder())
+												.build())
+						.collect(Collectors.toList());
 
-	private static BrowseFavoriteRouteResponse getSearchFavoriteRouteResponse() {
-		return BrowseFavoriteRouteResponse.builder()
-				.favoriteRoutes(
-						List.of(
-								FavoriteRouteDetail.builder()
-										.id(1L)
-										.name("공7-길성우부")
-										.startPoint(
-												PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
-										.endPoint(
-												PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build())
-										.createdAt(LocalDateTime.of(2021, 1, 1, 0, 0))
-										.build()))
-				.build();
-	}
-
-	private static BrowseFavoriteRouteResponse getFilterFavoriteRouteResponse() {
-		return BrowseFavoriteRouteResponse.builder()
-				.favoriteRoutes(
-						List.of(
-								FavoriteRouteDetail.builder()
-										.id(1L)
-										.name("공7-길성우부")
-										.startPoint(
-												PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
-										.endPoint(
-												PointDetail.builder().lat(GIL_SUNG_UBU_LAT).lng(GIL_SUNG_UBU_LNG).build())
-										.createdAt(LocalDateTime.of(2021, 1, 1, 0, 0))
-										.build(),
-								FavoriteRouteDetail.builder()
-										.id(2L)
-										.name("공7-맥도날드")
-										.startPoint(
-												PointDetail.builder().lat(GONG_SEVEN_LAT).lng(GONG_SEVEN_LNG).build())
-										.endPoint(PointDetail.builder().lat(MAC_DONALD_LAT).lng(MAC_DONALD_LNG).build())
-										.createdAt(LocalDateTime.of(2021, 1, 2, 0, 0))
-										.build()))
-				.build();
+		// BrowseFavoriteRouteResponse 객체 생성 및 반환
+		return BrowseFavoriteRouteResponse.builder().favoriteRoutes(favoritePoints).build();
 	}
 }
