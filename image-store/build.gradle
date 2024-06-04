@@ -1,0 +1,24 @@
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: 'org.jlleitschuh.gradle.ktlint-idea'
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'org.jetbrains.kotlin.plugin.spring'
+
+dependencies {
+    // kotlin reflect
+    runtimeOnly "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+    // minio
+    implementation "io.minio:minio:${minioVersion}"
+
+    // s3
+    implementation "com.amazonaws:aws-java-sdk-s3:${awsS3Version}"
+}

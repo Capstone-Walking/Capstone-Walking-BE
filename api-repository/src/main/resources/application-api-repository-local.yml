@@ -1,0 +1,6 @@
+api:
+    datasource:
+        jdbc-url: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+        username: root
+        password: root
+        driver-class-name: com.mysql.cj.jdbc.Driver

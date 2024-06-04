@@ -9,11 +9,10 @@ spring:
     # add import modules profile
     include:
       - data-local
-  datasource:
-    jdbc-url: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
+      - api-repository-local
+      - member-api-local
+      - image-store-local
+      - minio
 
 walking:
   batch:

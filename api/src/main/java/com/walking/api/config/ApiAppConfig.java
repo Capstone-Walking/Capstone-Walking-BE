@@ -1,8 +1,11 @@
 package com.walking.api.config;
 
+import com.walking.member.api.config.MemberApiConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
+@Import({MemberApiConfig.class})
 @Configuration
 @ComponentScan(basePackages = ApiAppConfig.BASE_PACKAGE)
 public class ApiAppConfig {

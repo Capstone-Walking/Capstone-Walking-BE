@@ -1,6 +1,6 @@
 package com.walking.api.service.traffic;
 
-import com.walking.api.repository.traffic.TrafficRepository;
+import com.walking.api.repository.dao.traffic.TrafficRepository;
 import com.walking.data.entity.traffic.TrafficEntity;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
