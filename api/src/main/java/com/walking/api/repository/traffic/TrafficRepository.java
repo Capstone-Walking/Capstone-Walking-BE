@@ -13,7 +13,6 @@ public interface TrafficRepository extends JpaRepository<TrafficEntity, Long> {
 	@Query("SELECT t FROM TrafficEntity t where t.id IN :ids")
 	List<TrafficEntity> findByIds(@Param("ids") List<Long> ids);
 
-
 	// 주변 1km의 Polygon을 만들어 인덱스를 타도록
 	@Query(
 			value =
