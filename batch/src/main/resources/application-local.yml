@@ -42,8 +42,3 @@ api:
       baseUrl: http://t-data.seoul.go.kr
       colorPath: /apig/apiman-gateway/tapi/v2xSignalPhaseInformation/1.0
       timeLeftPath: /apig/apiman-gateway/tapi/v2xSignalPhaseTimingInformation/1.0
-
-# log config
-log:
-  file:
-    path: ./var/log/walking/batch

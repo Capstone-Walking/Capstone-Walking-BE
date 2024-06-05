@@ -61,10 +61,6 @@ cookie:
   max-age: ${COOKIE_MAX_AGE}
 
 
-# log config
-log:
-  file:
-    path: ${FILE_LOG_PATH}
 
 # api docs config
 springdoc:

@@ -68,12 +68,6 @@ cookie:
   path: /
   max-age: 86400
 
-
-# log config
-log:
-  file:
-    path: ./var/log/walking/api
-
 # api docs config
 springdoc:
   swagger-ui:

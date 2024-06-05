@@ -18,8 +18,3 @@ walking:
       initialize-schema: never
     job:
       enabled: ${job.name:NONE}
-
-# log config
-log:
-  file:
-    path: ${FILE_LOG_PATH}
