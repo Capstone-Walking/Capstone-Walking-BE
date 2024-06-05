@@ -60,15 +60,7 @@ task buildDockerImage {
     doLast {
         exec {
             workingDir '.'
-            commandLine 'docker','run','--privileged','--rm','tonistiigi/binfmt','--install','all'
-        }
-        exec {
-            workingDir '.'
-            commandLine 'docker','buildx','create','--use'
-        }
-        exec {
-            workingDir '.'
-            commandLine 'docker','buildx', 'build','--platform=linux/amd64,linux/arm64', '-t', repository, '--build-arg', "RELEASE_VERSION=${releaseVersion}", '.', '--push'
+            commandLine 'docker', 'build', '-t', "${imageName}", '--build-arg', "RELEASE_VERSION=${releaseVersion}", '.'
         }
     }
 }
