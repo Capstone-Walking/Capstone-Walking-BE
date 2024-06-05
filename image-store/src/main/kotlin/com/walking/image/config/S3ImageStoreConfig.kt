@@ -28,14 +28,14 @@ class S3ImageStoreConfig(
     private var client: AmazonS3Client? = null
 
     override fun onApplicationEvent(event: ContextRefreshedEvent) {
-        client?.let { client ->
-            if (!client.doesBucketExistV2(bucket)) {
-                client.createBucket(bucket)
-                log.info("Create bucket $bucket")
-            } else {
-                log.info("Bucket $bucket already exists")
-            }
-        }
+//        client?.let { client ->
+//            if (!client.doesBucketExistV2(bucket)) {
+//                client.createBucket(bucket)
+//                log.info("Create bucket $bucket")
+//            } else {
+//                log.info("Bucket $bucket already exists")
+//            }
+//        }
     }
 
     @Bean
