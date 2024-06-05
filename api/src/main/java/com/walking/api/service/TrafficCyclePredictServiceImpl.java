@@ -29,10 +29,10 @@ public class TrafficCyclePredictServiceImpl {
 	private final TrafficRepository trafficRepository;
 	private final TrafficDetailRepository trafficDetailRepository;
 
-	@Value("${walking.batch.schedular.interval}")
+	@Value("${walking.batch.schedular.interval:70}")
 	private int schedularInterval;
 
-	@Value("${walking.predict.maximumSearchCount}")
+	@Value("${walking.predict.maximumSearchCount:5}")
 	private int MAXIMUM_SEARCH_COUNT;
 
 	/**
