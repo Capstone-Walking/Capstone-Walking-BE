@@ -55,7 +55,7 @@ def repository = "walking/${imageName}"
 
 task buildDockerImage {
     dependsOn 'bootJar'
-    dependsOn 'copySwaggerUI'
+//    dependsOn 'copySwaggerUI'
 
     doLast {
         exec {
