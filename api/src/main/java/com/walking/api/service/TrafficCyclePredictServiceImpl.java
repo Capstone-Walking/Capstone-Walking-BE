@@ -16,7 +16,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +28,9 @@ public class TrafficCyclePredictServiceImpl {
 	private final TrafficRepository trafficRepository;
 	private final TrafficDetailRepository trafficDetailRepository;
 
-	@Value("${walking.batch.schedular.interval:70}")
-	private int schedularInterval;
+	private int schedularInterval = 70;
 
-	@Value("${walking.predict.maximumSearchCount:5}")
-	private int MAXIMUM_SEARCH_COUNT;
+	private int MAXIMUM_SEARCH_COUNT = 5;
 
 	/**
 	 * 파라미터로 전달 받은 신호등 리스트와, 데이터를 가져오는 간격을 가지고 예측을 수행합니다.
