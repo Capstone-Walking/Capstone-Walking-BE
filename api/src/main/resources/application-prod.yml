@@ -12,7 +12,7 @@ spring:
       - api-repository-prod
       - member-api-prod
       - image-store-prod
-      - minio
+      - s3
 
 # prometheus config
 management:

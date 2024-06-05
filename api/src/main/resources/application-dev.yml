@@ -12,7 +12,7 @@ spring:
       - api-repository-dev
       - member-api-dev
       - image-store-dev
-      - minio
+      - s3
 
 # logging config
 logging:
