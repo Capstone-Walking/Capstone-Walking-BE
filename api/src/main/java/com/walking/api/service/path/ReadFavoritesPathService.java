@@ -1,8 +1,8 @@
 package com.walking.api.service.path;
 
+import com.walking.api.repository.dao.dto.response.PathFavoritesVo;
 import com.walking.api.repository.dao.member.MemberRepository;
-import com.walking.api.repository.dto.response.PathFavoritesVo;
-import com.walking.api.repository.path.PathFavoritesRepository;
+import com.walking.api.repository.dao.path.PathFavoritesRepository;
 import com.walking.api.service.dto.response.ReadFavoritesPathResponse;
 import com.walking.api.web.dto.request.OrderFilter;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.walking.api.service.path;
 
-import com.walking.api.repository.path.PathFavoritesRepository;
-import com.walking.api.repository.path.TrafficInPathFavoritesRepository;
+import com.walking.api.repository.dao.path.PathFavoritesRepository;
+import com.walking.api.repository.dao.path.TrafficInPathFavoritesRepository;
 import com.walking.api.service.dto.PathPrimaryData;
 import com.walking.api.service.dto.PathTrafficData;
 import com.walking.api.web.dto.response.RouteDetailResponse;

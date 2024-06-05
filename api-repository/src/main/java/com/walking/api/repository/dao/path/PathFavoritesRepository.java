@@ -1,6 +1,6 @@
-package com.walking.api.repository.path;
+package com.walking.api.repository.dao.path;
 
-import com.walking.api.repository.dto.response.PathFavoritesVo;
+import com.walking.api.repository.dao.dto.response.PathFavoritesVo;
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.path.PathFavoritesEntity;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Repository;
 public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEntity, Long> {
 
 	@Query(
-			" select new  com.walking.api.repository.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
+			" select new  com.walking.api.repository.dao.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
 					+ " from PathFavoritesEntity pf"
 					+ " where pf.memberFk = :memberFk"
 					+ " order by pf.order desc ")
@@ -22,7 +22,7 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 			@Param("memberFk") MemberEntity memberFk);
 
 	@Query(
-			" select new  com.walking.api.repository.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
+			" select new  com.walking.api.repository.dao.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
 					+ " from PathFavoritesEntity pf"
 					+ " where pf.memberFk = :memberFk"
 					+ " order by pf.createdAt")
@@ -30,7 +30,7 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 			@Param("memberFk") MemberEntity memberFk);
 
 	@Query(
-			" select new  com.walking.api.repository.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
+			" select new  com.walking.api.repository.dao.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
 					+ " from PathFavoritesEntity pf"
 					+ " where pf.memberFk = :memberFk"
 					+ " order by pf.name")
@@ -38,7 +38,7 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 			@Param("memberFk") MemberEntity memberFk);
 
 	@Query(
-			" select new  com.walking.api.repository.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
+			" select new  com.walking.api.repository.dao.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
 					+ " from PathFavoritesEntity pf"
 					+ " where pf.memberFk = :memberFk"
 					+ " and ( pf.name like concat('%',:name,'%') or pf.startAlias like concat('%',:name,'%')  or pf.endAlias like concat('%',:name,'%')) "

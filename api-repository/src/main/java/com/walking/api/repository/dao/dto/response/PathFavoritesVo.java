@@ -1,4 +1,4 @@
-package com.walking.api.repository.dto.response;
+package com.walking.api.repository.dao.dto.response;
 
 import java.time.LocalDateTime;
 import lombok.*;

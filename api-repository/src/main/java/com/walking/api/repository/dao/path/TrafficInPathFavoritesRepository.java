@@ -1,4 +1,4 @@
-package com.walking.api.repository.path;
+package com.walking.api.repository.dao.path;
 
 import com.walking.data.entity.path.TrafficInPathFavoritesEntity;
 import java.util.Optional;
