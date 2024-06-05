@@ -1,6 +1,7 @@
 package com.walking.member.api.usecase
 
 import com.walking.data.entity.member.MemberEntity
+import com.walking.image.service.RemoveImageService
 import com.walking.image.service.minio.MinioRemoveImageService
 import com.walking.member.api.client.unlink.SocialUnlinkClientManager
 import com.walking.member.api.dao.MemberDao
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class DeleteMemberUseCase(
     private val memberRepository: MemberDao,
-    private val removeImageService: MinioRemoveImageService,
+    private val removeImageService: RemoveImageService,
     private val unlinkClientManager: SocialUnlinkClientManager
 ) {
     @Transactional
