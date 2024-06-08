@@ -20,6 +20,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 @Slf4j
@@ -37,6 +38,7 @@ public class TrafficDetailItemWriter implements ItemWriter<TrafficDetailDto> {
 	}
 
 	@Override
+	@Transactional(transactionManager = ApiDataSourceConfig.TXM_NAME)
 	public void write(List<? extends TrafficDetailDto> items) throws Exception {
 		log.debug("write 작업 중...");
 		DefaultTransactionDefinition transactionDef = new DefaultTransactionDefinition();
@@ -51,7 +53,7 @@ public class TrafficDetailItemWriter implements ItemWriter<TrafficDetailDto> {
 
 			Map<Long, Map<Long, String>> ids =
 					jdbcTemplate.query(
-							"SELECT t.id, t.detail ->> '$.id' as trafficId, t.detail ->> '$.direction' as direction  FROM traffic t where t.detail ->> '$.id' IN (:trafficIds)",
+							"SELECT t.id, t.detail ->> '$.trafficId' as trafficId, t.detail ->> '$.direction' as direction  FROM api.traffic t where t.detail ->> '$.trafficId' IN (:trafficIds)",
 							parameters,
 							new ResultSetExtractor<Map<Long, Map<Long, String>>>() {
 								public Map<Long, Map<Long, String>> extractData(ResultSet rs)
@@ -105,7 +107,7 @@ public class TrafficDetailItemWriter implements ItemWriter<TrafficDetailDto> {
 			log.debug("bulk insert 를 위한 파라미터 준비 완료.");
 
 			jdbcTemplate.batchUpdate(
-					"INSERT INTO traffic_detail (traffic_id, direction, color, time_left, color_reg_dt, time_left_reg_dt)"
+					"INSERT INTO api.traffic_detail (traffic_id, direction, color, time_left, color_reg_dt, time_left_reg_dt)"
 							+ " VALUES (:trafficId, :direction, :color, :timeLeft, :color_reg_dt, :time_left_reg_dt)",
 					bulkInsertParams.toArray(new SqlParameterSource[0]));
 
