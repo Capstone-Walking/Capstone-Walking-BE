@@ -14,7 +14,10 @@ class S3GetPreSignedImageUrlService(
     private val imageStoreClient: S3ImageStoreClient
 ) : GetPreSignedImageUrlService {
     override fun execute(image: String): String {
+        println("S3GetPreSignedImageUrlService.execute\n")
+        println("image: $image")
         ImageArgsGenerator.preSignedUrl(bucket, image).let { args ->
+            println("args: $args")
             return imageStoreClient.getPresignedObjectUrl(args) ?: throw Exception("Failed to get pre-signed url")
         }
     }

@@ -27,6 +27,12 @@ class GetMemberDetailUseCase(
         val certificationSubject = member.certificationSubject.name
         val status = member.status.name
         val profile = getProfile(member)
+        println("GetMemberDetailUseCase.execute\n")
+        println("id: $id")
+        println("nickName: $nickName")
+        println("certificationSubject: $certificationSubject")
+        println("status: $status")
+        println("profile: $profile")
 
         return GetMemberDetailUseCaseResponse(
             id,
