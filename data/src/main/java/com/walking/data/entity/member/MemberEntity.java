@@ -56,6 +56,7 @@ public class MemberEntity extends BaseEntity {
 		this.nickName = nickName;
 		this.profile = profile;
 		this.certificationId = certificationId;
+		this.certificationSubject = CertificationSubject.KAKAO;
 	}
 
 	public MemberEntity withDrawn() {
