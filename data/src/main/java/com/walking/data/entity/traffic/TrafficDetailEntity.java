@@ -13,6 +13,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -28,7 +29,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @SuperBuilder(toBuilder = true)
-@Table(name = "traffic_detail")
+@Table(
+		name = "traffic_detail",
+		indexes = @Index(name = "traffic_id_idx", columnList = "traffic_id"))
 @ToString
 public class TrafficDetailEntity {
 
