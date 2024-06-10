@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.Point;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 @AllArgsConstructor
+@Slf4j
 public class RouteDetailResponseService {
 
 	private final TrafficRepository trafficRepository;
@@ -65,6 +67,12 @@ public class RouteDetailResponseService {
 		List<TrafficEntity> FirstClosetTraffic =
 				trafficRepository.findClosetTrafficByLocation(
 						traffics.get(0).getX(), traffics.get(0).getY());
+
+		log.info("FirstClosetTraffic : {}", FirstClosetTraffic);
+
+		if (FirstClosetTraffic.isEmpty()) {
+			return buildOnlyPath(startLat, startLng, endLat, endLng, primaryData, lineString);
+		}
 
 		// 2. 티맵을 통해 확인한 첫번째 신호등이 어떤 방향인지 확인한다.
 		TrafficEntity firstTraffic = getFirstTraffic(pathTrafficData, FirstClosetTraffic);
@@ -117,6 +125,28 @@ public class RouteDetailResponseService {
 						pathTrafficData.getTrafficsInPath().stream()
 								.map(TrafficEntity::getId)
 								.collect(Collectors.toList()))
+				.paths(convertLineStringToPointDetailList(lineString))
+				.build();
+	}
+
+	private static RouteDetailResponse buildOnlyPath(
+			double startLat,
+			double startLng,
+			double endLat,
+			double endLng,
+			PathPrimaryData primaryData,
+			LineString lineString) {
+		return RouteDetailResponse.builder()
+				.nowTime(LocalDateTime.now())
+				.totalTime(primaryData.getTotalTime())
+				.trafficCount(0)
+				.departureTimes(new ArrayList<>())
+				.timeToFirstTraffic(primaryData.getUntilTrafficTime())
+				.totalDistance(primaryData.getTotalDistance())
+				.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
+				.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
+				.traffics(new ArrayList<>())
+				.trafficIdsInPath(new ArrayList<>())
 				.paths(convertLineStringToPointDetailList(lineString))
 				.build();
 	}

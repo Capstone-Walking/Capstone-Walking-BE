@@ -30,6 +30,9 @@ public class ExtractPathTrafficInfoService {
 							traffics.get(i).getX(), traffics.get(i).getY());
 			pathTrafficData.getAllTraffics().addAll(closetTrafficByLocation);
 
+			if (closetTrafficByLocation.isEmpty()) {
+				continue;
+			}
 			log.info("closetTrafficByLocation : {}", closetTrafficByLocation);
 			TrafficDirection direction =
 					TrafficDirection.findDirection(
