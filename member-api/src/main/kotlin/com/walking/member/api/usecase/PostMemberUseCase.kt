@@ -16,9 +16,9 @@ class PostMemberUseCase(
 ) {
 
     companion object{
-        val RED_PROFILE = "https://d25bhk5us0632l.cloudfront.net/default/profiles/red.png"
-        val GREEN_PROFILE = "https://d25bhk5us0632l.cloudfront.net/default/profiles/green.png"
-        val YELLOW_PROFILE = "https://d25bhk5us0632l.cloudfront.net/default/profiles/yellow.png"
+        val RED_PROFILE = "https://d2zed8vaz1decw.cloudfront.net/default/profiles/red.png"
+        val GREEN_PROFILE = "https://d2zed8vaz1decw.cloudfront.net/default/profiles/green.png"
+        val YELLOW_PROFILE = "https://d2zed8vaz1decw.cloudfront.net/default/profiles/yellow.png"
         val DEFAULT_PROFILES = listOf(RED_PROFILE, GREEN_PROFILE, YELLOW_PROFILE)
     }
     @Transactional
