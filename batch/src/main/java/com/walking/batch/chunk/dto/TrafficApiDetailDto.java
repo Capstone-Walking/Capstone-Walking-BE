@@ -73,7 +73,7 @@ public class TrafficApiDetailDto {
 				|| pdsgStatNm.equals("permissive-clearance")) {
 			return "GREEN";
 		}
-		if (pdsgStatNm.equals("dark")) {
+		if (pdsgStatNm.equals("dark") || pdsgStatNm.equals("protected-clearance")) {
 			return "DARK";
 		}
 		throw new IllegalArgumentException(
