@@ -16,10 +16,7 @@ import com.walking.data.entity.traffic.TrafficEntity;
 import com.walking.data.entity.traffic.constant.TrafficColor;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
@@ -163,10 +160,19 @@ public class RouteDetailResponseService {
 		PredictedData predictedData = predictedDataMap.get(firstTraffic.getId());
 		predictedData.isAllPredicted();
 
-		TrafficColor currentColor = predictedData.getCurrentColor().orElseThrow();
-		Float currentTimeLeft = predictedData.getCurrentTimeLeft().orElseThrow();
-		Float redCycle = predictedData.getRedCycle().orElseThrow();
-		Float greenCycle = predictedData.getGreenCycle().orElseThrow();
+		TrafficColor currentColor;
+		Float currentTimeLeft;
+		Float redCycle;
+		Float greenCycle;
+
+		try {
+			currentColor = predictedData.getCurrentColor().orElseThrow();
+			currentTimeLeft = predictedData.getCurrentTimeLeft().orElseThrow();
+			redCycle = predictedData.getRedCycle().orElseThrow();
+			greenCycle = predictedData.getGreenCycle().orElseThrow();
+		} catch (NoSuchElementException e) {
+			return new ArrayList<>();
+		}
 
 		LocalDateTime firstGreenTime =
 				getFirstGreenTime(currentColor, currentTimeLeft, redCycle, greenCycle, now);
