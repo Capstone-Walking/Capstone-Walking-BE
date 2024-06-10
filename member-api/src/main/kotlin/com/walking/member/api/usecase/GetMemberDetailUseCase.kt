@@ -26,13 +26,17 @@ class GetMemberDetailUseCase(
         val nickName = member.nickName
         val certificationSubject = member.certificationSubject.name
         val status = member.status.name
-        val profile = getProfile(member)
+        var profile = getProfile(member)
         println("GetMemberDetailUseCase.execute\n")
         println("id: $id")
         println("nickName: $nickName")
         println("certificationSubject: $certificationSubject")
         println("status: $status")
         println("profile: $profile")
+
+        if (profile.isEmpty() || profile == "") {
+            profile = "https://d2zed8vaz1decw.cloudfront.net/default/profiles/yellow.png"
+        }
 
         return GetMemberDetailUseCaseResponse(
             id,
