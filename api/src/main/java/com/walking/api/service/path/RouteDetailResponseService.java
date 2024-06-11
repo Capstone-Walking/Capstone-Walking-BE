@@ -45,7 +45,7 @@ public class RouteDetailResponseService {
 			PathPrimaryData primaryData,
 			LineString lineString) {
 		// case 1 길에 신호등이 없는 경우
-		// todo
+
 		if (traffics.isEmpty()) {
 			return RouteDetailResponse.builder()
 					.nowTime(LocalDateTime.now())
@@ -69,13 +69,14 @@ public class RouteDetailResponseService {
 						traffics.get(0).getX(), traffics.get(0).getY());
 
 		log.info("FirstClosetTraffic : {}", FirstClosetTraffic);
+		log.info("pathTrafficData : {}", pathTrafficData.getTrafficsInPath());
 
-		if (FirstClosetTraffic.isEmpty()) {
-			return buildOnlyPath(startLat, startLng, endLat, endLng, primaryData, lineString);
-		}
+		//		if (FirstClosetTraffic.isEmpty()) {
+		//			return buildOnlyPath(startLat, startLng, endLat, endLng, primaryData, lineString);
+		//		}
 
 		// 2. 티맵을 통해 확인한 첫번째 신호등이 어떤 방향인지 확인한다.
-		TrafficEntity firstTraffic = getFirstTraffic(pathTrafficData, FirstClosetTraffic);
+		// TrafficEntity firstTraffic = getFirstTraffic(pathTrafficData, FirstClosetTraffic);
 
 		// 첫 신호등에 대해
 		IntegrationPredictResponseDto predictResponse =
@@ -103,11 +104,11 @@ public class RouteDetailResponseService {
 
 		LocalDateTime now = LocalDateTime.now();
 		// 처음 내가 지나가는 신호등의 예측 출발시간 3개
-		List<LocalDateTime> departureTimes =
-				calDepartureTimes(
-						firestPredictedDataMap, firstTraffic, primaryData.getUntilTrafficTime(), now);
-
-		removeNullInPredictedDataMap(firestPredictedDataMap);
+		//		List<LocalDateTime> departureTimes =
+		//				calDepartureTimes(
+		//						firestPredictedDataMap, firstTraffic, primaryData.getUntilTrafficTime(), now);
+		//
+		//		removeNullInPredictedDataMap(firestPredictedDataMap);
 
 		removeNullInPredictedDataMap(AllPredictedDataMap);
 
@@ -115,38 +116,16 @@ public class RouteDetailResponseService {
 				.nowTime(now)
 				.totalTime(primaryData.getTotalTime())
 				.trafficCount(traffics.size())
-				.departureTimes(departureTimes)
-				.timeToFirstTraffic(primaryData.getUntilTrafficTime())
-				.totalDistance(primaryData.getTotalDistance())
-				.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
-				.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
-				.traffics(TrafficDetailConverter.execute(new ArrayList<>(firestPredictedDataMap.values())))
-				.trafficIdsInPath(
-						pathTrafficData.getTrafficsInPath().stream()
-								.map(TrafficEntity::getId)
-								.collect(Collectors.toList()))
-				.paths(convertLineStringToPointDetailList(lineString))
-				.build();
-	}
-
-	private static RouteDetailResponse buildOnlyPath(
-			double startLat,
-			double startLng,
-			double endLat,
-			double endLng,
-			PathPrimaryData primaryData,
-			LineString lineString) {
-		return RouteDetailResponse.builder()
-				.nowTime(LocalDateTime.now())
-				.totalTime(primaryData.getTotalTime())
-				.trafficCount(0)
 				.departureTimes(new ArrayList<>())
 				.timeToFirstTraffic(primaryData.getUntilTrafficTime())
 				.totalDistance(primaryData.getTotalDistance())
 				.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
 				.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
-				.traffics(new ArrayList<>())
-				.trafficIdsInPath(new ArrayList<>())
+				.traffics(TrafficDetailConverter.execute(new ArrayList<>(AllPredictedDataMap.values())))
+				.trafficIdsInPath(
+						pathTrafficData.getTrafficsInPath().stream()
+								.map(TrafficEntity::getId)
+								.collect(Collectors.toList()))
 				.paths(convertLineStringToPointDetailList(lineString))
 				.build();
 	}

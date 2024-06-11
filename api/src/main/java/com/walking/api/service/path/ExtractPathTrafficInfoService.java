@@ -30,16 +30,16 @@ public class ExtractPathTrafficInfoService {
 							traffics.get(i).getX(), traffics.get(i).getY());
 			pathTrafficData.getAllTraffics().addAll(closetTrafficByLocation);
 
-			if (closetTrafficByLocation.isEmpty()) {
-				continue;
-			}
-			log.info("closetTrafficByLocation : {}", closetTrafficByLocation);
-			TrafficDirection direction =
-					TrafficDirection.findDirection(
-							closetTrafficByLocation.get(0).getPoint(), traffics.get(i));
-			pathTrafficData.getTrafficDirections().add(direction);
-			TrafficEntity crossTraffic = getCrossTraffic(closetTrafficByLocation, direction);
-			pathTrafficData.getTrafficsInPath().add(crossTraffic);
+			//			if (closetTrafficByLocation.isEmpty()) {
+			//				continue;
+			//			}
+			//			log.info("closetTrafficByLocation : {}", closetTrafficByLocation);
+			//			TrafficDirection direction =
+			//					TrafficDirection.findDirection(
+			//							closetTrafficByLocation.get(0).getPoint(), traffics.get(i));
+			//			pathTrafficData.getTrafficDirections().add(direction);
+			//			TrafficEntity crossTraffic = getCrossTraffic(closetTrafficByLocation, direction);
+			//			pathTrafficData.getTrafficsInPath().add(crossTraffic);
 		}
 
 		return pathTrafficData;
@@ -55,9 +55,10 @@ public class ExtractPathTrafficInfoService {
 							traffics.get(i).getX(), traffics.get(i).getY());
 			pathTrafficData.getAllTraffics().addAll(closetTrafficByLocation);
 
-			TrafficEntity crossTraffic =
-					getCrossTraffic(closetTrafficByLocation, pathTrafficData.getTrafficDirections().get(i));
-			pathTrafficData.getTrafficsInPath().add(crossTraffic);
+			//			TrafficEntity crossTraffic =
+			//					getCrossTraffic(closetTrafficByLocation,
+			// pathTrafficData.getTrafficDirections().get(i));
+			//			pathTrafficData.getTrafficsInPath().add(crossTraffic);
 		}
 
 		return pathTrafficData;
