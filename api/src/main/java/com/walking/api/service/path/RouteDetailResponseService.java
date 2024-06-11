@@ -64,29 +64,32 @@ public class RouteDetailResponseService {
 
 		// case 2 길에 신호등이 있는 경우
 		// 1. 처음 신호등의 위도 경도를 통해 교차로의 신호등 리스트를 찾는다.
-		List<TrafficEntity> FirstClosetTraffic =
-				trafficRepository.findClosetTrafficByLocation(
-						traffics.get(0).getX(), traffics.get(0).getY());
-
-		log.info("FirstClosetTraffic : {}", FirstClosetTraffic);
-		log.info("pathTrafficData : {}", pathTrafficData.getTrafficsInPath());
-
-		//		if (FirstClosetTraffic.isEmpty()) {
-		//			return buildOnlyPath(startLat, startLng, endLat, endLng, primaryData, lineString);
-		//		}
+		if (pathTrafficData.getTrafficsInPath().isEmpty()) {
+			return RouteDetailResponse.builder()
+					.nowTime(LocalDateTime.now())
+					.totalTime(primaryData.getTotalTime())
+					.trafficCount(0)
+					.departureTimes(new ArrayList<>())
+					.timeToFirstTraffic(primaryData.getUntilTrafficTime())
+					.totalDistance(primaryData.getTotalDistance())
+					.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
+					.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
+					.traffics(new ArrayList<>())
+					.trafficIdsInPath(new ArrayList<>())
+					.paths(convertLineStringToPointDetailList(lineString))
+					.build();
+		}
 
 		// 2. 티맵을 통해 확인한 첫번째 신호등이 어떤 방향인지 확인한다.
 		// TrafficEntity firstTraffic = getFirstTraffic(pathTrafficData, FirstClosetTraffic);
-
+		TrafficEntity firstTraffic = pathTrafficData.getTrafficsInPath().get(0);
 		// 첫 신호등에 대해
+		List<Long> firstTrafficId = new ArrayList<>();
+		firstTrafficId.add(firstTraffic.getId());
+
 		IntegrationPredictResponseDto predictResponse =
 				trafficIntegrationPredictService.execute(
-						IntegrationPredictRequestDto.builder()
-								.trafficIds(
-										FirstClosetTraffic.stream()
-												.map(TrafficEntity::getId)
-												.collect(Collectors.toList()))
-								.build());
+						IntegrationPredictRequestDto.builder().trafficIds(firstTrafficId).build());
 
 		Map<Long, PredictedData> firestPredictedDataMap = predictResponse.getPredictedDataMap();
 
@@ -95,7 +98,7 @@ public class RouteDetailResponseService {
 				trafficIntegrationPredictService.execute(
 						IntegrationPredictRequestDto.builder()
 								.trafficIds(
-										pathTrafficData.getAllTraffics().stream()
+										pathTrafficData.getTrafficsInPath().stream()
 												.map(TrafficEntity::getId)
 												.collect(Collectors.toList()))
 								.build());
@@ -104,11 +107,11 @@ public class RouteDetailResponseService {
 
 		LocalDateTime now = LocalDateTime.now();
 		// 처음 내가 지나가는 신호등의 예측 출발시간 3개
-		//		List<LocalDateTime> departureTimes =
-		//				calDepartureTimes(
-		//						firestPredictedDataMap, firstTraffic, primaryData.getUntilTrafficTime(), now);
-		//
-		//		removeNullInPredictedDataMap(firestPredictedDataMap);
+		List<LocalDateTime> departureTimes =
+				calDepartureTimes(
+						firestPredictedDataMap, firstTraffic, primaryData.getUntilTrafficTime(), now);
+
+		removeNullInPredictedDataMap(firestPredictedDataMap);
 
 		removeNullInPredictedDataMap(AllPredictedDataMap);
 
@@ -116,7 +119,7 @@ public class RouteDetailResponseService {
 				.nowTime(now)
 				.totalTime(primaryData.getTotalTime())
 				.trafficCount(traffics.size())
-				.departureTimes(new ArrayList<>())
+				.departureTimes(departureTimes)
 				.timeToFirstTraffic(primaryData.getUntilTrafficTime())
 				.totalDistance(primaryData.getTotalDistance())
 				.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())

@@ -2,6 +2,7 @@ package com.walking.api.repository.dao.traffic;
 
 import com.walking.data.entity.traffic.TrafficEntity;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -32,6 +33,22 @@ public interface TrafficRepository extends JpaRepository<TrafficEntity, Long> {
 							+ "  FROM temp t2)",
 			nativeQuery = true)
 	List<TrafficEntity> findClosetTrafficByLocation(
+			@Param("longitude") Double longitude, @Param("latitude") Double latitude);
+
+	@Query(
+			value =
+					" SELECT *"
+							+ " FROM traffic t "
+							+ " WHERE ST_Contains( "
+							+ " ST_GeomFromText(CONCAT('POLYGON((', "
+							+ ":latitude - 0.0113, ' ', :longitude + 0.009, ', ', "
+							+ ":latitude + 0.0113, ' ', :longitude + 0.009, ', ', "
+							+ ":latitude + 0.0113, ' ', :longitude - 0.009, ', ', "
+							+ ":latitude - 0.0113, ' ', :longitude - 0.009, ', ', "
+							+ ":latitude - 0.0113, ' ', :longitude + 0.009, '))'), 4326), t.point_value) "
+							+ " ORDER BY ST_DISTANCE(t.point_value, ST_SRID(POINT(:longitude, :latitude), 4326)) ASC limit 1 ",
+			nativeQuery = true)
+	Optional<TrafficEntity> findClosestTraffic(
 			@Param("longitude") Double longitude, @Param("latitude") Double latitude);
 
 	@Query(

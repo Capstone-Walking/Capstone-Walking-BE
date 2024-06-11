@@ -6,6 +6,7 @@ import com.walking.api.util.JsonParser;
 import com.walking.data.entity.path.TrafficDirection;
 import com.walking.data.entity.traffic.TrafficEntity;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
@@ -25,10 +26,16 @@ public class ExtractPathTrafficInfoService {
 		PathTrafficData pathTrafficData = new PathTrafficData();
 
 		for (int i = 0; i < traffics.size(); i++) {
-			List<TrafficEntity> closetTrafficByLocation =
-					trafficRepository.findClosetTrafficByLocation(
-							traffics.get(i).getX(), traffics.get(i).getY());
-			pathTrafficData.getAllTraffics().addAll(closetTrafficByLocation);
+			//			List<TrafficEntity> closetTrafficByLocation =
+			//					trafficRepository.findClosetTrafficByLocation(
+			//							traffics.get(i).getX(), traffics.get(i).getY());
+			//			pathTrafficData.getAllTraffics().addAll(closetTrafficByLocation);
+
+			Optional<TrafficEntity> closestTraffic =
+					trafficRepository.findClosestTraffic(traffics.get(i).getX(), traffics.get(i).getY());
+
+			closestTraffic.ifPresent(
+					trafficEntity -> pathTrafficData.getTrafficsInPath().add(trafficEntity));
 
 			//			if (closetTrafficByLocation.isEmpty()) {
 			//				continue;
