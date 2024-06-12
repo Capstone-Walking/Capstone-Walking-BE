@@ -35,7 +35,7 @@ class GetMemberDetailUseCase(
         println("profile: $profile")
 
         if (profile.isEmpty() || profile == "") {
-            profile = "https://d2zed8vaz1decw.cloudfront.net/default/profiles/yellow.png"
+            profile = member.profile
         }
 
         return GetMemberDetailUseCaseResponse(
