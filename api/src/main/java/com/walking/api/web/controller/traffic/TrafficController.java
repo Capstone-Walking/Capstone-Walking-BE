@@ -135,25 +135,31 @@ public class TrafficController {
 		String authorization = request.getHeader("Authorization");
 		Optional<FavoriteTrafficDetail> favoriteTrafficDetail = Optional.empty();
 		if (Objects.nonNull(authorization)) {
-
+			log.info("=========== authorization ============");
+			log.info(">>>> authorization: {}", authorization);
 			String token = AccessTokenResolver.resolve(authorization);
 			UserDetails userDetails = tokenUserDetailsService.loadUserByUsername(token);
 			Long memberId = Long.valueOf(userDetails.getUsername());
-
+			log.info(">>>> token: {}", token);
+			log.info(">>> memberId: {}", memberId);
 			BrowseFavoriteTrafficsResponse favoriteTraffics =
 					browseFavoriteTrafficsUseCase.execute(
 							BrowseFavoriteTrafficsUseCaseRequest.builder().memberId(memberId).build());
+			log.info(">>> favoriteTraffics: {}", favoriteTraffics);
 
 			favoriteTrafficDetail =
 					favoriteTraffics.getTraffics().stream()
 							.filter(traffic -> traffic.getId().equals(trafficId))
 							.findFirst();
+			log.info(">>> favoriteTrafficDetail: {}", favoriteTrafficDetail);
 		}
 
 		TrafficDetail trafficDetail =
 				TrafficDetailConverter.execute(predictedData, favoriteTrafficDetail);
+		log.info(">>> trafficDetail: {}", trafficDetail);
 		BrowseTrafficsResponse response =
 				BrowseTrafficsResponse.builder().traffic(trafficDetail).build();
+		log.info(">>> response: {}", response);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
