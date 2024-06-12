@@ -29,7 +29,7 @@ public class BrowseFavoriteTrafficsUseCase {
 	@Transactional
 	public BrowseFavoriteTrafficsResponse execute(BrowseFavoriteTrafficsUseCaseRequest request) {
 		List<TrafficFavoritesEntity> trafficFavorites =
-				trafficFavoritesRepository.findByMemberFkAAndDeletedFalse(
+				trafficFavoritesRepository.findByMemberFkAndDeletedFalse(
 						MemberEntity.builder().id(request.getMemberId()).build());
 
 		List<FavoriteTrafficDetail> details = new ArrayList<>();
