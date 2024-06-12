@@ -181,8 +181,16 @@ public class TrafficController {
 
 	@GetMapping("/favorite")
 	public ApiResponse<ApiResponse.SuccessBody<BrowseFavoriteTrafficsResponse>>
-			browseFavoriteTraffics(@AuthenticationPrincipal TokenUserDetails userDetails) {
-		Long memberId = Long.valueOf(userDetails.getUsername());
+			browseFavoriteTraffics(HttpServletRequest request) {
+		Long memberId = null;
+		String authorization = request.getHeader("Authorization");
+		if (Objects.nonNull(authorization)) {
+			log.info("=========== authorization ============");
+			log.info(">>>> authorization: {}", authorization);
+			String token = AccessTokenResolver.resolve(authorization);
+			UserDetails userDetails = tokenUserDetailsService.loadUserByUsername(token);
+			memberId = Long.valueOf(userDetails.getUsername());
+		}
 		BrowseFavoriteTrafficsResponse response =
 				browseFavoriteTrafficsUseCase.execute(
 						BrowseFavoriteTrafficsUseCaseRequest.builder().memberId(memberId).build());
