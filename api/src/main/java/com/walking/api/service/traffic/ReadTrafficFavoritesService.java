@@ -14,6 +14,6 @@ public class ReadTrafficFavoritesService {
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 
 	public List<TrafficFavoritesEntity> executeByMemberFk(MemberEntity member) {
-		return trafficFavoritesRepository.findByMemberFk(member);
+		return trafficFavoritesRepository.findByMemberFkAAndDeletedFalse(member);
 	}
 }
