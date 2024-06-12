@@ -1,5 +1,6 @@
 package com.walking.api.domain.traffic.usecase;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseRequest;
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
@@ -33,8 +34,13 @@ public class BrowseFavoriteTrafficsUseCase {
 
 		List<FavoriteTrafficDetail> details = new ArrayList<>();
 		for (TrafficFavoritesEntity entity : trafficFavorites) {
-			TrafficDetailInfo detailInfo =
-					objectMapper.convertValue(entity.getTrafficFk().getDetail(), TrafficDetailInfo.class);
+			TrafficDetailInfo detailInfo = null;
+			try {
+				detailInfo =
+						objectMapper.readValue(entity.getTrafficFk().getDetail(), TrafficDetailInfo.class);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
 			Point point = entity.getTrafficFk().getPoint();
 			details.add(
 					FavoriteTrafficDetail.builder()
