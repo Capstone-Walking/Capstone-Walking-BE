@@ -103,7 +103,8 @@ public class WebSecurityConfig {
 								"/reports/**",
 								"/api/v1/paths/detail",
 								"/api/v2/paths/detail",
-								"/api/v1/traffics")
+								"/api/v1/traffics",
+								"/api/v1/traffics/*")
 						.antMatchers(HttpMethod.POST, "/api/v1/members");
 	}
 
@@ -124,7 +125,8 @@ public class WebSecurityConfig {
 								"/reports/**",
 								"/api/v1/paths/detail",
 								"/api/v2/paths/detail",
-								"/api/v1/traffics")
+								"/api/v1/traffics",
+								"/api/v1/traffics/*")
 						.antMatchers(HttpMethod.POST, "/api/v1/members");
 	}
 
