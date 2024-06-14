@@ -10,12 +10,21 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class TokenGenerator {
+public class TokenGenerator implements ApplicationRunner {
+
+	@Override
+	public void run(ApplicationArguments args) throws Exception {
+		log.info("TokenGenerator.run");
+		String s = this.generateAccessToken(1L, List.of(Roles.ROLE_USER));
+		log.info("s: {}", s);
+	}
 
 	@Value("${security.jwt.token.secretkey}")
 	private String secretKey;

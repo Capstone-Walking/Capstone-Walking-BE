@@ -1,6 +1,6 @@
 package com.walking.api.converter;
 
-import com.walking.api.service.dto.PredictedData;
+import com.walking.api.domain.traffic.service.model.PredictedData;
 import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
 import com.walking.api.web.dto.response.detail.PointDetail;
 import com.walking.api.web.dto.response.detail.TrafficDetail;

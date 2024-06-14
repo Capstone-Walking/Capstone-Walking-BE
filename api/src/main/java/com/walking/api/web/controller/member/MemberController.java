@@ -73,7 +73,6 @@ public class MemberController {
 						.accessToken(authToken.getAccessToken())
 						.refreshToken(authToken.getRefreshToken())
 						.build();
-		log.info("response: {}", response);
 		return ApiResponseGenerator.success(response, HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
 

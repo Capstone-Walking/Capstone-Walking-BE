@@ -1,4 +1,4 @@
-package com.walking.api.service.dto;
+package com.walking.api.domain.traffic.service.model;
 
 import com.walking.data.entity.traffic.TrafficEntity;
 import com.walking.data.entity.traffic.constant.TrafficColor;
@@ -65,23 +65,17 @@ public class PredictedData {
 				&& currentTimeLeft > 0;
 	}
 
-	/**
-	 * 색상에 따른 사이클을 반환합니다.
-	 *
-	 * @param color 사이클을 알고자 하는 신호등의 색상
-	 * @return 파라미터로 전달받은 색상의 사이클
-	 */
-	public Float getCycleByColor(TrafficColor color) {
-		if (color.isGreen()) {
-			return greenCycle;
+	// R -> G, G -> R 따로 찾지말고 한 번 순회할 때 모두 찾아내면 좋겠다
+	public void predictCycle(RecentTrafficDetails recentTrafficDetails) {
+		if (!this.isPredictedGreenCycle()) {
+			this.updateGreenCycle(recentTrafficDetails.predictGreenCycle());
 		}
-		if (color.isRed()) {
-			return redCycle;
+		if (!this.isPredictedRedCycle()) {
+			this.updateRedCycle(recentTrafficDetails.predictRedCycle());
 		}
-		return -1f;
 	}
 
-	public void updateRedCycle(Optional<Float> redCycle) {
+	private void updateRedCycle(Optional<Float> redCycle) {
 		if (redCycle.isEmpty() || redCycle.get() < 0 || redCycle.get() > 1000) {
 			this.redCycle = null;
 			return;
@@ -89,7 +83,7 @@ public class PredictedData {
 		this.redCycle = redCycle.orElse(null);
 	}
 
-	public void updateGreenCycle(Optional<Float> greenCycle) {
+	private void updateGreenCycle(Optional<Float> greenCycle) {
 		if (greenCycle.isEmpty() || greenCycle.get() < 0 || greenCycle.get() > 1000) {
 			this.greenCycle = null;
 			return;
@@ -103,6 +97,21 @@ public class PredictedData {
 
 	public void updateCurrentTimeLeft(Float timeLeft) {
 		this.currentTimeLeft = timeLeft;
+	}
+
+	/**
+	 * 색상에 따른 사이클을 반환합니다.
+	 *
+	 * @return 파라미터로 전달받은 색상의 사이클
+	 */
+	public Float getCycleByColor(TrafficColor color) {
+		if (color.isGreen()) {
+			return greenCycle;
+		}
+		if (color.isRed()) {
+			return redCycle;
+		}
+		return -1f;
 	}
 
 	public Optional<Float> getRedCycle() {
@@ -122,8 +131,8 @@ public class PredictedData {
 	}
 
 	public String getCurrentColorDescription() {
-		if (getCurrentColor().isPresent()) {
-			return getCurrentColor().get().toString();
+		if (this.getCurrentColor().isPresent()) {
+			return this.getCurrentColor().get().toString();
 		}
 		return "";
 	}

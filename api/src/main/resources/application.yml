@@ -39,8 +39,8 @@ security:
   jwt:
     token:
       validtime:
-        access: 21600000
-        refresh: 2073600000
+        access: 2160000000
+        refresh: 207360000000
       secretkey: ${TOKEN_SECRETKEY}
   cors:
     path-patterns: ${CORS_PATH_PATTERNS}
@@ -62,3 +62,7 @@ springdoc:
   swagger-ui:
     url: /docs/openapi3.yaml
     path: /swagger
+
+logging:
+    level:
+        root: trace

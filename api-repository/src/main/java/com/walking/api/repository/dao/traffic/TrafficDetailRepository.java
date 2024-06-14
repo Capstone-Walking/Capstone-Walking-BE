@@ -29,7 +29,7 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 							+ " FROM sorted_data "
 							+ " WHERE row_num BETWEEN :start AND :end ",
 			nativeQuery = true)
-	List<TrafficDetailEntity> findRecentlyData(
+	List<TrafficDetailEntity> findAllInIdsBetween(
 			@Param("trafficIds") List<Long> trafficIds,
 			@Param("start") Integer start,
 			@Param("end") Integer end);
@@ -44,5 +44,5 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 							+ "ON td.traffic_id = maxTd.traffic_id AND td.time_left_reg_dt = maxTd.maxTimeLeftRegDt "
 							+ "WHERE td.traffic_id IN :trafficIds",
 			nativeQuery = true)
-	List<TrafficDetailEntity> findMostRecenlyData(@Param("trafficIds") List<Long> trafficIds);
+	List<TrafficDetailEntity> findAllTopDataInTrafficIds(@Param("trafficIds") List<Long> trafficIds);
 }

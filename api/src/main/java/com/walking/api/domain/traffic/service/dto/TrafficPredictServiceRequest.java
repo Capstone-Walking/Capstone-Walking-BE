@@ -1,4 +1,4 @@
-package com.walking.api.service.dto.request;
+package com.walking.api.domain.traffic.service.dto;
 
 import java.util.List;
 import lombok.Builder;
@@ -6,7 +6,6 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class IntegrationPredictRequestDto {
-
+public class TrafficPredictServiceRequest {
 	private List<Long> trafficIds;
 }

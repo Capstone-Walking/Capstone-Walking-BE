@@ -1,13 +1,13 @@
 package com.walking.api.service.path;
 
 import com.walking.api.converter.TrafficDetailConverter;
+import com.walking.api.domain.traffic.service.TrafficPredictService;
+import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceRequest;
+import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceResponse;
+import com.walking.api.domain.traffic.service.model.PredictedData;
 import com.walking.api.repository.dao.traffic.TrafficRepository;
-import com.walking.api.service.TrafficIntegrationPredictService;
 import com.walking.api.service.dto.PathPrimaryData;
 import com.walking.api.service.dto.PathTrafficData;
-import com.walking.api.service.dto.PredictedData;
-import com.walking.api.service.dto.request.IntegrationPredictRequestDto;
-import com.walking.api.service.dto.response.IntegrationPredictResponseDto;
 import com.walking.api.util.JsonParser;
 import com.walking.api.web.dto.response.RouteDetailResponse;
 import com.walking.api.web.dto.response.detail.PointDetail;
@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RouteDetailResponseService {
 
 	private final TrafficRepository trafficRepository;
-	private final TrafficIntegrationPredictService trafficIntegrationPredictService;
+	private final TrafficPredictService trafficPredictService;
 
 	public RouteDetailResponse execute(
 			double startLat,
@@ -87,23 +87,23 @@ public class RouteDetailResponseService {
 		List<Long> firstTrafficId = new ArrayList<>();
 		firstTrafficId.add(firstTraffic.getId());
 
-		IntegrationPredictResponseDto predictResponse =
-				trafficIntegrationPredictService.execute(
-						IntegrationPredictRequestDto.builder().trafficIds(firstTrafficId).build());
+		TrafficPredictServiceResponse predictResponse =
+				trafficPredictService.execute(
+						TrafficPredictServiceRequest.builder().trafficIds(firstTrafficId).build());
 
-		Map<Long, PredictedData> firestPredictedDataMap = predictResponse.getPredictedDataMap();
+		Map<Long, PredictedData> firestPredictedDataMap = predictResponse.getPredictedData();
 
 		// 모든 신호등에 대해
-		IntegrationPredictResponseDto allPredictResponse =
-				trafficIntegrationPredictService.execute(
-						IntegrationPredictRequestDto.builder()
+		TrafficPredictServiceResponse allPredictResponse =
+				trafficPredictService.execute(
+						TrafficPredictServiceRequest.builder()
 								.trafficIds(
 										pathTrafficData.getTrafficsInPath().stream()
 												.map(TrafficEntity::getId)
 												.collect(Collectors.toList()))
 								.build());
 
-		Map<Long, PredictedData> AllPredictedDataMap = allPredictResponse.getPredictedDataMap();
+		Map<Long, PredictedData> AllPredictedDataMap = allPredictResponse.getPredictedData();
 
 		LocalDateTime now = LocalDateTime.now();
 		// 처음 내가 지나가는 신호등의 예측 출발시간 3개

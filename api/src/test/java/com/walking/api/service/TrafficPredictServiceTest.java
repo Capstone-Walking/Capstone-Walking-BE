@@ -1,10 +1,9 @@
 package com.walking.api.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.walking.api.ApiApp;
-import com.walking.api.service.dto.PredictedData;
-import com.walking.api.service.dto.request.IntegrationPredictRequestDto;
+import com.walking.api.domain.traffic.service.TrafficPredictService;
+import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceRequest;
+import com.walking.api.domain.traffic.service.model.PredictedData;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -20,17 +19,17 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles(value = "test")
 @SpringBootTest(classes = ApiApp.class)
 @Slf4j
-class TrafficIntegrationPredictServiceTest {
+class TrafficPredictServiceTest {
 
-	@Autowired TrafficIntegrationPredictService integrationPredictService;
+	@Autowired TrafficPredictService integrationPredictService;
 
 	@ParameterizedTest
 	@MethodSource("getTrafficIds")
 	void example(List<Long> trafficIds) {
 		Map<Long, PredictedData> predictedDataMap =
 				integrationPredictService
-						.execute(IntegrationPredictRequestDto.builder().trafficIds(trafficIds).build())
-						.getPredictedDataMap();
+						.execute(TrafficPredictServiceRequest.builder().trafficIds(trafficIds).build())
+						.getPredictedData();
 
 		for (Long trafficId : predictedDataMap.keySet()) {
 			log.debug(trafficId + "의 결과는 " + predictedDataMap.get(trafficId));
