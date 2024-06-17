@@ -1,6 +1,6 @@
-package com.walking.api.domain.traffic.dto;
+package com.walking.api.web.dto.response.route;
 
-import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
+import com.walking.api.domain.traffic.dto.detail.FavoriteRouteDetail;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class SearchTrafficsUseCaseResponse {
+public class BrowseFavoriteRouteResponse {
 
-	private List<TrafficDetail> traffics;
+	private List<FavoriteRouteDetail> favoriteRoutes;
 }

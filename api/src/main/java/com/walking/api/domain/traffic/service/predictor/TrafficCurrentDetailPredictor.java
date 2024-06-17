@@ -2,8 +2,8 @@ package com.walking.api.domain.traffic.service.predictor;
 
 import com.walking.api.domain.traffic.service.dto.CurrentDetailsResponse;
 import com.walking.api.domain.traffic.service.model.PredictedData;
+import com.walking.api.domain.util.OffsetDateTimeCalculator;
 import com.walking.api.repository.dao.traffic.TrafficDetailRepository;
-import com.walking.api.util.OffsetDateTimeCalculator;
 import com.walking.data.entity.traffic.TrafficDetailEntity;
 import com.walking.data.entity.traffic.constant.TrafficColor;
 import java.time.OffsetDateTime;

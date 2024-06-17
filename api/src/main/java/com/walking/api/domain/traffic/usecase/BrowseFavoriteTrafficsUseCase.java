@@ -3,11 +3,11 @@ package com.walking.api.domain.traffic.usecase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseRequest;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseResponse;
+import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
+import com.walking.api.domain.traffic.dto.detail.PointDetail;
+import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
-import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
-import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
-import com.walking.api.web.dto.response.detail.PointDetail;
-import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.member.TrafficFavoritesEntity;
 import java.util.ArrayList;
@@ -27,7 +27,8 @@ public class BrowseFavoriteTrafficsUseCase {
 	private final ObjectMapper objectMapper;
 
 	@Transactional
-	public BrowseFavoriteTrafficsResponse execute(BrowseFavoriteTrafficsUseCaseRequest request) {
+	public BrowseFavoriteTrafficsUseCaseResponse execute(
+			BrowseFavoriteTrafficsUseCaseRequest request) {
 		List<TrafficFavoritesEntity> trafficFavorites =
 				trafficFavoritesRepository.findByMemberFkAndDeletedFalse(
 						MemberEntity.builder().id(request.getMemberId()).build());
@@ -52,6 +53,6 @@ public class BrowseFavoriteTrafficsUseCase {
 							.build());
 		}
 
-		return BrowseFavoriteTrafficsResponse.builder().traffics(details).build();
+		return BrowseFavoriteTrafficsUseCaseResponse.builder().traffics(details).build();
 	}
 }

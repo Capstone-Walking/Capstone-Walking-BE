@@ -2,6 +2,7 @@ package com.walking.api.web.controller.traffic;
 
 import com.walking.api.domain.traffic.dto.AddFavoriteTrafficUseCaseRequest;
 import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseRequest;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseResponse;
 import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseRequest;
 import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseResponse;
 import com.walking.api.domain.traffic.dto.DeleteFavoriteTrafficUseCaseRequest;
@@ -20,7 +21,6 @@ import com.walking.api.security.filter.token.AccessTokenResolver;
 import com.walking.api.web.dto.request.point.ViewPointParam;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
 import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
-import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
@@ -107,7 +107,7 @@ public class TrafficController {
 	}
 
 	@GetMapping("/favorite")
-	public ApiResponse<ApiResponse.SuccessBody<BrowseFavoriteTrafficsResponse>>
+	public ApiResponse<ApiResponse.SuccessBody<BrowseFavoriteTrafficsUseCaseResponse>>
 			browseFavoriteTraffics(HttpServletRequest request) {
 		Long memberId = null;
 		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -121,7 +121,8 @@ public class TrafficController {
 
 		BrowseFavoriteTrafficsUseCaseRequest useCaseRequest =
 				BrowseFavoriteTrafficsUseCaseRequest.builder().memberId(memberId).build();
-		BrowseFavoriteTrafficsResponse response = browseFavoriteTrafficsUseCase.execute(useCaseRequest);
+		BrowseFavoriteTrafficsUseCaseResponse response =
+				browseFavoriteTrafficsUseCase.execute(useCaseRequest);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 

@@ -2,17 +2,15 @@ package com.walking.api.domain.traffic.usecase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.walking.api.converter.TrafficDetailConverter;
 import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseRequest;
 import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseResponse;
+import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
+import com.walking.api.domain.traffic.dto.detail.PointDetail;
+import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
 import com.walking.api.domain.traffic.service.TrafficPredictService;
 import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceResponse;
 import com.walking.api.domain.traffic.service.model.PredictedData;
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
-import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
-import com.walking.api.web.dto.response.detail.PointDetail;
-import com.walking.api.web.dto.response.detail.TrafficDetail;
-import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.member.TrafficFavoritesEntity;
 import java.util.List;
@@ -49,9 +47,8 @@ public class ReadTrafficsUseCase {
 				favoriteTrafficDetail = memberFavoriteTrafficDetail;
 			}
 		}
-		TrafficDetail trafficDetail =
-				TrafficDetailConverter.execute(predictedData, favoriteTrafficDetail);
-		return BrowseTrafficsUseCaseResponse.builder().traffic(trafficDetail).build();
+
+		return new BrowseTrafficsUseCaseResponse(predictedData, favoriteTrafficDetail);
 	}
 
 	private Optional<FavoriteTrafficDetail> getFavoriteTrafficDetail(Long memberId, Long trafficId) {

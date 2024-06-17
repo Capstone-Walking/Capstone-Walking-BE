@@ -1,6 +1,6 @@
 package com.walking.api.domain.traffic.service.model;
 
-import com.walking.api.util.OffsetDateTimeCalculator;
+import com.walking.api.domain.util.OffsetDateTimeCalculator;
 import com.walking.data.entity.traffic.TrafficDetailEntity;
 import java.util.Iterator;
 import java.util.List;

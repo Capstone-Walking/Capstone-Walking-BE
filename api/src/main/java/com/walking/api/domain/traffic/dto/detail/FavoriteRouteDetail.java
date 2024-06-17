@@ -1,7 +1,6 @@
-package com.walking.api.domain.traffic.dto;
+package com.walking.api.domain.traffic.dto.detail;
 
-import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
-import java.util.List;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +15,14 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class SearchTrafficsUseCaseResponse {
+public class FavoriteRouteDetail {
 
-	private List<TrafficDetail> traffics;
+	private Long id;
+	private String name;
+	private PointDetail startPoint;
+	private PointDetail endPoint;
+	private LocalDateTime createdAt;
+	private String startAlias;
+	private String endAlias;
+	private Long order;
 }

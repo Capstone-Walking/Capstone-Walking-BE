@@ -1,7 +1,5 @@
-package com.walking.api.domain.traffic.dto;
+package com.walking.api.domain.traffic.dto.detail;
 
-import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +14,8 @@ import lombok.ToString;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class SearchTrafficsUseCaseResponse {
+public class PointDetail {
 
-	private List<TrafficDetail> traffics;
+	private double lat;
+	private double lng;
 }

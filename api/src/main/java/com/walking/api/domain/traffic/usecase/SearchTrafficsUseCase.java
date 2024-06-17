@@ -1,13 +1,13 @@
 package com.walking.api.domain.traffic.usecase;
 
-import com.walking.api.converter.TrafficDetailConverter;
 import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseRequest;
 import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseResponse;
+import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
 import com.walking.api.domain.traffic.service.TrafficPredictService;
 import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceRequest;
 import com.walking.api.domain.traffic.service.model.PredictedData;
 import com.walking.api.repository.dao.traffic.TrafficRepository;
-import com.walking.api.web.dto.response.detail.TrafficDetail;
+import com.walking.api.web.dto.support.TrafficDetailConverter;
 import com.walking.data.entity.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
