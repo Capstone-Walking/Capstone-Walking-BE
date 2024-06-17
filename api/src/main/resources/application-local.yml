@@ -62,12 +62,6 @@ security:
     allow-credentials: true
     max-age: 1800
 
-# cookie config
-cookie:
-  domain: localhost
-  path: /
-  max-age: 86400
-
 # api docs config
 springdoc:
   swagger-ui:

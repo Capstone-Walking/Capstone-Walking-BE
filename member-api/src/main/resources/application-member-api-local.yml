@@ -23,4 +23,4 @@ kakao:
 
 walking:
     default:
-        profiles: "red", "blue", "green", "yellow", "black", "white"
+        profiles: "red, blue, green"

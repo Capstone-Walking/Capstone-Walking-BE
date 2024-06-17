@@ -17,10 +17,10 @@ spring:
 walking:
     batch:
         schedular:
-            interval: 70
+            interval: ${SCHEDULAR_INTERVAL}
     predict:
-        dataInterval: 20
-        maximumSearchCount: 5
+        dataInterval: ${DATA_INTERVAL}
+        maximumSearchCount: ${MAXIMUM_SEARCH_COUNT}
 
 # prometheus config
 management:
@@ -39,8 +39,8 @@ security:
   jwt:
     token:
       validtime:
-        access: 2160000000
-        refresh: 207360000000
+        access: ${ACCESS_TOKEN_VALIDTIME}
+        refresh: ${REFRESH_TOKEN_VALIDTIME}
       secretkey: ${TOKEN_SECRETKEY}
   cors:
     path-patterns: ${CORS_PATH_PATTERNS}
@@ -50,12 +50,6 @@ security:
     exposed-headers: ${CORS_EXPOSED_HEADERS}
     allow-credentials: ${CORS_ALLOW_CREDENTIALS}
     max-age: ${CORS_MAX_AGE}
-
-# cookie config
-cookie:
-  domain: ${COOKIE_DOMAIN}
-  path: ${COOKIE_PATH}
-  max-age: ${COOKIE_MAX_AGE}
 
 # api docs config
 springdoc:
