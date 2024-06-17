@@ -1,4 +1,4 @@
-package com.walking.member.api.usecase
+package com.walking.member.api.service
 
 import com.walking.member.api.dao.MemberDao
 import org.springframework.stereotype.Service

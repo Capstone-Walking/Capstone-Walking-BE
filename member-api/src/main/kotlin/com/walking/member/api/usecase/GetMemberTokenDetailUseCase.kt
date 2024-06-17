@@ -1,7 +1,7 @@
 package com.walking.member.api.usecase
 
 import com.walking.member.api.dao.MemberDao
-import com.walking.member.api.usecase.dto.response.GetMemberTokenDetailUseCaseResponse
+import com.walking.member.api.dto.GetMemberTokenDetailUseCaseResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

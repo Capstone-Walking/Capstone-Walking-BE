@@ -1,4 +1,4 @@
-package com.walking.member.api.usecase.dto.response
+package com.walking.member.api.dto
 
 data class PostMemberUseCaseResponse(
     val id: Long,

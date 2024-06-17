@@ -2,8 +2,8 @@ package com.walking.member.api.usecase
 
 import com.walking.image.service.UploadImageService
 import com.walking.member.api.dao.MemberDao
-import com.walking.member.api.service.CacheAbleMemberProfileUpdateDelegator
-import com.walking.member.api.usecase.dto.response.PatchProfileImageUseCaseResponse
+import com.walking.member.api.service.delegator.CacheAbleMemberProfileUpdateDelegator
+import com.walking.member.api.dto.PatchProfileImageUseCaseResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.io.File
