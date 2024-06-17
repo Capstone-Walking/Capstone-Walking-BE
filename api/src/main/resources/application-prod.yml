@@ -22,18 +22,6 @@ walking:
         dataInterval: ${DATA_INTERVAL}
         maximumSearchCount: ${MAXIMUM_SEARCH_COUNT}
 
-# prometheus config
-management:
-    endpoint:
-        metrics:
-            enabled: true
-        prometheus:
-            enabled: true
-    endpoints:
-        web:
-            exposure:
-                include: "*"
-
 # security config
 security:
     jwt:

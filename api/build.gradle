@@ -27,9 +27,6 @@ dependencies {
     // actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    // prometheus todo remove related dependencies
-    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-
     //jwt
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtokenVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jsonwebtokenVersion}"
