@@ -25,7 +25,7 @@ class GetMemberDetailUseCase(
         val nickName = member.nickName
         val certificationSubject = member.certificationSubject.name
         val status = member.status.name
-        var profile = getPreSignedImageUrlService.execute(member.profile)
+        var profile = getProfile(member.profile)
 
         return GetMemberDetailUseCaseResponse(
             id,
@@ -34,5 +34,12 @@ class GetMemberDetailUseCase(
             certificationSubject,
             status
         )
+    }
+
+    private fun getProfile(profile: String): String {
+        if (profile.startsWith("http")) {
+            return profile
+        }
+        return getPreSignedImageUrlService.execute(profile)
     }
 }
