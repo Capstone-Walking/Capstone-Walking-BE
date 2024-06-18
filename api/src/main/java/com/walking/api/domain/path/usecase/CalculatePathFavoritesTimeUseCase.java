@@ -1,10 +1,14 @@
 package com.walking.api.domain.path.usecase;
 
-import com.walking.api.domain.path.dto.CalculatePathTimeUseCaseResponse;
-import com.walking.api.domain.path.dto.PathPrimaryData;
-import com.walking.api.domain.path.dto.PathTrafficData;
+import com.walking.api.domain.path.dto.CalculatePathFavoritesTimeUseCaseIn;
+import com.walking.api.domain.path.dto.CalculatePathFavoritesTimeUseCaseOut;
+import com.walking.api.domain.path.model.SearchPath.PathPrimaryVO;
+import com.walking.api.domain.path.service.CalculateRouteDetailService;
 import com.walking.api.domain.path.service.ExtractPathTrafficInfoService;
-import com.walking.api.domain.path.service.RouteDetailResponseService;
+import com.walking.api.domain.path.service.dto.CRDQuery;
+import com.walking.api.domain.path.service.dto.EPTIQueryWithDirections;
+import com.walking.api.domain.path.service.dto.PathTrafficVO;
+import com.walking.api.domain.path.service.dto.RouteDetailVO;
 import com.walking.api.repository.dao.path.PathFavoritesRepository;
 import com.walking.api.repository.dao.path.TrafficInPathFavoritesRepository;
 import com.walking.data.entity.path.PathFavoritesEntity;
@@ -24,11 +28,13 @@ public class CalculatePathFavoritesTimeUseCase {
 
 	private final PathFavoritesRepository pathFavoritesRepository;
 	private final TrafficInPathFavoritesRepository trafficInPathFavoritesRepository;
-	private final ExtractPathTrafficInfoService extractPathTrafficInfoService;
-	private final RouteDetailResponseService routeDetailResponseService;
 
-	public CalculatePathTimeUseCaseResponse execute(Long favoritesPathId) {
-		Optional<PathFavoritesEntity> findPath = pathFavoritesRepository.findById(favoritesPathId);
+	private final ExtractPathTrafficInfoService extractPathTrafficInfoService;
+	private final CalculateRouteDetailService calculateRouteDetailService;
+
+	public CalculatePathFavoritesTimeUseCaseOut execute(CalculatePathFavoritesTimeUseCaseIn in) {
+		Optional<PathFavoritesEntity> findPath =
+				pathFavoritesRepository.findById(in.getFavoritesPathId());
 
 		PathFavoritesEntity pathFavorites = checkPathFavoritesEntity(findPath);
 
@@ -42,21 +48,43 @@ public class CalculatePathFavoritesTimeUseCase {
 				trafficInPathFavorites.getTrafficTypes(); // 내가 지나는 신호등의 방향정보
 		List<Point> traffics = trafficInPathFavorites.getTrafficPoints(); // 내가 지나는 신호등 위치의 중간값
 
-		PathTrafficData pathTrafficData =
-				extractPathTrafficInfoService.execute(traffics, trafficDirections);
+		PathTrafficVO pathTrafficVo =
+				extractPathTrafficInfoService.execute(
+						EPTIQueryWithDirections.builder()
+								.traffics(traffics)
+								.trafficDirections(trafficDirections)
+								.build());
 
-		return routeDetailResponseService.execute(
-				pathFavorites.getStartPoint().getY(),
-				pathFavorites.getStartPoint().getX(),
-				pathFavorites.getEndPoint().getY(),
-				pathFavorites.getEndPoint().getX(),
-				traffics,
-				pathTrafficData,
-				new PathPrimaryData(
-						pathFavorites.getTotalTime(),
-						pathFavorites.getUntilFirstTrafficTime(),
-						pathFavorites.getTotalDistance()),
-				pathFavorites.getPath());
+		RouteDetailVO routeDetailVo =
+				calculateRouteDetailService.execute(
+						CRDQuery.builder()
+								.startLat(pathFavorites.getStartPoint().getY())
+								.startLng(pathFavorites.getStartPoint().getX())
+								.endLat(pathFavorites.getEndPoint().getY())
+								.endLng(pathFavorites.getEndPoint().getX())
+								.traffics(traffics)
+								.pathTrafficVo(pathTrafficVo)
+								.primaryData(
+										new PathPrimaryVO(
+												pathFavorites.getTotalTime(),
+												pathFavorites.getUntilFirstTrafficTime(),
+												pathFavorites.getTotalDistance()))
+								.lineString(pathFavorites.getPath())
+								.build());
+
+		return CalculatePathFavoritesTimeUseCaseOut.builder()
+				.nowTime(routeDetailVo.getNowTime())
+				.totalTime(routeDetailVo.getTotalTime())
+				.trafficCount(routeDetailVo.getTrafficCount())
+				.departureTimes(routeDetailVo.getDepartureTimes())
+				.timeToFirstTraffic(routeDetailVo.getTimeToFirstTraffic())
+				.totalDistance(routeDetailVo.getTotalDistance())
+				.startPoint(routeDetailVo.getStartPoint())
+				.endPoint(routeDetailVo.getEndPoint())
+				.traffics(routeDetailVo.getTraffics())
+				.trafficIdsInPath(routeDetailVo.getTrafficIdsInPath())
+				.paths(routeDetailVo.getPaths())
+				.build();
 	}
 
 	private TrafficInPathFavoritesEntity checkTrafficInPathFavoritesEntity(

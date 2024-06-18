@@ -1,11 +1,11 @@
 package com.walking.api.domain.traffic.usecase;
 
-import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseRequest;
-import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseResponse;
+import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseIn;
+import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseOut;
 import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
 import com.walking.api.domain.traffic.service.TrafficPredictService;
-import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceRequest;
-import com.walking.api.domain.traffic.service.model.PredictedData;
+import com.walking.api.domain.traffic.service.dto.TPQuery;
+import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import com.walking.api.repository.dao.traffic.TrafficRepository;
 import com.walking.api.web.dto.support.TrafficDetailConverter;
 import com.walking.data.entity.BaseEntity;
@@ -27,7 +27,7 @@ public class SearchTrafficsUseCase {
 	private final TrafficPredictService trafficPredictService;
 
 	@Transactional
-	public SearchTrafficsUseCaseResponse execute(SearchTrafficsUseCaseRequest request) {
+	public SearchTrafficsUseCaseOut execute(SearchTrafficsUseCaseIn request) {
 		final Float vblLng = request.getVblLng();
 		final Float vblLat = request.getVblLat();
 		final Float vtrLng = request.getVtrLng();
@@ -38,12 +38,11 @@ public class SearchTrafficsUseCase {
 						.map(BaseEntity::getId)
 						.collect(Collectors.toList());
 
-		TrafficPredictServiceRequest predictRequest =
-				TrafficPredictServiceRequest.builder().trafficIds(inBoundsTrafficIds).build();
-		List<PredictedData> predictedData =
+		TPQuery predictRequest = TPQuery.builder().trafficIds(inBoundsTrafficIds).build();
+		List<PredictedTraffic> predictedData =
 				new ArrayList<>(trafficPredictService.execute(predictRequest).getPredictedData().values());
 
 		List<TrafficDetail> trafficDetails = TrafficDetailConverter.execute(predictedData);
-		return SearchTrafficsUseCaseResponse.builder().traffics(trafficDetails).build();
+		return SearchTrafficsUseCaseOut.builder().traffics(trafficDetails).build();
 	}
 }

@@ -2,7 +2,6 @@ package com.walking.api.web.controller.member;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -23,11 +22,11 @@ import com.walking.api.web.controller.description.Description;
 import com.walking.api.web.dto.request.member.PatchProfileBody;
 import com.walking.api.web.dto.request.member.PostMemberBody;
 import com.walking.api.web.dto.request.member.RefreshMemberAuthTokenBody;
-import com.walking.member.api.dto.DeleteMemberUseCaseResponse;
-import com.walking.member.api.dto.GetMemberDetailUseCaseResponse;
-import com.walking.member.api.dto.GetMemberTokenDetailUseCaseResponse;
-import com.walking.member.api.dto.PatchProfileImageUseCaseResponse;
-import com.walking.member.api.dto.PostMemberUseCaseResponse;
+import com.walking.member.api.dto.DeleteMemberUseCaseOut;
+import com.walking.member.api.dto.GetMemberDetailUseCaseOut;
+import com.walking.member.api.dto.GetMemberTokenDetailUseCaseOut;
+import com.walking.member.api.dto.PatchProfileImageUseCaseOut;
+import com.walking.member.api.dto.PostMemberUseCaseOut;
 import com.walking.member.api.usecase.DeleteMemberUseCase;
 import com.walking.member.api.usecase.GetMemberDetailUseCase;
 import com.walking.member.api.usecase.GetMemberTokenDetailUseCase;
@@ -79,7 +78,7 @@ class MemberControllerTest {
 	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void postMember() throws Exception {
 		when(postMemberUseCase.execute(any()))
-				.thenReturn(new PostMemberUseCaseResponse(1L, "nickname", "profile"));
+				.thenReturn(new PostMemberUseCaseOut(1L, "nickname", "profile"));
 		when(tokenGenerator.generateAuthToken(any(), any()))
 				.thenReturn(new AuthToken("accessToken", "refreshToken"));
 
@@ -133,8 +132,8 @@ class MemberControllerTest {
 	@DisplayName("DELETE /api/v1/members 회원 탈퇴를 한다.")
 	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void deleteMember() throws Exception {
-		when(deleteMemberUseCase.execute(anyLong()))
-				.thenReturn(new DeleteMemberUseCaseResponse(1L, LocalDateTime.now()));
+		when(deleteMemberUseCase.execute(any()))
+				.thenReturn(new DeleteMemberUseCaseOut(1L, LocalDateTime.now()));
 
 		mockMvc
 				.perform(
@@ -172,8 +171,8 @@ class MemberControllerTest {
 	@DisplayName("GET /api/v1/members 회원 정보를 조회한다.")
 	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void getMember() throws Exception {
-		when(getMemberDetailUseCase.execute(anyLong()))
-				.thenReturn(new GetMemberDetailUseCaseResponse(1L, "nickname", "profile", "KAKAO", "정회원"));
+		when(getMemberDetailUseCase.execute(any()))
+				.thenReturn(new GetMemberDetailUseCaseOut(1L, "nickname", "profile", "KAKAO", "정회원"));
 
 		mockMvc
 				.perform(
@@ -216,8 +215,8 @@ class MemberControllerTest {
 	void getMemberToken() throws Exception {
 		when(tokenResolver.resolveId(any())).thenReturn(Optional.of(1L));
 
-		when(getMemberTokenDetailUseCase.execute(anyLong()))
-				.thenReturn(new GetMemberTokenDetailUseCaseResponse(1L));
+		when(getMemberTokenDetailUseCase.execute(any()))
+				.thenReturn(new GetMemberTokenDetailUseCaseOut(1L));
 
 		when(tokenGenerator.generateAuthToken(any(), any()))
 				.thenReturn(new AuthToken("accessToken", "refreshToken"));
@@ -259,8 +258,8 @@ class MemberControllerTest {
 	@DisplayName("PATCH /api/v1/members/profile 프로필 이미지를 수정한다.")
 	@WithUserDetails(userDetailsServiceBeanName = "testTokenUserDetailsService")
 	void patchProfile() throws Exception {
-		when(patchProfileImageUseCase.execute(anyLong(), any()))
-				.thenReturn(new PatchProfileImageUseCaseResponse(1L, "nickname", "profile"));
+		when(patchProfileImageUseCase.execute(any()))
+				.thenReturn(new PatchProfileImageUseCaseOut(1L, "nickname", "profile"));
 
 		File file = makeFile("src/test/resources/images", "test", "png");
 		PatchProfileBody patchProfileBody =

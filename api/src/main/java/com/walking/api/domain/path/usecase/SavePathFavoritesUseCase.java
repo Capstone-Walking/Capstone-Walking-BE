@@ -5,11 +5,12 @@ package com.walking.api.domain.path.usecase;
 import com.walking.api.domain.client.TMapClient;
 import com.walking.api.domain.client.dto.request.TMapRequestDto;
 import com.walking.api.domain.client.dto.response.TMapResponseDto;
-import com.walking.api.domain.path.dto.PathPrimaryData;
-import com.walking.api.domain.path.dto.PathTrafficData;
-import com.walking.api.domain.path.dto.SavePathFavoritesUseCaseRequest;
+import com.walking.api.domain.path.dto.SavePathFavoritesUseCaseIn;
 import com.walking.api.domain.path.model.SearchPath;
+import com.walking.api.domain.path.model.SearchPath.PathPrimaryVO;
 import com.walking.api.domain.path.service.ExtractPathTrafficInfoService;
+import com.walking.api.domain.path.service.dto.EPTIQuery;
+import com.walking.api.domain.path.service.dto.PathTrafficVO;
 import com.walking.api.repository.dao.path.PathFavoritesRepository;
 import com.walking.api.repository.dao.path.TrafficInPathFavoritesRepository;
 import com.walking.data.entity.member.MemberEntity;
@@ -31,13 +32,12 @@ public class SavePathFavoritesUseCase {
 	private final TMapClient tMapClient;
 	private final ExtractPathTrafficInfoService extractPathTrafficInfoService;
 
-	public void execute(SavePathFavoritesUseCaseRequest request) {
+	public void execute(SavePathFavoritesUseCaseIn in) {
 		TMapResponseDto tMapPathData =
-				getTMapPathData(
-						request.getStartLat(), request.getStartLng(), request.getEndLat(), request.getEndLng());
+				getTMapPathData(in.getStartLat(), in.getStartLng(), in.getEndLat(), in.getEndLng());
 
 		SearchPath searchPath = new SearchPath(tMapPathData);
-		PathPrimaryData primaryData = searchPath.extractPrimaryDataByTMap();
+		PathPrimaryVO primaryData = searchPath.extractPrimaryDataByTMap();
 
 		// 신호등 중간값 좌표 추출
 		List<Point> traffics = searchPath.extractAllTrafficPoints();
@@ -45,21 +45,22 @@ public class SavePathFavoritesUseCase {
 		// LineString 추출
 		LineString lineString = searchPath.extractLineString();
 
-		PathTrafficData pathTrafficData = extractPathTrafficInfoService.execute(traffics);
+		PathTrafficVO pathTrafficVo =
+				extractPathTrafficInfoService.execute(EPTIQuery.builder().traffics(traffics).build());
 
 		// 저장
 		savePathFavoritesAndTrafficInFavorites(
-				request, traffics, pathTrafficData.getTrafficDirections(), lineString, primaryData);
+				in, traffics, pathTrafficVo.getTrafficDirections(), lineString, primaryData);
 	}
 
 	// todo 다른 객체로 분리
 	@Transactional(readOnly = false)
 	public void savePathFavoritesAndTrafficInFavorites(
-			SavePathFavoritesUseCaseRequest request,
+			SavePathFavoritesUseCaseIn request,
 			List<Point> traffics,
 			List<TrafficDirection> trafficDirections,
 			LineString lineString,
-			PathPrimaryData primaryData) {
+			PathPrimaryVO primaryData) {
 		PathFavoritesEntity savedPathFavorites =
 				pathFavoritesRepository.save(
 						PathFavoritesEntity.builder()

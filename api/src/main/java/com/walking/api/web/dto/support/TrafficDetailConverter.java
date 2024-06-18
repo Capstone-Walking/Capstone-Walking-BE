@@ -7,7 +7,7 @@ import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
 import com.walking.api.domain.traffic.dto.detail.PointDetail;
 import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
 import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
-import com.walking.api.domain.traffic.service.model.PredictedData;
+import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import com.walking.data.entity.traffic.TrafficEntity;
 import java.util.List;
 import java.util.Optional;
@@ -20,13 +20,13 @@ public class TrafficDetailConverter {
 	/**
 	 * PredictedData를 기반으로 TrafficDetail를 생성합니다.
 	 *
-	 * @param predictedData 사이클 정보 와 현재 색상 및 잔여시간을 예측한 데이터
+	 * @param predictedTraffic 사이클 정보 와 현재 색상 및 잔여시간을 예측한 데이터
 	 * @return 예측 값을 바탕으로 만든 TrafficDetail
 	 */
 	public TrafficDetail execute(
-			PredictedData predictedData, Optional<FavoriteTrafficDetail> favoriteTrafficDetail) {
+			PredictedTraffic predictedTraffic, Optional<FavoriteTrafficDetail> favoriteTrafficDetail) {
 
-		TrafficEntity trafficEntity = predictedData.getTraffic();
+		TrafficEntity trafficEntity = predictedTraffic.getTraffic();
 		boolean isFavorite = false;
 		String viewName = trafficEntity.getName();
 
@@ -38,12 +38,12 @@ public class TrafficDetailConverter {
 
 		return TrafficDetail.builder()
 				.id(trafficEntity.getId())
-				.color(predictedData.getCurrentColorDescription())
-				.timeLeft(predictedData.getCurrentTimeLeft().orElse(null))
+				.color(predictedTraffic.getCurrentColorDescription())
+				.timeLeft(predictedTraffic.getCurrentTimeLeft().orElse(null))
 				.point(
 						PointDetail.builder().lng(trafficEntity.getLng()).lat(trafficEntity.getLat()).build())
-				.redCycle(predictedData.getRedCycle().orElse(null))
-				.greenCycle(predictedData.getGreenCycle().orElse(null))
+				.redCycle(predictedTraffic.getRedCycle().orElse(null))
+				.greenCycle(predictedTraffic.getGreenCycle().orElse(null))
 				.detail(convertToTrafficDetailInfo(trafficEntity))
 				.isFavorite(isFavorite)
 				.viewName(viewName)
@@ -56,7 +56,7 @@ public class TrafficDetailConverter {
 	 * @param predictedData 사이클 정보 와 현재 색상 및 잔여시간을 예측한 데이터 리스트
 	 * @return 예측 값을 바탕으로 만든 TrafficDetail의 List
 	 */
-	public List<TrafficDetail> execute(List<PredictedData> predictedData) {
+	public List<TrafficDetail> execute(List<PredictedTraffic> predictedData) {
 
 		return predictedData.stream()
 				.map(

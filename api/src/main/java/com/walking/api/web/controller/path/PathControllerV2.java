@@ -1,9 +1,14 @@
 package com.walking.api.web.controller.path;
 
-import com.walking.api.domain.path.dto.CalculatePathTimeUseCaseResponse;
-import com.walking.api.domain.path.dto.ReadFavoritesPathUseCaseResponse;
-import com.walking.api.domain.path.dto.SavePathFavoritesUseCaseRequest;
-import com.walking.api.domain.path.dto.UpdateRoutePathNameUseCaseRequest;
+import com.walking.api.domain.path.dto.CalculatePathFavoritesTimeUseCaseIn;
+import com.walking.api.domain.path.dto.CalculatePathFavoritesTimeUseCaseOut;
+import com.walking.api.domain.path.dto.CalculatePathTimeUseCaseIn;
+import com.walking.api.domain.path.dto.CalculatePathTimeUseCaseOut;
+import com.walking.api.domain.path.dto.DeleteFavoriteRouteUseCaseIn;
+import com.walking.api.domain.path.dto.ReadFavoritesPathUseCaseIn;
+import com.walking.api.domain.path.dto.ReadFavoritesPathUseCaseOut;
+import com.walking.api.domain.path.dto.SavePathFavoritesUseCaseIn;
+import com.walking.api.domain.path.dto.UpdateRoutePathNameUseCaseIn;
 import com.walking.api.domain.path.usecase.CalculatePathFavoritesTimeUseCase;
 import com.walking.api.domain.path.usecase.CalculatePathTimeUseCase;
 import com.walking.api.domain.path.usecase.DeleteFavoriteRouteUseCase;
@@ -48,14 +53,16 @@ public class PathControllerV2 {
 	private final DeleteFavoriteRouteUseCase deleteFavoriteRouteUseCase;
 
 	@GetMapping("/detail")
-	public ApiResponse<ApiResponse.SuccessBody<CalculatePathTimeUseCaseResponse>> detailRoute(
+	public ApiResponse<ApiResponse.SuccessBody<CalculatePathTimeUseCaseOut>> detailRoute(
 			@Valid RoutePointParam routePointParam) {
-		CalculatePathTimeUseCaseResponse response =
+		CalculatePathTimeUseCaseOut response =
 				calculatePathTimeUseCase.execute(
-						routePointParam.getStartLat(),
-						routePointParam.getStartLng(),
-						routePointParam.getEndLat(),
-						routePointParam.getEndLng());
+						CalculatePathTimeUseCaseIn.builder()
+								.startLat(routePointParam.getStartLat())
+								.startLng(routePointParam.getStartLng())
+								.endLat(routePointParam.getEndLat())
+								.endLng(routePointParam.getEndLng())
+								.build());
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -65,7 +72,7 @@ public class PathControllerV2 {
 			@Valid @RequestBody FavoritePathBody favoritePathBody) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
 		savePathFavoritesUseCase.execute(
-				SavePathFavoritesUseCaseRequest.builder()
+				SavePathFavoritesUseCaseIn.builder()
 						.memberId(memberId)
 						.name(favoritePathBody.getName())
 						.startLat(favoritePathBody.getStartLat())
@@ -85,25 +92,33 @@ public class PathControllerV2 {
 			@RequestParam(required = false) Optional<String> name) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
 		if (name.isPresent()) {
-			List<ReadFavoritesPathUseCaseResponse> favoritesPaths =
-					readFavoritesPathUseCase.execute(memberId, name.get());
+			List<ReadFavoritesPathUseCaseOut> favoritesPaths =
+					readFavoritesPathUseCase.execute(
+							ReadFavoritesPathUseCaseIn.builder().memberId(memberId).name(name.get()).build());
 			BrowseFavoriteRouteResponse response = getFavoriteRouteResponse(favoritesPaths);
 			return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 		}
 
 		// todo implement: filter 기준 정렬
-		List<ReadFavoritesPathUseCaseResponse> favoritesPaths =
-				readFavoritesPathUseCase.execute(memberId, filter);
+		List<ReadFavoritesPathUseCaseOut> favoritesPaths =
+				readFavoritesPathUseCase.execute(
+						ReadFavoritesPathUseCaseIn.builder()
+								.memberId(memberId)
+								.name(name.get())
+								.orderFilter(filter)
+								.build());
 		BrowseFavoriteRouteResponse response = getFavoriteRouteResponse(favoritesPaths);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
 	@GetMapping("/favorite/{favoriteId}")
-	public ApiResponse<ApiResponse.SuccessBody<CalculatePathTimeUseCaseResponse>> detailFavoriteRoute(
-			@AuthenticationPrincipal TokenUserDetails userDetails,
-			@Min(1) @PathVariable Long favoriteId) {
-		CalculatePathTimeUseCaseResponse response =
-				calculatePathFavoritesTimeUseCase.execute(favoriteId);
+	public ApiResponse<ApiResponse.SuccessBody<CalculatePathFavoritesTimeUseCaseOut>>
+			detailFavoriteRoute(
+					@AuthenticationPrincipal TokenUserDetails userDetails,
+					@Min(1) @PathVariable Long favoriteId) {
+		CalculatePathFavoritesTimeUseCaseOut response =
+				calculatePathFavoritesTimeUseCase.execute(
+						CalculatePathFavoritesTimeUseCaseIn.builder().favoritesPathId(favoriteId).build());
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
 
@@ -114,7 +129,7 @@ public class PathControllerV2 {
 			@Valid @RequestBody PatchFavoritePathNameBody pathNameBody) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
 		updateRoutePathNameUseCase.execute(
-				UpdateRoutePathNameUseCaseRequest.builder()
+				UpdateRoutePathNameUseCaseIn.builder()
 						.memberId(memberId)
 						.pathId(favoriteId)
 						.name(pathNameBody.getName())
@@ -129,12 +144,13 @@ public class PathControllerV2 {
 			@AuthenticationPrincipal TokenUserDetails userDetails,
 			@Min(1) @PathVariable Long favoriteId) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
-		deleteFavoriteRouteUseCase.execute(memberId, favoriteId);
+		deleteFavoriteRouteUseCase.execute(
+				DeleteFavoriteRouteUseCaseIn.builder().memberId(memberId).pathId(favoriteId).build());
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 
 	private BrowseFavoriteRouteResponse getFavoriteRouteResponse(
-			List<ReadFavoritesPathUseCaseResponse> favoritesPaths) {
+			List<ReadFavoritesPathUseCaseOut> favoritesPaths) {
 		List<FavoriteRouteDetail> favoritePoints =
 				favoritesPaths.stream()
 						.map(

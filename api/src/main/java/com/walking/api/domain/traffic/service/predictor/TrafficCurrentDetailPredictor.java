@@ -1,7 +1,7 @@
 package com.walking.api.domain.traffic.service.predictor;
 
-import com.walking.api.domain.traffic.service.dto.CurrentDetailsResponse;
-import com.walking.api.domain.traffic.service.model.PredictedData;
+import com.walking.api.domain.traffic.service.dto.CurrentDetailsVO;
+import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import com.walking.api.domain.util.OffsetDateTimeCalculator;
 import com.walking.api.repository.dao.traffic.TrafficDetailRepository;
 import com.walking.data.entity.traffic.TrafficDetailEntity;
@@ -25,12 +25,12 @@ public class TrafficCurrentDetailPredictor {
 	private final TrafficDetailRepository trafficDetailRepository;
 
 	@Transactional(readOnly = true)
-	public CurrentDetailsResponse execute(
+	public CurrentDetailsVO execute(
 			TrafficCyclePredictor trafficCyclePredictor, List<Long> trafficIds) {
 		return doExecute(trafficCyclePredictor.execute(trafficIds));
 	}
 
-	CurrentDetailsResponse doExecute(Map<Long, PredictedData> predictedMap) {
+	CurrentDetailsVO doExecute(Map<Long, PredictedTraffic> predictedMap) {
 		Set<Long> trafficIdSet = predictedMap.keySet();
 		List<Long> trafficIds = new ArrayList<>(trafficIdSet);
 
@@ -41,8 +41,8 @@ public class TrafficCurrentDetailPredictor {
 
 		OffsetDateTime now = OffsetDateTime.now();
 		for (Long id : trafficIds) {
-			PredictedData predictedData = predictedMap.get(id);
-			if (!predictedData.isPredictCycleSuccessful()) {
+			PredictedTraffic predictedTraffic = predictedMap.get(id);
+			if (!predictedTraffic.isPredictCycleSuccessful()) {
 				continue;
 			}
 
@@ -51,9 +51,9 @@ public class TrafficCurrentDetailPredictor {
 			float differenceInSeconds =
 					OffsetDateTimeCalculator.getDifferenceInSeconds(trafficDetail.getTimeLeftRegDt(), now);
 			TrafficColor currentColor = trafficDetail.getColor();
-			updatePredictData(predictedData, currentColor, timeLeft, differenceInSeconds);
+			updatePredictData(predictedTraffic, currentColor, timeLeft, differenceInSeconds);
 		}
-		return CurrentDetailsResponse.builder().currentDetails(predictedMap).build();
+		return CurrentDetailsVO.builder().currentDetails(predictedMap).build();
 	}
 
 	private Map<Long, TrafficDetailEntity> mappedTrafficDetailByTrafficId(
@@ -67,7 +67,7 @@ public class TrafficCurrentDetailPredictor {
 
 	/** 하나의 신호등에 대하여 현재 신호 색상과 잔여시간을 예측하는 작업을 수행 */
 	private void updatePredictData(
-			PredictedData predictedData,
+			PredictedTraffic predictedTraffic,
 			TrafficColor currentColor,
 			float timeLeft,
 			float differenceInSeconds) {
@@ -75,15 +75,15 @@ public class TrafficCurrentDetailPredictor {
 		while (differenceInSeconds >= 0) {
 			if (currentColor.isRed()) {
 				currentColor = TrafficColor.GREEN;
-				Float cycleOfNextColor = predictedData.getCycleByColor(TrafficColor.GREEN);
+				Float cycleOfNextColor = predictedTraffic.getCycleByColor(TrafficColor.GREEN);
 				differenceInSeconds -= cycleOfNextColor;
 			} else {
 				currentColor = TrafficColor.RED;
-				Float cycleOfNextColor = predictedData.getCycleByColor(TrafficColor.RED);
+				Float cycleOfNextColor = predictedTraffic.getCycleByColor(TrafficColor.RED);
 				differenceInSeconds -= cycleOfNextColor;
 			}
 		}
-		predictedData.updateCurrentColor(currentColor);
-		predictedData.updateCurrentTimeLeft(Math.abs(differenceInSeconds));
+		predictedTraffic.updateCurrentColor(currentColor);
+		predictedTraffic.updateCurrentTimeLeft(Math.abs(differenceInSeconds));
 	}
 }

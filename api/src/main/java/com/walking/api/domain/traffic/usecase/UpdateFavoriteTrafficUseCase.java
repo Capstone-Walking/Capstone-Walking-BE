@@ -1,6 +1,6 @@
 package com.walking.api.domain.traffic.usecase;
 
-import com.walking.api.domain.traffic.dto.UpdateFavoriteTrafficUseCaseRequest;
+import com.walking.api.domain.traffic.dto.UpdateFavoriteTrafficUseCaseIn;
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
 import com.walking.data.entity.member.TrafficFavoritesEntity;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public class UpdateFavoriteTrafficUseCase {
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 
 	@Transactional
-	public boolean execute(UpdateFavoriteTrafficUseCaseRequest request) {
+	public boolean execute(UpdateFavoriteTrafficUseCaseIn request) {
 		TrafficFavoritesEntity favoriteTraffic =
 				trafficFavoritesRepository
 						.findByIdAndDeletedFalse(request.getFavoriteTrafficId())
