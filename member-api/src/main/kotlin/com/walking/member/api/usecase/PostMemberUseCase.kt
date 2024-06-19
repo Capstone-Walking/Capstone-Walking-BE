@@ -9,6 +9,7 @@ import com.walking.member.api.dto.PostMemberUseCaseOut
 import com.walking.member.api.service.kakao.PostKaKaoMemberService
 import com.walking.member.api.service.kakao.dto.KMSQuery
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Random
@@ -20,6 +21,7 @@ class PostMemberUseCase(
     private val memberRepository: MemberDao
 ) {
     @Transactional(value = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
+    @CacheEvict(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
     fun execute(useCaseIn: PostMemberUseCaseIn): PostMemberUseCaseOut {
         val socialMember = createKaKaoMemberService.execute(KMSQuery(useCaseIn.code))
 

@@ -6,6 +6,7 @@ import com.walking.member.api.dao.MemberDao
 import com.walking.member.api.dto.PatchProfileImageUseCaseIn
 import com.walking.member.api.service.delegator.CacheAbleMemberProfileUpdateDelegator
 import com.walking.member.api.dto.PatchProfileImageUseCaseOut
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -18,6 +19,7 @@ class PatchProfileImageUseCase(
     private val memberProfileUpdateDelegator: CacheAbleMemberProfileUpdateDelegator
 ) {
     @Transactional(value = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
+    @CacheEvict(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
     fun execute(useCaseIn: PatchProfileImageUseCaseIn): PatchProfileImageUseCaseOut {
         val member = memberDao.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")
         val dateDir = LocalDate.now().toString()
