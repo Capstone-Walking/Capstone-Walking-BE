@@ -1,5 +1,7 @@
 package com.walking.api.domain.path.usecase;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.path.dto.UpdateRoutePathNameUseCaseIn;
 import com.walking.api.repository.dao.path.PathFavoritesRepository;
 import com.walking.data.entity.member.MemberEntity;
@@ -16,7 +18,7 @@ public class UpdateRoutePathNameUseCase {
 
 	private final PathFavoritesRepository pathFavoritesRepository;
 
-	@Transactional
+	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
 	public void execute(UpdateRoutePathNameUseCaseIn in) {
 		pathFavoritesRepository.updatePathName(
 				MemberEntity.builder().id(in.getMemberId()).build(),

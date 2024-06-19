@@ -2,6 +2,8 @@ package com.walking.api.domain.path.usecase;
 
 // todo refactor path 패키지 내부 클래스를 사용하도록 수정
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.client.TMapClient;
 import com.walking.api.domain.client.dto.request.TMapRequestDto;
 import com.walking.api.domain.client.dto.response.TMapResponseDto;
@@ -32,6 +34,7 @@ public class SavePathFavoritesUseCase {
 	private final TMapClient tMapClient;
 	private final ExtractPathTrafficInfoService extractPathTrafficInfoService;
 
+	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
 	public void execute(SavePathFavoritesUseCaseIn in) {
 		TMapResponseDto tMapPathData =
 				getTMapPathData(in.getStartLat(), in.getStartLng(), in.getEndLat(), in.getEndLng());
@@ -54,7 +57,7 @@ public class SavePathFavoritesUseCase {
 	}
 
 	// todo 다른 객체로 분리
-	@Transactional(readOnly = false)
+	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
 	public void savePathFavoritesAndTrafficInFavorites(
 			SavePathFavoritesUseCaseIn request,
 			List<Point> traffics,

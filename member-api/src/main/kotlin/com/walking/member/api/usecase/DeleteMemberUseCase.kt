@@ -1,5 +1,6 @@
 package com.walking.member.api.usecase
 
+import com.walking.api.repository.config.ApiRepositoryJpaConfig
 import com.walking.data.entity.member.MemberEntity
 import com.walking.image.service.RemoveImageService
 import com.walking.member.api.client.unlink.SocialUnlinkClientManager
@@ -16,7 +17,7 @@ class DeleteMemberUseCase(
     private val removeImageService: RemoveImageService,
     private val unlinkClientManager: SocialUnlinkClientManager
 ) {
-    @Transactional
+    @Transactional(transactionManager = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     @CacheEvict(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
     fun execute(useCaseIn: DeleteMemberUseCaseIn): DeleteMemberUseCaseOut {
         val member = memberRepository.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")

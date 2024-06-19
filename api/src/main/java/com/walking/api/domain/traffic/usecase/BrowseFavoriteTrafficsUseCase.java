@@ -1,5 +1,7 @@
 package com.walking.api.domain.traffic.usecase;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseIn;
@@ -26,7 +28,7 @@ public class BrowseFavoriteTrafficsUseCase {
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 	private final ObjectMapper objectMapper;
 
-	@Transactional
+	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
 	public BrowseFavoriteTrafficsUseCaseOut execute(BrowseFavoriteTrafficsUseCaseIn request) {
 		List<TrafficFavoritesEntity> trafficFavorites =
 				trafficFavoritesRepository.findByMemberFkAndDeletedFalse(

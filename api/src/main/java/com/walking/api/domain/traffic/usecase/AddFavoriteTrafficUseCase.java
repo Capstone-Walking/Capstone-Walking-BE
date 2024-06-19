@@ -1,5 +1,7 @@
 package com.walking.api.domain.traffic.usecase;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.traffic.dto.AddFavoriteTrafficUseCaseIn;
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
 import com.walking.data.entity.member.MemberEntity;
@@ -17,7 +19,7 @@ public class AddFavoriteTrafficUseCase {
 
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 
-	@Transactional
+	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
 	public boolean execute(AddFavoriteTrafficUseCaseIn request) {
 		TrafficFavoritesEntity entity =
 				TrafficFavoritesEntity.builder()

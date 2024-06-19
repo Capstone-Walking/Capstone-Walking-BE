@@ -1,5 +1,7 @@
 package com.walking.api.domain.path.usecase;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.path.dto.ReadFavoritesPathUseCaseIn;
 import com.walking.api.domain.path.dto.ReadFavoritesPathUseCaseOut;
 import com.walking.api.repository.dao.dto.response.PathFavoritesVo;
@@ -19,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, transactionManager = TRANSACTION_MANAGER_NAME)
 public class ReadFavoritesPathUseCase {
 
 	private final PathFavoritesRepository pathFavoritesRepository;

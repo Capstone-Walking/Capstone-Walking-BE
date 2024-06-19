@@ -1,5 +1,7 @@
 package com.walking.api.domain.traffic.usecase;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseIn;
@@ -19,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -31,6 +34,7 @@ public class ReadTrafficsUseCase {
 
 	private final TrafficPredictService trafficPredictService;
 
+	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
 	public BrowseTrafficsUseCaseOut execute(BrowseTrafficsUseCaseIn request) {
 		final Long trafficId = request.getTrafficId();
 		final Long memberId = request.getMemberId();

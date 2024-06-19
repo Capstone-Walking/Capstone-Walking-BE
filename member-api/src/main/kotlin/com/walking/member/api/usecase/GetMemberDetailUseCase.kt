@@ -1,5 +1,6 @@
 package com.walking.member.api.usecase
 
+import com.walking.api.repository.config.ApiRepositoryJpaConfig
 import com.walking.image.service.GetPreSignedImageUrlService
 import com.walking.member.api.dao.MemberDao
 import com.walking.member.api.dto.GetMemberDetailUseCaseIn
@@ -18,7 +19,7 @@ class GetMemberDetailUseCase(
 ) {
     val log: Logger = LoggerFactory.getLogger(GetMemberDetailUseCase::class.java)
 
-    @Transactional
+    @Transactional(transactionManager = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     @Cacheable(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
     fun execute(useCaseIn: GetMemberDetailUseCaseIn): GetMemberDetailUseCaseOut {
         val member = memberRepository.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")

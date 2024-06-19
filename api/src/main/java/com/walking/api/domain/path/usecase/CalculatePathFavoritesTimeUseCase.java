@@ -1,5 +1,7 @@
 package com.walking.api.domain.path.usecase;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.path.dto.CalculatePathFavoritesTimeUseCaseIn;
 import com.walking.api.domain.path.dto.CalculatePathFavoritesTimeUseCaseOut;
 import com.walking.api.domain.path.model.SearchPath.PathPrimaryVO;
@@ -23,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, transactionManager = TRANSACTION_MANAGER_NAME)
 public class CalculatePathFavoritesTimeUseCase {
 
 	private final PathFavoritesRepository pathFavoritesRepository;

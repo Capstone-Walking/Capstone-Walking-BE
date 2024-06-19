@@ -2,6 +2,8 @@ package com.walking.api.domain.path.usecase;
 
 // todo refactor path 패키지 내부 클래스를 사용하도록 수정
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.client.TMapClient;
 import com.walking.api.domain.client.dto.request.TMapRequestDto;
 import com.walking.api.domain.client.dto.response.TMapResponseDto;
@@ -25,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(readOnly = true, transactionManager = TRANSACTION_MANAGER_NAME)
 @Slf4j
 public class CalculatePathTimeUseCase {
 

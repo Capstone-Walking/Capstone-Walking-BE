@@ -1,5 +1,7 @@
 package com.walking.api.domain.traffic.usecase;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseIn;
 import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseOut;
 import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
@@ -26,7 +28,7 @@ public class SearchTrafficsUseCase {
 
 	private final TrafficPredictService trafficPredictService;
 
-	@Transactional
+	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
 	public SearchTrafficsUseCaseOut execute(SearchTrafficsUseCaseIn request) {
 		final Float vblLng = request.getVblLng();
 		final Float vblLat = request.getVblLat();

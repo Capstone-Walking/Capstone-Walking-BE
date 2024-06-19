@@ -1,5 +1,6 @@
 package com.walking.member.api.usecase
 
+import com.walking.api.repository.config.ApiRepositoryJpaConfig
 import com.walking.image.service.UploadImageService
 import com.walking.member.api.dao.MemberDao
 import com.walking.member.api.dto.PatchProfileImageUseCaseIn
@@ -16,7 +17,7 @@ class PatchProfileImageUseCase(
     private val uploadImageService: UploadImageService,
     private val memberProfileUpdateDelegator: CacheAbleMemberProfileUpdateDelegator
 ) {
-    @Transactional
+    @Transactional(transactionManager = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     fun execute(useCaseIn: PatchProfileImageUseCaseIn): PatchProfileImageUseCaseOut {
         val member = memberDao.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")
         val imageName = generateImageName()

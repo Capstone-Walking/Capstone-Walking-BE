@@ -1,5 +1,6 @@
 package com.walking.member.api.usecase
 
+import com.walking.api.repository.config.ApiRepositoryJpaConfig
 import com.walking.data.entity.member.MemberEntity
 import com.walking.member.api.dao.MemberDao
 import com.walking.member.api.dto.PostMemberUseCaseIn
@@ -18,8 +19,7 @@ class PostMemberUseCase(
     private val createKaKaoMemberService: PostKaKaoMemberService,
     private val memberRepository: MemberDao
 ) {
-
-    @Transactional
+    @Transactional(transactionManager = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     fun execute(useCaseIn: PostMemberUseCaseIn): PostMemberUseCaseOut {
         val socialMember = createKaKaoMemberService.execute(KMSQuery(useCaseIn.code))
 
