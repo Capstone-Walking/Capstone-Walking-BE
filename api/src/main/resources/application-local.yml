@@ -45,3 +45,15 @@ springdoc:
   swagger-ui:
     url: /docs/openapi3.yaml
     path: /swagger
+
+logging:
+    level:
+        com.walking: DEBUG
+        org.springframework: TRACE
+        org:
+            hibernate:
+                SQL: DEBUG
+                type:
+                    descriptor:
+                        sql:
+                            BasicBinder: TRACE

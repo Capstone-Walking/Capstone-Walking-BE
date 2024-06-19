@@ -49,6 +49,7 @@ springdoc:
 logging:
     level:
         com.walking: DEBUG
+        org.springframework: TRACE
         org:
             hibernate:
                 SQL: DEBUG
