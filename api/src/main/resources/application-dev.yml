@@ -18,7 +18,7 @@ spring:
 walking:
     batch:
         schedular:
-            interval: ${SCHEDULAR_INTERVAL}
+            interval: ${SCHEDULER_INTERVAL}
     predict:
         dataInterval: ${DATA_INTERVAL}
         maximumSearchCount: ${MAXIMUM_SEARCH_COUNT}
