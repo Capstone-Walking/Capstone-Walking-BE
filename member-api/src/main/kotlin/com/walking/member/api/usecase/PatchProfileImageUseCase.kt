@@ -20,7 +20,8 @@ class PatchProfileImageUseCase(
     @Transactional(value = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     fun execute(useCaseIn: PatchProfileImageUseCaseIn): PatchProfileImageUseCaseOut {
         val member = memberDao.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")
-        val imageName = generateImageName()
+        val dateDir = LocalDate.now().toString()
+        val imageName = "$dateDir/${generateImageName()}"
 
         uploadImageService.execute(imageName, useCaseIn.image).let {
             memberProfileUpdateDelegator.execute(member, imageName).let { member ->
