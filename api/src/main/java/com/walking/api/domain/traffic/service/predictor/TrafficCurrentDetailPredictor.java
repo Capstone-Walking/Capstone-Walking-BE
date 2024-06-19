@@ -1,5 +1,7 @@
 package com.walking.api.domain.traffic.service.predictor;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.traffic.service.dto.CurrentDetailsVO;
 import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import com.walking.api.domain.util.OffsetDateTimeCalculator;
@@ -24,7 +26,7 @@ public class TrafficCurrentDetailPredictor {
 
 	private final TrafficDetailRepository trafficDetailRepository;
 
-	@Transactional(readOnly = true)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public CurrentDetailsVO execute(
 			TrafficCyclePredictor trafficCyclePredictor, List<Long> trafficIds) {
 		return doExecute(trafficCyclePredictor.execute(trafficIds));

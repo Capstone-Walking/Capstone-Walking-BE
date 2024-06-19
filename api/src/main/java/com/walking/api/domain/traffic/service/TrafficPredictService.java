@@ -1,5 +1,7 @@
 package com.walking.api.domain.traffic.service;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.traffic.service.dto.CurrentDetailsVO;
 import com.walking.api.domain.traffic.service.dto.TPQuery;
 import com.walking.api.domain.traffic.service.dto.TPVO;
@@ -20,7 +22,7 @@ public class TrafficPredictService {
 	private final TrafficCyclePredictor trafficCyclePredictor;
 	private final TrafficCurrentDetailPredictor trafficCurrentDetailPredictor;
 
-	@Transactional(readOnly = true)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public TPVO execute(TPQuery requestDto) {
 		final List<Long> trafficIds = requestDto.getTrafficIds();
 

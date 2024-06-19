@@ -1,5 +1,7 @@
 package com.walking.api.domain.path.service;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.path.model.SearchPath.PathPrimaryVO;
 import com.walking.api.domain.path.service.dto.CRDQuery;
 import com.walking.api.domain.path.service.dto.PathTrafficVO;
@@ -27,7 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(value = TRANSACTION_MANAGER_NAME)
 @AllArgsConstructor
 @Slf4j
 public class CalculateRouteDetailService {

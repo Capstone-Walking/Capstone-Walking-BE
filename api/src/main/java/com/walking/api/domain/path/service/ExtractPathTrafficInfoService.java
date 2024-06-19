@@ -1,5 +1,7 @@
 package com.walking.api.domain.path.service;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.path.service.dto.EPTIQuery;
 import com.walking.api.domain.path.service.dto.EPTIQueryWithDirections;
 import com.walking.api.domain.path.service.dto.PathTrafficVO;
@@ -16,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(value = TRANSACTION_MANAGER_NAME)
 @Slf4j
 public class ExtractPathTrafficInfoService {
 

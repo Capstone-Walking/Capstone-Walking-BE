@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(value = TRANSACTION_MANAGER_NAME)
 public class UpdateRoutePathNameUseCase {
 
 	private final PathFavoritesRepository pathFavoritesRepository;

@@ -1,5 +1,7 @@
 package com.walking.api.domain.traffic.service.predictor;
 
+import static com.walking.api.repository.config.ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import com.walking.api.domain.traffic.service.model.RecentTrafficDetails;
 import com.walking.api.repository.dao.traffic.TrafficDetailRepository;
@@ -27,7 +29,7 @@ public class TrafficCyclePredictor {
 	private final TrafficRepository trafficRepository;
 	private final TrafficDetailRepository trafficDetailRepository;
 
-	@Transactional(readOnly = true)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public Map<Long, PredictedTraffic> execute(List<Long> trafficIds) {
 		Map<Long, PredictedTraffic> trafficPredictTargets =
 				trafficRepository.findAllInIds(trafficIds).stream()
