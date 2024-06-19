@@ -38,7 +38,7 @@ walking:
 api:
   traffic:
     seoul:
-      apiKey: f6675d12-8dff-42b8-b031-9e1cc55cf39a
+      apiKey: a16184ea-533f-4b10-b2c1-1a67757fcd93
       baseUrl: http://t-data.seoul.go.kr
       colorPath: /apig/apiman-gateway/tapi/v2xSignalPhaseInformation/1.0
       timeLeftPath: /apig/apiman-gateway/tapi/v2xSignalPhaseTimingInformation/1.0
