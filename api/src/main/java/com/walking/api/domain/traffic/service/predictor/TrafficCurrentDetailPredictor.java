@@ -35,7 +35,7 @@ public class TrafficCurrentDetailPredictor {
 		List<Long> trafficIds = new ArrayList<>(trafficIdSet);
 
 		List<TrafficDetailEntity> topTrafficDetails =
-				trafficDetailRepository.findAllTopDataInTrafficIds(trafficIds);
+				trafficDetailRepository.findMostRecenlyData(trafficIds);
 		Map<Long, TrafficDetailEntity> mappedTrafficDetail =
 				mappedTrafficDetailByTrafficId(topTrafficDetails);
 
