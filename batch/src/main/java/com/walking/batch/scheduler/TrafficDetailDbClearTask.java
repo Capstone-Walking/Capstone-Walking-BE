@@ -19,7 +19,7 @@ public class TrafficDetailDbClearTask {
 	@Scheduled(cron = "0 0 3 * * ?") // 매일 03시에 실행
 	@Transactional
 	public void clearDatabase() {
-		jdbcTemplate.execute("TRUNCATE TABLE traffic_detail");
+		jdbcTemplate.execute("TRUNCATE TABLE api.traffic_detail");
 		log.debug("Database cleared! [" + LocalDateTime.now() + "]");
 	}
 }
