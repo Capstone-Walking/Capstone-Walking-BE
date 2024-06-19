@@ -2,9 +2,11 @@ package com.walking.member.api.usecase
 
 import com.walking.data.entity.member.MemberEntity
 import com.walking.member.api.dao.MemberDao
-import com.walking.member.api.service.kakao.dto.SocialMemberServiceDto
-import com.walking.member.api.dto.PostMemberUseCaseResponse
+import com.walking.member.api.dto.PostMemberUseCaseIn
+import com.walking.member.api.service.kakao.dto.SocialMemberVO
+import com.walking.member.api.dto.PostMemberUseCaseOut
 import com.walking.member.api.service.kakao.PostKaKaoMemberService
+import com.walking.member.api.service.kakao.dto.KMSQuery
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,21 +20,21 @@ class PostMemberUseCase(
 ) {
 
     @Transactional
-    fun execute(code: String): PostMemberUseCaseResponse {
-        val socialMember = createKaKaoMemberService.execute(code)
+    fun execute(useCaseIn: PostMemberUseCaseIn): PostMemberUseCaseOut {
+        val socialMember = createKaKaoMemberService.execute(KMSQuery(useCaseIn.code))
 
         memberRepository.findByCertificationId(socialMember.certificationId)
             ?.let { member ->
-                return PostMemberUseCaseResponse(member.id, member.nickName, member.profile)
+                return PostMemberUseCaseOut(member.id, member.nickName, member.profile)
             }
 
         val newMember = createMemberEntity(socialMember)
         memberRepository.save(newMember).let { member ->
-            return PostMemberUseCaseResponse(member.id, member.nickName, member.profile)
+            return PostMemberUseCaseOut(member.id, member.nickName, member.profile)
         }
     }
 
-    private fun createMemberEntity(socialMember: SocialMemberServiceDto): MemberEntity {
+    private fun createMemberEntity(socialMember: SocialMemberVO): MemberEntity {
         Random().nextInt(defaultProfiles.size).let { index ->
             socialMember.profile = defaultProfiles[index]
         }

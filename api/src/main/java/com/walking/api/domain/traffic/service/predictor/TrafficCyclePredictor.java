@@ -1,6 +1,6 @@
 package com.walking.api.domain.traffic.service.predictor;
 
-import com.walking.api.domain.traffic.service.model.PredictedData;
+import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import com.walking.api.domain.traffic.service.model.RecentTrafficDetails;
 import com.walking.api.repository.dao.traffic.TrafficDetailRepository;
 import com.walking.api.repository.dao.traffic.TrafficRepository;
@@ -28,10 +28,10 @@ public class TrafficCyclePredictor {
 	private final TrafficDetailRepository trafficDetailRepository;
 
 	@Transactional(readOnly = true)
-	public Map<Long, PredictedData> execute(List<Long> trafficIds) {
-		Map<Long, PredictedData> trafficPredictTargets =
+	public Map<Long, PredictedTraffic> execute(List<Long> trafficIds) {
+		Map<Long, PredictedTraffic> trafficPredictTargets =
 				trafficRepository.findAllInIds(trafficIds).stream()
-						.collect(Collectors.toMap(TrafficEntity::getId, PredictedData::new));
+						.collect(Collectors.toMap(TrafficEntity::getId, PredictedTraffic::new));
 		return doPredict(trafficPredictTargets);
 	}
 
@@ -39,7 +39,7 @@ public class TrafficCyclePredictor {
 	 * 최신 순으로 interval 개 만큼 씩 데이터를 가지고 와서 계산을 수행<br>
 	 * 예를 들어, interval이 5인 경우 한 번 예측을 시도할 때마다 5개의 데이터를 가져와 예측을 수행합니다.
 	 */
-	private Map<Long, PredictedData> doPredict(Map<Long, PredictedData> trafficPredictTargets) {
+	private Map<Long, PredictedTraffic> doPredict(Map<Long, PredictedTraffic> trafficPredictTargets) {
 		int tryCount = 0;
 		int startRowNum = 0;
 		int endRowNum = startRowNum + predictInterval;
@@ -61,7 +61,7 @@ public class TrafficCyclePredictor {
 
 			mappedUnpredictedTrafficRecentData.forEach(
 					(id, recentTrafficDetails) -> {
-						PredictedData predictTarget = trafficPredictTargets.get(id);
+						PredictedTraffic predictTarget = trafficPredictTargets.get(id);
 						predictTarget.predictCycle(recentTrafficDetails);
 					});
 
@@ -77,7 +77,7 @@ public class TrafficCyclePredictor {
 		return searchCount >= MAXIMUM_SEARCH_COUNT;
 	}
 
-	private List<Long> updateUnpredictedTrafficKeys(Map<Long, PredictedData> predictTargets) {
+	private List<Long> updateUnpredictedTrafficKeys(Map<Long, PredictedTraffic> predictTargets) {
 		return predictTargets.entrySet().stream()
 				.filter(entry -> !entry.getValue().isPredictCycleSuccessful())
 				.map(Map.Entry::getKey)

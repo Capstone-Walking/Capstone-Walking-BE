@@ -1,8 +1,8 @@
 package com.walking.api.domain.traffic.service;
 
-import com.walking.api.domain.traffic.service.dto.CurrentDetailsResponse;
-import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceRequest;
-import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceResponse;
+import com.walking.api.domain.traffic.service.dto.CurrentDetailsVO;
+import com.walking.api.domain.traffic.service.dto.TPQuery;
+import com.walking.api.domain.traffic.service.dto.TPVO;
 import com.walking.api.domain.traffic.service.predictor.TrafficCurrentDetailPredictor;
 import com.walking.api.domain.traffic.service.predictor.TrafficCyclePredictor;
 import java.util.List;
@@ -21,17 +21,15 @@ public class TrafficPredictService {
 	private final TrafficCurrentDetailPredictor trafficCurrentDetailPredictor;
 
 	@Transactional(readOnly = true)
-	public TrafficPredictServiceResponse execute(TrafficPredictServiceRequest requestDto) {
+	public TPVO execute(TPQuery requestDto) {
 		final List<Long> trafficIds = requestDto.getTrafficIds();
 
-		CurrentDetailsResponse currentTrafficDetails =
+		CurrentDetailsVO currentTrafficDetails =
 				trafficCurrentDetailPredictor.execute(trafficCyclePredictor, trafficIds);
-		return TrafficPredictServiceResponse.builder()
-				.predictedData(currentTrafficDetails.getCurrentDetails())
-				.build();
+		return TPVO.builder().predictedData(currentTrafficDetails.getCurrentDetails()).build();
 	}
 
-	public TrafficPredictServiceResponse execute(List<Long> trafficIds) {
-		return execute(TrafficPredictServiceRequest.builder().trafficIds(trafficIds).build());
+	public TPVO execute(List<Long> trafficIds) {
+		return execute(TPQuery.builder().trafficIds(trafficIds).build());
 	}
 }

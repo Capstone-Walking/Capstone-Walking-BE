@@ -2,14 +2,14 @@ package com.walking.api.domain.traffic.usecase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseRequest;
-import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseResponse;
+import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseIn;
+import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseOut;
 import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
 import com.walking.api.domain.traffic.dto.detail.PointDetail;
 import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
 import com.walking.api.domain.traffic.service.TrafficPredictService;
-import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceResponse;
-import com.walking.api.domain.traffic.service.model.PredictedData;
+import com.walking.api.domain.traffic.service.dto.TPVO;
+import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.member.TrafficFavoritesEntity;
@@ -31,13 +31,12 @@ public class ReadTrafficsUseCase {
 
 	private final TrafficPredictService trafficPredictService;
 
-	public BrowseTrafficsUseCaseResponse execute(BrowseTrafficsUseCaseRequest request) {
+	public BrowseTrafficsUseCaseOut execute(BrowseTrafficsUseCaseIn request) {
 		final Long trafficId = request.getTrafficId();
 		final Long memberId = request.getMemberId();
 
-		TrafficPredictServiceResponse trafficPredictServiceResponse =
-				trafficPredictService.execute(List.of(trafficId));
-		PredictedData predictedData = trafficPredictServiceResponse.getPredictedData().get(trafficId);
+		TPVO trafficPredictServiceVO = trafficPredictService.execute(List.of(trafficId));
+		PredictedTraffic predictedTraffic = trafficPredictServiceVO.getPredictedData().get(trafficId);
 
 		Optional<FavoriteTrafficDetail> favoriteTrafficDetail = Optional.empty();
 		if (memberId != -1) {
@@ -48,7 +47,7 @@ public class ReadTrafficsUseCase {
 			}
 		}
 
-		return new BrowseTrafficsUseCaseResponse(predictedData, favoriteTrafficDetail);
+		return new BrowseTrafficsUseCaseOut(predictedTraffic, favoriteTrafficDetail);
 	}
 
 	private Optional<FavoriteTrafficDetail> getFavoriteTrafficDetail(Long memberId, Long trafficId) {

@@ -2,8 +2,9 @@ package com.walking.member.api.usecase
 
 import com.walking.image.service.GetPreSignedImageUrlService
 import com.walking.member.api.dao.MemberDao
+import com.walking.member.api.dto.GetMemberDetailUseCaseIn
 
-import com.walking.member.api.dto.GetMemberDetailUseCaseResponse
+import com.walking.member.api.dto.GetMemberDetailUseCaseOut
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
@@ -18,16 +19,16 @@ class GetMemberDetailUseCase(
     val log: Logger = LoggerFactory.getLogger(GetMemberDetailUseCase::class.java)
 
     @Transactional
-    @Cacheable(key = "#id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
-    fun execute(id: Long): GetMemberDetailUseCaseResponse {
-        val member = memberRepository.findById(id) ?: throw IllegalArgumentException("Member not found")
+    @Cacheable(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
+    fun execute(useCaseIn: GetMemberDetailUseCaseIn): GetMemberDetailUseCaseOut {
+        val member = memberRepository.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")
         val id = member.id
         val nickName = member.nickName
         val certificationSubject = member.certificationSubject.name
         val status = member.status.name
         var profile = getProfile(member.profile)
 
-        return GetMemberDetailUseCaseResponse(
+        return GetMemberDetailUseCaseOut(
             id,
             nickName,
             profile,

@@ -36,13 +36,12 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 
 	@Query(
 			value =
-					"SELECT * FROM traffic_detail td "
-							+ "INNER JOIN (SELECT t.traffic_id, MAX(t.time_left_reg_dt) AS maxTimeLeftRegDt "
-							+ "	FROM traffic_detail t "
-							+ "	WHERE t.traffic_id IN :trafficIds "
-							+ "	GROUP BY t.traffic_id) maxTd "
-							+ "ON td.traffic_id = maxTd.traffic_id AND td.time_left_reg_dt = maxTd.maxTimeLeftRegDt "
-							+ "WHERE td.traffic_id IN :trafficIds",
-			nativeQuery = true)
-	List<TrafficDetailEntity> findAllTopDataInTrafficIds(@Param("trafficIds") List<Long> trafficIds);
+					"    SELECT td1 "
+							+ "    FROM TrafficDetailEntity td1 "
+							+ "    WHERE td1.traffic in (:trafficIds) "
+							+ "    AND td1.timeLeftRegDt = ( "
+							+ "    SELECT MAX(td2.timeLeftRegDt) "
+							+ "    FROM TrafficDetailEntity td2 "
+							+ "    WHERE td2.traffic = td1.traffic)")
+	List<TrafficDetailEntity> findMostRecenlyData(@Param("trafficIds") List<Long> trafficIds);
 }

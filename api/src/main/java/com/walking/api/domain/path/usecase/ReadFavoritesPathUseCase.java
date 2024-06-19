@@ -1,6 +1,7 @@
 package com.walking.api.domain.path.usecase;
 
-import com.walking.api.domain.path.dto.ReadFavoritesPathUseCaseResponse;
+import com.walking.api.domain.path.dto.ReadFavoritesPathUseCaseIn;
+import com.walking.api.domain.path.dto.ReadFavoritesPathUseCaseOut;
 import com.walking.api.repository.dao.dto.response.PathFavoritesVo;
 import com.walking.api.repository.dao.member.MemberRepository;
 import com.walking.api.repository.dao.path.PathFavoritesRepository;
@@ -25,15 +26,18 @@ public class ReadFavoritesPathUseCase {
 	// todo refactor service 클래스로 분리
 	private final MemberRepository memberRepository;
 
-	public List<ReadFavoritesPathUseCaseResponse> execute(Long memberId, String name) {
+	public List<ReadFavoritesPathUseCaseOut> execute(ReadFavoritesPathUseCaseIn in) {
+		if (in.isOrderFiltered()) {
+			return doExecute(in.getMemberId(), in.getOrderFilter());
+		}
 		List<PathFavoritesVo> pathFavorites =
 				pathFavoritesRepository.findPathFavoritesByMemberFkAndFilterName(
-						memberRepository.findById(memberId).get(), name);
+						memberRepository.findById(in.getMemberId()).get(), in.getName());
 
 		return mappedFavoritesPathOrder(pathFavorites);
 	}
 
-	public List<ReadFavoritesPathUseCaseResponse> execute(Long memberId, OrderFilter orderFilter) {
+	private List<ReadFavoritesPathUseCaseOut> doExecute(Long memberId, OrderFilter orderFilter) {
 		if (orderFilter == OrderFilter.NAME) {
 			return mappedFavoritesPathOrder(
 					pathFavoritesRepository.findPathFavoritesByMemberFkOrderByName(
@@ -54,14 +58,14 @@ public class ReadFavoritesPathUseCase {
 		throw new IllegalArgumentException("잘못된 OrderFilter입니다.");
 	}
 
-	private List<ReadFavoritesPathUseCaseResponse> mappedFavoritesPathOrder(
+	private List<ReadFavoritesPathUseCaseOut> mappedFavoritesPathOrder(
 			List<PathFavoritesVo> pathFavorites) {
 		// 인덱스를 위한 AtomicInteger
 		AtomicInteger index = new AtomicInteger();
 		return pathFavorites.stream()
 				.map(
 						vo ->
-								ReadFavoritesPathUseCaseResponse.builder()
+								ReadFavoritesPathUseCaseOut.builder()
 										.id(vo.getId())
 										.startPoint((Point) vo.getStartPoint())
 										.endPoint((Point) vo.getEndPoint())

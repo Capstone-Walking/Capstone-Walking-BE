@@ -3,6 +3,7 @@ package com.walking.data.entity.traffic;
 import com.walking.data.entity.BaseEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import org.locationtech.jts.geom.Point;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @SuperBuilder(toBuilder = true)
-@Table(name = "traffic")
+@Table(name = "traffic", indexes = @Index(name = "point_idx", columnList = "point_value"))
 @SQLDelete(sql = "UPDATE traffic SET deleted=true where id=?")
 public class TrafficEntity extends BaseEntity {
 

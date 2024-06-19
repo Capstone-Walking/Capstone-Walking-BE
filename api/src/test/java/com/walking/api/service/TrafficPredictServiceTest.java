@@ -2,8 +2,8 @@ package com.walking.api.service;
 
 import com.walking.api.ApiApp;
 import com.walking.api.domain.traffic.service.TrafficPredictService;
-import com.walking.api.domain.traffic.service.dto.TrafficPredictServiceRequest;
-import com.walking.api.domain.traffic.service.model.PredictedData;
+import com.walking.api.domain.traffic.service.dto.TPQuery;
+import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +26,9 @@ class TrafficPredictServiceTest {
 	@ParameterizedTest
 	@MethodSource("getTrafficIds")
 	void example(List<Long> trafficIds) {
-		Map<Long, PredictedData> predictedDataMap =
+		Map<Long, PredictedTraffic> predictedDataMap =
 				integrationPredictService
-						.execute(TrafficPredictServiceRequest.builder().trafficIds(trafficIds).build())
+						.execute(TPQuery.builder().trafficIds(trafficIds).build())
 						.getPredictedData();
 
 		for (Long trafficId : predictedDataMap.keySet()) {

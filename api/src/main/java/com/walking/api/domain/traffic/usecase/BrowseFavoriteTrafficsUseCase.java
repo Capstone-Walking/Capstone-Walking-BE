@@ -2,8 +2,8 @@ package com.walking.api.domain.traffic.usecase;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseRequest;
-import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseResponse;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseIn;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseOut;
 import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
 import com.walking.api.domain.traffic.dto.detail.PointDetail;
 import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
@@ -27,8 +27,7 @@ public class BrowseFavoriteTrafficsUseCase {
 	private final ObjectMapper objectMapper;
 
 	@Transactional
-	public BrowseFavoriteTrafficsUseCaseResponse execute(
-			BrowseFavoriteTrafficsUseCaseRequest request) {
+	public BrowseFavoriteTrafficsUseCaseOut execute(BrowseFavoriteTrafficsUseCaseIn request) {
 		List<TrafficFavoritesEntity> trafficFavorites =
 				trafficFavoritesRepository.findByMemberFkAndDeletedFalse(
 						MemberEntity.builder().id(request.getMemberId()).build());
@@ -53,6 +52,6 @@ public class BrowseFavoriteTrafficsUseCase {
 							.build());
 		}
 
-		return BrowseFavoriteTrafficsUseCaseResponse.builder().traffics(details).build();
+		return BrowseFavoriteTrafficsUseCaseOut.builder().traffics(details).build();
 	}
 }

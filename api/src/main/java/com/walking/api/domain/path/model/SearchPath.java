@@ -3,10 +3,10 @@ package com.walking.api.domain.path.model;
 import com.walking.api.domain.client.dto.response.TMapResponseDto;
 import com.walking.api.domain.client.dto.response.detail.FeatureDetail;
 import com.walking.api.domain.client.dto.response.detail.GeometryDetail;
-import com.walking.api.domain.path.dto.PathPrimaryData;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.locationtech.jts.geom.*;
 
 @AllArgsConstructor
@@ -14,8 +14,16 @@ public class SearchPath {
 
 	private final TMapResponseDto tMapPathData;
 
-	public PathPrimaryData extractPrimaryDataByTMap() {
-		return new PathPrimaryData(
+	@Data
+	@AllArgsConstructor
+	public static class PathPrimaryVO {
+		private Integer totalTime;
+		private Integer untilTrafficTime;
+		private Integer totalDistance;
+	}
+
+	public PathPrimaryVO extractPrimaryDataByTMap() {
+		return new PathPrimaryVO(
 				calculateTotalTime(tMapPathData),
 				calculateUntilFirstTraffic(tMapPathData),
 				tMapPathData.getFeatureDetails().get(0).getPropertyDetails().getTotalDistance());

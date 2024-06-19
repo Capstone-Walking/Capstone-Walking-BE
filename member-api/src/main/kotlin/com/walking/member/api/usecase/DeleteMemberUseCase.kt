@@ -4,7 +4,8 @@ import com.walking.data.entity.member.MemberEntity
 import com.walking.image.service.RemoveImageService
 import com.walking.member.api.client.unlink.SocialUnlinkClientManager
 import com.walking.member.api.dao.MemberDao
-import com.walking.member.api.dto.DeleteMemberUseCaseResponse
+import com.walking.member.api.dto.DeleteMemberUseCaseIn
+import com.walking.member.api.dto.DeleteMemberUseCaseOut
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,9 +17,9 @@ class DeleteMemberUseCase(
     private val unlinkClientManager: SocialUnlinkClientManager
 ) {
     @Transactional
-    @CacheEvict(key = "#id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
-    fun execute(id: Long): DeleteMemberUseCaseResponse {
-        val member = memberRepository.findById(id) ?: throw IllegalArgumentException("Member not found")
+    @CacheEvict(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
+    fun execute(useCaseIn: DeleteMemberUseCaseIn): DeleteMemberUseCaseOut {
+        val member = memberRepository.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")
         val deletedMember = withdrawMember(member)
         removeImageService.execute(deletedMember.profile)
         unlinkClientManager.execute(
@@ -26,7 +27,7 @@ class DeleteMemberUseCase(
             deletedMember.certificationId
         )
 
-        return DeleteMemberUseCaseResponse(deletedMember.id, deletedMember.updatedAt)
+        return DeleteMemberUseCaseOut(deletedMember.id, deletedMember.updatedAt)
     }
 
     private fun withdrawMember(member: MemberEntity): MemberEntity {

@@ -17,7 +17,7 @@ import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.walking.api.ApiApp;
-import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseResponse;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseOut;
 import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
 import com.walking.api.domain.traffic.dto.detail.PointDetail;
 import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
@@ -366,7 +366,7 @@ class TrafficControllerTest {
 
 		when(browseFavoriteTrafficsUseCase.execute(any()))
 				.thenReturn(
-						BrowseFavoriteTrafficsUseCaseResponse.builder()
+						BrowseFavoriteTrafficsUseCaseOut.builder()
 								.traffics(
 										List.of(
 												FavoriteTrafficDetail.builder()

@@ -1,6 +1,8 @@
 package com.walking.api.domain.path.service;
 
-import com.walking.api.domain.path.dto.PathTrafficData;
+import com.walking.api.domain.path.service.dto.EPTIQuery;
+import com.walking.api.domain.path.service.dto.EPTIQueryWithDirections;
+import com.walking.api.domain.path.service.dto.PathTrafficVO;
 import com.walking.api.repository.dao.traffic.TrafficRepository;
 import com.walking.data.entity.path.TrafficDirection;
 import com.walking.data.entity.traffic.TrafficEntity;
@@ -21,27 +23,30 @@ public class ExtractPathTrafficInfoService {
 	private final TrafficRepository trafficRepository;
 
 	// 신호등 좌표를 기준으로 db의 교차로의 신호등 조회
-	public PathTrafficData execute(List<Point> traffics) {
-		PathTrafficData pathTrafficData = new PathTrafficData();
+	public PathTrafficVO execute(EPTIQuery query) {
+		List<Point> traffics = query.getTraffics();
+		PathTrafficVO pathTrafficVo = new PathTrafficVO();
 		for (int i = 0; i < traffics.size(); i++) {
 			Optional<TrafficEntity> closestTraffic =
 					trafficRepository.findClosestTraffic(traffics.get(i).getX(), traffics.get(i).getY());
 
 			closestTraffic.ifPresent(
-					trafficEntity -> pathTrafficData.getTrafficsInPath().add(trafficEntity));
+					trafficEntity -> pathTrafficVo.getTrafficsInPath().add(trafficEntity));
 		}
-		return pathTrafficData;
+		return pathTrafficVo;
 	}
 
-	public PathTrafficData execute(List<Point> traffics, List<TrafficDirection> trafficDirections) {
-		PathTrafficData pathTrafficData = new PathTrafficData();
-		pathTrafficData.setTrafficDirections(trafficDirections);
+	public PathTrafficVO execute(EPTIQueryWithDirections query) {
+		List<Point> traffics = query.getTraffics();
+		List<TrafficDirection> trafficDirections = query.getTrafficDirections();
+		PathTrafficVO pathTrafficVo = new PathTrafficVO();
+		pathTrafficVo.setTrafficDirections(trafficDirections);
 		for (int i = 0; i < traffics.size(); i++) {
 			List<TrafficEntity> closetTrafficByLocation =
 					trafficRepository.findClosetTrafficByLocation(
 							traffics.get(i).getX(), traffics.get(i).getY());
-			pathTrafficData.getAllTraffics().addAll(closetTrafficByLocation);
+			pathTrafficVo.getAllTraffics().addAll(closetTrafficByLocation);
 		}
-		return pathTrafficData;
+		return pathTrafficVo;
 	}
 }
