@@ -1,6 +1,6 @@
 package com.walking.api.domain.traffic.usecase;
 
-import com.walking.api.domain.traffic.dto.DeleteFavoriteTrafficUseCaseRequest;
+import com.walking.api.domain.traffic.dto.DeleteFavoriteTrafficUseCaseIn;
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.member.TrafficFavoritesEntity;
@@ -16,7 +16,7 @@ public class DeleteFavoriteTrafficUseCase {
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 
 	@Transactional
-	public boolean execute(DeleteFavoriteTrafficUseCaseRequest request) {
+	public boolean execute(DeleteFavoriteTrafficUseCaseIn request) {
 		TrafficFavoritesEntity favoriteTraffic =
 				trafficFavoritesRepository
 						.findByIdAndMemberFkAndDeletedFalse(

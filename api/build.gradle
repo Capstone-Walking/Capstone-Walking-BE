@@ -13,7 +13,8 @@ dependencies {
 
     // web
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    // webflux
+
+    // webflux todo remove related dependencies
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.104.Final:osx-aarch_64'
 
@@ -26,9 +27,6 @@ dependencies {
     // actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    // prometheus
-    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
-
     //jwt
     implementation "io.jsonwebtoken:jjwt-api:${jsonwebtokenVersion}"
     implementation "io.jsonwebtoken:jjwt-impl:${jsonwebtokenVersion}"
@@ -40,8 +38,8 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation group: 'com.google.code.findbugs', name: 'jsr305', version: "${jsr305Version}"
 
+    // todo remove related dependencies
     implementation 'org.json:json:20200518'
-
 
     // security
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -53,6 +51,7 @@ def releaseVersion = project.hasProperty('releaseVersion') ? releaseVersion : nu
 
 def repository = "walking/${imageName}"
 
+// todo refactor can use under tasks
 task buildDockerImage {
     dependsOn 'bootJar'
 //    dependsOn 'copySwaggerUI'

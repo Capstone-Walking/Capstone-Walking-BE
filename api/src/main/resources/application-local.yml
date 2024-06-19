@@ -33,18 +33,6 @@ logging:
             sql:
               BasicBinder: TRACE
 
-# prometheus config
-management:
-  endpoint:
-    metrics:
-      enabled: true
-    prometheus:
-      enabled: true
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
 # security config
 security:
   jwt:
@@ -61,12 +49,6 @@ security:
     exposed-headers: "Set-Cookie, Authorization, Content-Type, X-Requested-With, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"
     allow-credentials: true
     max-age: 1800
-
-# cookie config
-cookie:
-  domain: localhost
-  path: /
-  max-age: 86400
 
 # api docs config
 springdoc:

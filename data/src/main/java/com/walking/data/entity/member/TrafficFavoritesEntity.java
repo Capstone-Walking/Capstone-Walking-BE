@@ -16,7 +16,7 @@ import org.hibernate.annotations.SQLDelete;
 @Entity
 @SuperBuilder(toBuilder = true)
 @Table(name = "traffic_favorites")
-@SQLDelete(sql = "UPDATE traffuc_favorites SET deleted=true where id=?")
+@SQLDelete(sql = "UPDATE traffic_favorites SET deleted=true where id=?")
 public class TrafficFavoritesEntity extends BaseEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)

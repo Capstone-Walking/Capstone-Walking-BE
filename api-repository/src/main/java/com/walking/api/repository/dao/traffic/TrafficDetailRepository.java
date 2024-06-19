@@ -29,7 +29,7 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 							+ " FROM sorted_data "
 							+ " WHERE row_num BETWEEN :start AND :end ",
 			nativeQuery = true)
-	List<TrafficDetailEntity> findRecentlyData(
+	List<TrafficDetailEntity> findAllInIdsBetween(
 			@Param("trafficIds") List<Long> trafficIds,
 			@Param("start") Integer start,
 			@Param("end") Integer end);

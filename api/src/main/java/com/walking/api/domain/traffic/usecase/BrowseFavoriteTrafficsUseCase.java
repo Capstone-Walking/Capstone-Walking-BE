@@ -1,12 +1,13 @@
 package com.walking.api.domain.traffic.usecase;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseRequest;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseIn;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseOut;
+import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
+import com.walking.api.domain.traffic.dto.detail.PointDetail;
+import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository;
-import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
-import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
-import com.walking.api.web.dto.response.detail.PointDetail;
-import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import com.walking.data.entity.member.MemberEntity;
 import com.walking.data.entity.member.TrafficFavoritesEntity;
 import java.util.ArrayList;
@@ -26,15 +27,20 @@ public class BrowseFavoriteTrafficsUseCase {
 	private final ObjectMapper objectMapper;
 
 	@Transactional
-	public BrowseFavoriteTrafficsResponse execute(BrowseFavoriteTrafficsUseCaseRequest request) {
+	public BrowseFavoriteTrafficsUseCaseOut execute(BrowseFavoriteTrafficsUseCaseIn request) {
 		List<TrafficFavoritesEntity> trafficFavorites =
-				trafficFavoritesRepository.findByMemberFk(
+				trafficFavoritesRepository.findByMemberFkAndDeletedFalse(
 						MemberEntity.builder().id(request.getMemberId()).build());
 
 		List<FavoriteTrafficDetail> details = new ArrayList<>();
 		for (TrafficFavoritesEntity entity : trafficFavorites) {
-			TrafficDetailInfo detailInfo =
-					objectMapper.convertValue(entity.getTrafficFk().getDetail(), TrafficDetailInfo.class);
+			TrafficDetailInfo detailInfo = null;
+			try {
+				detailInfo =
+						objectMapper.readValue(entity.getTrafficFk().getDetail(), TrafficDetailInfo.class);
+			} catch (JsonProcessingException e) {
+				throw new RuntimeException(e);
+			}
 			Point point = entity.getTrafficFk().getPoint();
 			details.add(
 					FavoriteTrafficDetail.builder()
@@ -46,6 +52,6 @@ public class BrowseFavoriteTrafficsUseCase {
 							.build());
 		}
 
-		return BrowseFavoriteTrafficsResponse.builder().traffics(details).build();
+		return BrowseFavoriteTrafficsUseCaseOut.builder().traffics(details).build();
 	}
 }

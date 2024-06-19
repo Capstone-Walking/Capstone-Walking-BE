@@ -17,6 +17,10 @@ import com.epages.restdocs.apispec.Schema;
 import com.epages.restdocs.apispec.SimpleType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.walking.api.ApiApp;
+import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseOut;
+import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
+import com.walking.api.domain.traffic.dto.detail.PointDetail;
+import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
 import com.walking.api.domain.traffic.usecase.AddFavoriteTrafficUseCase;
 import com.walking.api.domain.traffic.usecase.BrowseFavoriteTrafficsUseCase;
 import com.walking.api.domain.traffic.usecase.DeleteFavoriteTrafficUseCase;
@@ -24,10 +28,6 @@ import com.walking.api.domain.traffic.usecase.UpdateFavoriteTrafficUseCase;
 import com.walking.api.web.controller.description.Description;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
 import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
-import com.walking.api.web.dto.response.BrowseFavoriteTrafficsResponse;
-import com.walking.api.web.dto.response.detail.FavoriteTrafficDetail;
-import com.walking.api.web.dto.response.detail.PointDetail;
-import com.walking.api.web.dto.response.detail.TrafficDetailInfo;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -366,7 +366,7 @@ class TrafficControllerTest {
 
 		when(browseFavoriteTrafficsUseCase.execute(any()))
 				.thenReturn(
-						BrowseFavoriteTrafficsResponse.builder()
+						BrowseFavoriteTrafficsUseCaseOut.builder()
 								.traffics(
 										List.of(
 												FavoriteTrafficDetail.builder()

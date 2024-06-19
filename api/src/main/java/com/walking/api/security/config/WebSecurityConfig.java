@@ -101,11 +101,11 @@ public class WebSecurityConfig {
 								"/v3/api-docs/**",
 								"/openapi3.yaml",
 								"/reports/**",
-								"/**")
-						.antMatchers(HttpMethod.POST, "/**")
-						.antMatchers(HttpMethod.PUT, "/**")
-						.antMatchers(HttpMethod.DELETE, "/**")
-						.antMatchers(HttpMethod.PATCH, "/**");
+								"/api/v1/paths/detail",
+								"/api/v2/paths/detail",
+								"/api/v1/traffics",
+								"/api/v1/traffics/*")
+						.antMatchers(HttpMethod.POST, "/api/v1/members");
 	}
 
 	@Bean
@@ -123,11 +123,11 @@ public class WebSecurityConfig {
 								"/v3/api-docs/**",
 								"/openapi3.yaml",
 								"/reports/**",
-								"/**")
-						.antMatchers(HttpMethod.POST, "/**")
-						.antMatchers(HttpMethod.PUT, "/**")
-						.antMatchers(HttpMethod.DELETE, "/**")
-						.antMatchers(HttpMethod.PATCH, "/**"); // TODO: ADD
+								"/api/v1/paths/detail",
+								"/api/v2/paths/detail",
+								"/api/v1/traffics",
+								"/api/v1/traffics/*")
+						.antMatchers(HttpMethod.POST, "/api/v1/members");
 	}
 
 	@Bean

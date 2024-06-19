@@ -2,11 +2,11 @@ package com.walking.member.api.usecase
 
 import com.walking.image.service.UploadImageService
 import com.walking.member.api.dao.MemberDao
-import com.walking.member.api.service.CacheAbleMemberProfileUpdateDelegator
-import com.walking.member.api.usecase.dto.response.PatchProfileImageUseCaseResponse
+import com.walking.member.api.dto.PatchProfileImageUseCaseIn
+import com.walking.member.api.service.delegator.CacheAbleMemberProfileUpdateDelegator
+import com.walking.member.api.dto.PatchProfileImageUseCaseOut
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.io.File
 import java.time.LocalDate
 import kotlin.random.Random
 
@@ -17,14 +17,14 @@ class PatchProfileImageUseCase(
     private val memberProfileUpdateDelegator: CacheAbleMemberProfileUpdateDelegator
 ) {
     @Transactional
-    fun execute(id: Long, image: File): PatchProfileImageUseCaseResponse {
-        val member = memberDao.findById(id) ?: throw IllegalArgumentException("Member not found")
+    fun execute(useCaseIn: PatchProfileImageUseCaseIn): PatchProfileImageUseCaseOut {
+        val member = memberDao.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")
         val imageName = generateImageName()
 
-        uploadImageService.execute(imageName, image).let {
+        uploadImageService.execute(imageName, useCaseIn.image).let {
             memberProfileUpdateDelegator.execute(member, imageName).let { member ->
                 memberDao.save(member)
-                return PatchProfileImageUseCaseResponse(member.id, member.nickName, imageName)
+                return PatchProfileImageUseCaseOut(member.id, member.nickName, imageName)
             }
         }
     }
