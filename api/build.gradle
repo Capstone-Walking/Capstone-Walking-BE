@@ -10,6 +10,7 @@ dependencyManagement {
 dependencies {
     implementation project(':api-repository')
     implementation project(':member-api')
+    implementation project(':batch')
 
     // web
     implementation 'org.springframework.boot:spring-boot-starter-web'

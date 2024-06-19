@@ -1,10 +1,10 @@
 package com.walking.batch.service.v2;
 
 import com.walking.batch.BatchMain;
-import com.walking.batch.service.TrafficColorApiServiceV2;
-import com.walking.batch.service.TrafficTimeLeftApiServiceV2;
-import com.walking.batch.service.dto.TrafficColorResponseDto;
-import com.walking.batch.service.dto.TrafficTimeLeftResponseDto;
+import com.walking.batch.traffic.service.TrafficColorApiServiceV2;
+import com.walking.batch.traffic.service.TrafficTimeLeftApiServiceV2;
+import com.walking.batch.traffic.service.dto.TrafficColorVO;
+import com.walking.batch.traffic.service.dto.TrafficTimeLeftVO;
 import com.walking.data.entity.traffic.TrafficEntity;
 import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
@@ -26,8 +26,8 @@ class TrafficColorApiServiceV2Test {
 
 	@Test
 	void example() {
-		Iterable<TrafficColorResponseDto> colorResponseDtos = colorApiServiceV2.request();
-		Iterable<TrafficTimeLeftResponseDto> timeLeftResponseDtos = timeLeftApiServiceV2.request();
+		Iterable<TrafficColorVO> colorResponseDtos = colorApiServiceV2.request();
+		Iterable<TrafficTimeLeftVO> timeLeftResponseDtos = timeLeftApiServiceV2.request();
 		TrafficEntity trafficEntity = em.find(TrafficEntity.class, 1L);
 		System.out.println("이거다 " + trafficEntity);
 	}

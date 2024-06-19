@@ -13,6 +13,7 @@ spring:
       - member-api-local
       - image-store-local
       - minio
+      - batch-local
 
 walking:
   batch:
@@ -21,17 +22,6 @@ walking:
   predict:
     dataInterval: 20
     maximumSearchCount: 5
-
-# logging config
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
 
 # security config
 security:

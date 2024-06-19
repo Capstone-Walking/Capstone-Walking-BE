@@ -13,6 +13,7 @@ spring:
             - member-api
             - image-store
             - s3
+            - batch-dev
 
 walking:
     batch:
@@ -44,7 +45,3 @@ springdoc:
     swagger-ui:
         url: /docs/openapi3.yaml
         path: /swagger
-
-logging:
-    level:
-        root: trace

@@ -1,7 +1,8 @@
 package com.walking.batch.service;
 
 import com.walking.batch.BatchMain;
-import com.walking.batch.service.dto.TrafficTimeLeftResponseDto;
+import com.walking.batch.traffic.service.TrafficTimeLeftApiServiceV2;
+import com.walking.batch.traffic.service.dto.TrafficTimeLeftVO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,6 @@ class TrafficTimeLeftApiServiceTest {
 
 	@Test
 	void example() {
-		Iterable<TrafficTimeLeftResponseDto> result = trafficTimeLeftApiService.request();
+		Iterable<TrafficTimeLeftVO> result = trafficTimeLeftApiService.request();
 	}
 }

@@ -13,6 +13,7 @@ spring:
       - member-api
       - image-store
       - s3
+      - batch
 
 walking:
     batch:
@@ -47,4 +48,11 @@ springdoc:
 
 logging:
     level:
-        root: debug
+        com.walking: DEBUG
+        org:
+            hibernate:
+                SQL: DEBUG
+                type:
+                    descriptor:
+                        sql:
+                            BasicBinder: TRACE

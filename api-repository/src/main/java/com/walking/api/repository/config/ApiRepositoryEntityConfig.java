@@ -1,6 +1,7 @@
 package com.walking.api.repository.config;
 
 import static com.walking.api.repository.config.ApiRepositoryDataSourceConfig.DATASOURCE_NAME;
+import static com.walking.data.config.DataJpaConfig.ENTITY_MANAGER_FACTORY_BUILDER;
 
 import com.walking.data.DataConfig;
 import com.walking.data.config.HibernatePropertyMapProvider;
@@ -12,11 +13,13 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.orm.hibernate5.SpringBeanContainer;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 
 @Configuration
 @RequiredArgsConstructor
+@Import(ApiRepositoryConfig.class)
 public class ApiRepositoryEntityConfig {
 	public static final String ENTITY_MANAGER_FACTORY_NAME =
 			ApiRepositoryConfig.BEAN_NAME_PREFIX + "EntityManagerFactory";
@@ -28,7 +31,7 @@ public class ApiRepositoryEntityConfig {
 	@Bean(name = ENTITY_MANAGER_FACTORY_NAME)
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
 			@Qualifier(value = DATASOURCE_NAME) DataSource dataSource,
-			EntityManagerFactoryBuilder builder,
+			@Qualifier(value = ENTITY_MANAGER_FACTORY_BUILDER) EntityManagerFactoryBuilder builder,
 			ConfigurableListableBeanFactory beanFactory) {
 
 		LocalContainerEntityManagerFactoryBean build =

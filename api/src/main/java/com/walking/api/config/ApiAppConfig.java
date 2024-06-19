@@ -1,11 +1,12 @@
 package com.walking.api.config;
 
+import com.walking.batch.config.BatchConfig;
 import com.walking.member.api.config.MemberApiConfig;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-@Import({MemberApiConfig.class})
+@Import({MemberApiConfig.class, BatchConfig.class})
 @Configuration
 @ComponentScan(basePackages = ApiAppConfig.BASE_PACKAGE)
 public class ApiAppConfig {
