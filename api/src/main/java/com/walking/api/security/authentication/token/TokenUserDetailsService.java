@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
@@ -28,7 +27,6 @@ public class TokenUserDetailsService implements UserDetailsService {
 	private final TokenResolver tokenResolver;
 
 	@Override
-	@Transactional
 	public UserDetails loadUserByUsername(String token) throws UsernameNotFoundException {
 		Claims claims =
 				tokenResolver
