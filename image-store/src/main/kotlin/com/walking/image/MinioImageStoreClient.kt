@@ -58,10 +58,10 @@ class MinioImageStoreClient(
                     minIoClient.putObject(args).let { owr ->
                         return ImageWriteResponse(
                             owr.bucket(),
-                            owr.region(),
+                            owr.region() ?: "",
                             owr.`object`(),
                             owr.etag(),
-                            owr.versionId()
+                            owr.versionId() ?: ""
                         )
                     }
                 } catch (e: Exception) {
