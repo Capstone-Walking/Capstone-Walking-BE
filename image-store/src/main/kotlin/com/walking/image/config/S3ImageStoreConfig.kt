@@ -18,7 +18,7 @@ class S3ImageStoreConfig(
     @Value("\${s3.access-key}") val accessKey: String,
     @Value("\${s3.secret-key}") val secretKey: String,
     @Value("\${s3.bucket-name}") val bucket: String,
-    @Value("\${s3.region}:ap-northeast-2") val region: String
+    @Value("\${s3.region}") val region: String
 ) {
 
     var log: Logger = LoggerFactory.getLogger(S3ImageStoreConfig::class.java)
