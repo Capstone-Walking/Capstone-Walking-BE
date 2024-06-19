@@ -1,8 +1,11 @@
 server:
     port: 8080
-
 # spring config
 spring:
+    servlet:
+        multipart:
+            max-file-size: 50MB
+            max-request-size: 50MB
     config:
         use-legacy-processing: true
     profiles:
@@ -14,7 +17,6 @@ spring:
             - image-store
             - s3
             - batch
-
 walking:
     batch:
         schedular:
