@@ -77,7 +77,6 @@ plugins {
 }
 
 apply from: './tasks/install-git-hooks.gradle'
-apply from: './tasks/set-git-commit-template.gradle'
 
 allprojects {
     apply plugin: 'com.diffplug.spotless'

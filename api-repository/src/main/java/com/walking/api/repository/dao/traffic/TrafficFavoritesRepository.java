@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TrafficFavoritesRepository extends JpaRepository<TrafficFavoritesEntity, Long> {
 
-	List<TrafficFavoritesEntity> findByMemberFk(MemberEntity memberFk);
+	List<TrafficFavoritesEntity> findByMemberFkAndDeletedFalse(MemberEntity memberFk);
 
 	Optional<TrafficFavoritesEntity> findByIdAndDeletedFalse(Long id);
 

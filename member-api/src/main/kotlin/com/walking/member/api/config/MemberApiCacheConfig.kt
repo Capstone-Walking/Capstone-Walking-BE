@@ -17,7 +17,7 @@ class MemberApiCacheConfig {
         SimpleCacheManager().apply {
             this.setCaches(
                 List.of(
-                    ConcurrentMapCache("member-profile-url")
+                    ConcurrentMapCache("member-profile")
                 )
             )
             return this

@@ -1,10 +1,10 @@
 package com.walking.member.api.usecase
 
-import com.walking.data.entity.member.MemberEntity
 import com.walking.image.service.GetPreSignedImageUrlService
 import com.walking.member.api.dao.MemberDao
+import com.walking.member.api.dto.GetMemberDetailUseCaseIn
 
-import com.walking.member.api.usecase.dto.response.GetMemberDetailUseCaseResponse
+import com.walking.member.api.dto.GetMemberDetailUseCaseOut
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
@@ -19,26 +19,16 @@ class GetMemberDetailUseCase(
     val log: Logger = LoggerFactory.getLogger(GetMemberDetailUseCase::class.java)
 
     @Transactional
-    @Cacheable(key = "#id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile-url"])
-    fun execute(id: Long): GetMemberDetailUseCaseResponse {
-        val member = memberRepository.findById(id) ?: throw IllegalArgumentException("Member not found")
+    @Cacheable(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
+    fun execute(useCaseIn: GetMemberDetailUseCaseIn): GetMemberDetailUseCaseOut {
+        val member = memberRepository.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")
         val id = member.id
         val nickName = member.nickName
         val certificationSubject = member.certificationSubject.name
         val status = member.status.name
-        var profile = getProfile(member)
-        println("GetMemberDetailUseCase.execute\n")
-        println("id: $id")
-        println("nickName: $nickName")
-        println("certificationSubject: $certificationSubject")
-        println("status: $status")
-        println("profile: $profile")
+        var profile = getProfile(member.profile)
 
-        if (profile.isEmpty() || profile == "") {
-            profile = "https://d2zed8vaz1decw.cloudfront.net/default/profiles/yellow.png"
-        }
-
-        return GetMemberDetailUseCaseResponse(
+        return GetMemberDetailUseCaseOut(
             id,
             nickName,
             profile,
@@ -47,12 +37,10 @@ class GetMemberDetailUseCase(
         )
     }
 
-    private fun getProfile(member: MemberEntity): String {
-        return try {
-            getPreSignedImageUrlService.execute(member.profile)
-        } catch (e: Exception) {
-            log.debug("Failed to get profile image: ${e.message}")
-            "" // todo fix 기본 이미지
+    private fun getProfile(profile: String): String {
+        if (profile.startsWith("http")) {
+            return profile
         }
+        return getPreSignedImageUrlService.execute(profile)
     }
 }

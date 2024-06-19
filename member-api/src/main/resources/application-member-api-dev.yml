@@ -21,3 +21,6 @@ kakao:
   redirect_uri: ${KAKO_APP_REDIRECT_URI}
   client_id: ${KAKO_APP_CLIENT_ID}
 
+walking:
+    default:
+        profiles: ${WALKING_DEFAULT_PROFILES}

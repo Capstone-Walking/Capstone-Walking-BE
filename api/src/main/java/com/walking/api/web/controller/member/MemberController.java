@@ -16,16 +16,21 @@ import com.walking.api.web.dto.response.member.PostMemberResponse;
 import com.walking.api.web.support.ApiResponse;
 import com.walking.api.web.support.ApiResponseGenerator;
 import com.walking.api.web.support.MessageCode;
+import com.walking.member.api.dto.DeleteMemberUseCaseIn;
+import com.walking.member.api.dto.DeleteMemberUseCaseOut;
+import com.walking.member.api.dto.GetMemberDetailUseCaseIn;
+import com.walking.member.api.dto.GetMemberDetailUseCaseOut;
+import com.walking.member.api.dto.GetMemberTokenDetailUseCaseIn;
+import com.walking.member.api.dto.GetMemberTokenDetailUseCaseOut;
+import com.walking.member.api.dto.PatchProfileImageUseCaseIn;
+import com.walking.member.api.dto.PatchProfileImageUseCaseOut;
+import com.walking.member.api.dto.PostMemberUseCaseIn;
+import com.walking.member.api.dto.PostMemberUseCaseOut;
 import com.walking.member.api.usecase.DeleteMemberUseCase;
 import com.walking.member.api.usecase.GetMemberDetailUseCase;
 import com.walking.member.api.usecase.GetMemberTokenDetailUseCase;
 import com.walking.member.api.usecase.PatchProfileImageUseCase;
 import com.walking.member.api.usecase.PostMemberUseCase;
-import com.walking.member.api.usecase.dto.response.DeleteMemberUseCaseResponse;
-import com.walking.member.api.usecase.dto.response.GetMemberDetailUseCaseResponse;
-import com.walking.member.api.usecase.dto.response.GetMemberTokenDetailUseCaseResponse;
-import com.walking.member.api.usecase.dto.response.PatchProfileImageUseCaseResponse;
-import com.walking.member.api.usecase.dto.response.PostMemberUseCaseResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -62,7 +67,8 @@ public class MemberController {
 	@PostMapping()
 	public ApiResponse<ApiResponse.SuccessBody<PostMemberResponse>> postMember(
 			@Valid @RequestBody PostMemberBody postMemberBody) {
-		PostMemberUseCaseResponse useCaseResponse = postMemberUseCase.execute(postMemberBody.getCode());
+		PostMemberUseCaseOut useCaseResponse =
+				postMemberUseCase.execute(new PostMemberUseCaseIn(postMemberBody.getCode()));
 		AuthToken authToken =
 				tokenGenerator.generateAuthToken(useCaseResponse.getId(), List.of(Roles.ROLE_USER));
 		PostMemberResponse response =
@@ -80,7 +86,8 @@ public class MemberController {
 	public ApiResponse<ApiResponse.SuccessBody<DeleteMemberResponse>> deleteMember(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
-		DeleteMemberUseCaseResponse useCaseResponse = deleteMemberUseCase.execute(memberId);
+		DeleteMemberUseCaseOut useCaseResponse =
+				deleteMemberUseCase.execute(new DeleteMemberUseCaseIn(memberId));
 		DeleteMemberResponse response =
 				DeleteMemberResponse.builder()
 						.id(useCaseResponse.getId())
@@ -93,7 +100,8 @@ public class MemberController {
 	public ApiResponse<ApiResponse.SuccessBody<GetMemberResponse>> getMember(
 			@AuthenticationPrincipal TokenUserDetails userDetails) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
-		GetMemberDetailUseCaseResponse useCaseResponse = getMemberDetailUseCase.execute(memberId);
+		GetMemberDetailUseCaseOut useCaseResponse =
+				getMemberDetailUseCase.execute(new GetMemberDetailUseCaseIn(memberId));
 		GetMemberResponse response =
 				GetMemberResponse.builder()
 						.id(useCaseResponse.getId())
@@ -110,8 +118,8 @@ public class MemberController {
 				tokenResolver
 						.resolveId(memberAuthTokenBody.getRefreshToken())
 						.orElseThrow(() -> new IllegalArgumentException("Invalid token"));
-		GetMemberTokenDetailUseCaseResponse useCaseResponse =
-				getMemberTokenDetailUseCase.execute(memberId);
+		GetMemberTokenDetailUseCaseOut useCaseResponse =
+				getMemberTokenDetailUseCase.execute(new GetMemberTokenDetailUseCaseIn(memberId));
 		AuthToken authToken =
 				tokenGenerator.generateAuthToken(useCaseResponse.getId(), List.of(Roles.ROLE_USER));
 		MemberTokenResponse response =
@@ -130,8 +138,8 @@ public class MemberController {
 		String suffix = patchProfileBody.getProfile().getOriginalFilename().split("\\.")[1];
 		File tempFile = File.createTempFile("temp_", "." + suffix);
 		patchProfileBody.getProfile().transferTo(tempFile);
-		PatchProfileImageUseCaseResponse useCaseResponse =
-				patchProfileImageUseCase.execute(memberId, tempFile);
+		PatchProfileImageUseCaseOut useCaseResponse =
+				patchProfileImageUseCase.execute(new PatchProfileImageUseCaseIn(memberId, tempFile));
 		tempFile.deleteOnExit();
 		PatchProfileResponse response =
 				PatchProfileResponse.builder()
