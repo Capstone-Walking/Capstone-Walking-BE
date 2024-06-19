@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class GetMemberTokenDetailUseCase(private val memberRepository: MemberDao) {
-    @Transactional(transactionManager = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
+    @Transactional(value = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     fun execute(useCaseIn: GetMemberTokenDetailUseCaseIn): GetMemberTokenDetailUseCaseOut {
         val member = memberRepository.findById(
             useCaseIn.id

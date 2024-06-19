@@ -17,7 +17,7 @@ class DeleteMemberUseCase(
     private val removeImageService: RemoveImageService,
     private val unlinkClientManager: SocialUnlinkClientManager
 ) {
-    @Transactional(transactionManager = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
+    @Transactional(value = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     @CacheEvict(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
     fun execute(useCaseIn: DeleteMemberUseCaseIn): DeleteMemberUseCaseOut {
         val member = memberRepository.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")

@@ -18,7 +18,7 @@ public class UpdateRoutePathNameUseCase {
 
 	private final PathFavoritesRepository pathFavoritesRepository;
 
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public void execute(UpdateRoutePathNameUseCaseIn in) {
 		pathFavoritesRepository.updatePathName(
 				MemberEntity.builder().id(in.getMemberId()).build(),

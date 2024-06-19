@@ -19,7 +19,7 @@ public class AddFavoriteTrafficUseCase {
 
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public boolean execute(AddFavoriteTrafficUseCaseIn request) {
 		TrafficFavoritesEntity entity =
 				TrafficFavoritesEntity.builder()

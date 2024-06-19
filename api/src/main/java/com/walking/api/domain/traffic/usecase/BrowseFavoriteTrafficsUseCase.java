@@ -28,7 +28,7 @@ public class BrowseFavoriteTrafficsUseCase {
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 	private final ObjectMapper objectMapper;
 
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public BrowseFavoriteTrafficsUseCaseOut execute(BrowseFavoriteTrafficsUseCaseIn request) {
 		List<TrafficFavoritesEntity> trafficFavorites =
 				trafficFavoritesRepository.findByMemberFkAndDeletedFalse(

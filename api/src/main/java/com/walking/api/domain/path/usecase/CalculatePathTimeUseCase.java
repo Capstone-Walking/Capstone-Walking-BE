@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true, transactionManager = TRANSACTION_MANAGER_NAME)
+@Transactional(readOnly = true, value = TRANSACTION_MANAGER_NAME)
 @Slf4j
 public class CalculatePathTimeUseCase {
 

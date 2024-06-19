@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true, transactionManager = TRANSACTION_MANAGER_NAME)
+@Transactional(readOnly = true, value = TRANSACTION_MANAGER_NAME)
 public class DeleteFavoriteRouteUseCase {
 
 	private final PathFavoritesRepository pathFavoritesRepository;

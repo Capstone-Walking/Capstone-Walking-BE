@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeleteFavoriteTrafficUseCase {
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public boolean execute(DeleteFavoriteTrafficUseCaseIn request) {
 		TrafficFavoritesEntity favoriteTraffic =
 				trafficFavoritesRepository

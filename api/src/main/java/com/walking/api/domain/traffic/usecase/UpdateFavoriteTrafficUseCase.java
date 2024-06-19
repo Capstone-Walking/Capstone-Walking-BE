@@ -17,7 +17,7 @@ public class UpdateFavoriteTrafficUseCase {
 
 	private final TrafficFavoritesRepository trafficFavoritesRepository;
 
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public boolean execute(UpdateFavoriteTrafficUseCaseIn request) {
 		TrafficFavoritesEntity favoriteTraffic =
 				trafficFavoritesRepository

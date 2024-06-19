@@ -19,7 +19,7 @@ class PostMemberUseCase(
     private val createKaKaoMemberService: PostKaKaoMemberService,
     private val memberRepository: MemberDao
 ) {
-    @Transactional(transactionManager = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
+    @Transactional(value = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     fun execute(useCaseIn: PostMemberUseCaseIn): PostMemberUseCaseOut {
         val socialMember = createKaKaoMemberService.execute(KMSQuery(useCaseIn.code))
 

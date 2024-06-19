@@ -19,7 +19,7 @@ class GetMemberDetailUseCase(
 ) {
     val log: Logger = LoggerFactory.getLogger(GetMemberDetailUseCase::class.java)
 
-    @Transactional(transactionManager = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
+    @Transactional(value = ApiRepositoryJpaConfig.TRANSACTION_MANAGER_NAME)
     @Cacheable(key = "#useCaseIn.id", cacheManager = "memberApiCacheManager", cacheNames = ["member-profile"])
     fun execute(useCaseIn: GetMemberDetailUseCaseIn): GetMemberDetailUseCaseOut {
         val member = memberRepository.findById(useCaseIn.id) ?: throw IllegalArgumentException("Member not found")

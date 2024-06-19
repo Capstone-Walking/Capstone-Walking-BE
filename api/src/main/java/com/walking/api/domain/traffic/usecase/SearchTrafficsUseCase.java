@@ -28,7 +28,7 @@ public class SearchTrafficsUseCase {
 
 	private final TrafficPredictService trafficPredictService;
 
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public SearchTrafficsUseCaseOut execute(SearchTrafficsUseCaseIn request) {
 		final Float vblLng = request.getVblLng();
 		final Float vblLat = request.getVblLat();

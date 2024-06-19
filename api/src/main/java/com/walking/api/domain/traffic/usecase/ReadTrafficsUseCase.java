@@ -34,7 +34,7 @@ public class ReadTrafficsUseCase {
 
 	private final TrafficPredictService trafficPredictService;
 
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public BrowseTrafficsUseCaseOut execute(BrowseTrafficsUseCaseIn request) {
 		final Long trafficId = request.getTrafficId();
 		final Long memberId = request.getMemberId();

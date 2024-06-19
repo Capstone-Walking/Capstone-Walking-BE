@@ -34,7 +34,7 @@ public class SavePathFavoritesUseCase {
 	private final TMapClient tMapClient;
 	private final ExtractPathTrafficInfoService extractPathTrafficInfoService;
 
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public void execute(SavePathFavoritesUseCaseIn in) {
 		TMapResponseDto tMapPathData =
 				getTMapPathData(in.getStartLat(), in.getStartLng(), in.getEndLat(), in.getEndLng());
@@ -57,7 +57,7 @@ public class SavePathFavoritesUseCase {
 	}
 
 	// todo 다른 객체로 분리
-	@Transactional(transactionManager = TRANSACTION_MANAGER_NAME)
+	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public void savePathFavoritesAndTrafficInFavorites(
 			SavePathFavoritesUseCaseIn request,
 			List<Point> traffics,
