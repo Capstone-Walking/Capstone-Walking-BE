@@ -25,6 +25,7 @@ dependencies {
 
     // spring cache
     implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.5'
 
     // jackson
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
