@@ -4,3 +4,25 @@ cd ../../resources/local-develop-environment
 docker-compose down
 docker-compose up -d
 sleep 10
+
+walking_mysql8_id=$(docker ps --filter "ancestor=mysql/mysql-server:8.0.27" -q)
+
+# 결과 출력
+echo $walking_mysql8_id
+
+docker exec -i $walking_mysql8_id mysql -uroot -proot api << EOF
+create table traffic (
+   id bigint not null auto_increment,
+    created_at datetime not null,
+    deleted bit not null,
+    updated_at datetime not null,
+    detail JSON not null,
+    name varchar(255) not null,
+    point_value POINT SRID 4326 not null,
+    primary key (id)
+) engine=InnoDB;
+EOF
+
+docker exec -i $walking_mysql8_id mysql -uroot -proot api << EOF
+SOURCE /bin/sql/sample-seoul-traffic.sql;
+EOF
