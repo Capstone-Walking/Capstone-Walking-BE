@@ -30,10 +30,10 @@ public class SearchTrafficsUseCase {
 
 	@Transactional(value = TRANSACTION_MANAGER_NAME)
 	public SearchTrafficsUseCaseOut execute(SearchTrafficsUseCaseIn request) {
-		final Float vblLng = request.getVblLng();
-		final Float vblLat = request.getVblLat();
-		final Float vtrLng = request.getVtrLng();
-		final Float vtrLat = request.getVtrLat();
+		final Double vblLng = request.getVblLng();
+		final Double vblLat = request.getVblLat();
+		final Double vtrLng = request.getVtrLng();
+		final Double vtrLat = request.getVtrLat();
 
 		List<Long> inBoundsTrafficIds =
 				trafficRepository.findTrafficWithinBounds(vblLng, vblLat, vtrLng, vtrLat).stream()

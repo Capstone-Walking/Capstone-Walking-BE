@@ -18,14 +18,14 @@ import lombok.ToString;
 @Builder
 public class ViewPointParam {
 	/* 화면 좌측 하단 위도 */
-	@LatParam private float vblLat;
+	@LatParam private double vblLat;
 
 	/* 화면 좌측 하단 경도 */
-	@LngParam private float vblLng;
+	@LngParam private double vblLng;
 
 	/* 화면 우측 상단 위도 */
-	@LatParam private float vtrLat;
+	@LatParam private double vtrLat;
 
 	/* 화면 우측 상단 경도 */
-	@LngParam private float vtrLng;
+	@LngParam private double vtrLng;
 }

@@ -79,8 +79,8 @@ public interface TrafficRepository extends JpaRepository<TrafficEntity, Long> {
 							+ ")",
 			nativeQuery = true)
 	List<TrafficEntity> findTrafficWithinBounds(
-			@Param("blLng") float blLng,
-			@Param("blLat") float blLat,
-			@Param("trLng") float trLng,
-			@Param("trLat") float trLat);
+			@Param("blLng") double blLng,
+			@Param("blLat") double blLat,
+			@Param("trLng") double trLng,
+			@Param("trLat") double trLat);
 }

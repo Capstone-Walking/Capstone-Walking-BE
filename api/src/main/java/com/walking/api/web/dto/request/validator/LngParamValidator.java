@@ -4,10 +4,10 @@ import java.util.Objects;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class LngParamValidator implements ConstraintValidator<LngParam, Float> {
+public class LngParamValidator implements ConstraintValidator<LngParam, Double> {
 
 	@Override
-	public boolean isValid(Float value, ConstraintValidatorContext context) {
+	public boolean isValid(Double value, ConstraintValidatorContext context) {
 		if (Objects.isNull(value)) {
 			addConstraintViolation(context, "lng is null");
 			return false;

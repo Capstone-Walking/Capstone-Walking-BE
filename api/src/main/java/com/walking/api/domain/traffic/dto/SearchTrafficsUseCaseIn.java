@@ -14,8 +14,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @Builder
 public class SearchTrafficsUseCaseIn {
-	private Float vblLng;
-	private Float vblLat;
-	private Float vtrLng;
-	private Float vtrLat;
+	private Double vblLng;
+	private Double vblLat;
+	private Double vtrLng;
+	private Double vtrLat;
 }

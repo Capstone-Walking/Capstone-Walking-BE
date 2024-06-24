@@ -4,10 +4,10 @@ import java.util.Objects;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class LatParamValidator implements ConstraintValidator<LatParam, Float> {
+public class LatParamValidator implements ConstraintValidator<LatParam, Double> {
 
 	@Override
-	public boolean isValid(Float value, ConstraintValidatorContext context) {
+	public boolean isValid(Double value, ConstraintValidatorContext context) {
 		if (Objects.isNull(value)) {
 			addConstraintViolation(context, "lat is null");
 			return false;
