@@ -38,7 +38,7 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 			value =
 					"    SELECT td1 "
 							+ "    FROM TrafficDetailEntity td1 "
-							+ "    WHERE td1.traffic in (:trafficIds) "
+							+ "    WHERE td1.traffic.id in (:trafficIds) "
 							+ "    AND td1.timeLeftRegDt = ( "
 							+ "    SELECT MAX(td2.timeLeftRegDt) "
 							+ "    FROM TrafficDetailEntity td2 "
