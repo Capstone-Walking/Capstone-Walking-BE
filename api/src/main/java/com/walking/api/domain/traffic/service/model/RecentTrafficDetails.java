@@ -8,13 +8,15 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @ToString
 @RequiredArgsConstructor
 public class RecentTrafficDetails {
 
-	private static final int SCHEDULER_INTERVAL = 70;
+	@Value("${walking.batch.schedular.interval}")
+	private int interval;
 
 	private final List<TrafficDetailEntity> trafficDetails;
 
@@ -66,11 +68,11 @@ public class RecentTrafficDetails {
 		float differenceInSeconds =
 				OffsetDateTimeCalculator.getDifferenceInSeconds(
 						before.getTimeLeftRegDt(), afterData.getTimeLeftRegDt());
-		return differenceInSeconds > 0 && differenceInSeconds < SCHEDULER_INTERVAL + bias;
+		return differenceInSeconds > 0 && differenceInSeconds < interval + bias;
 	}
 
 	private Optional<Float> calculateCycle(
 			TrafficDetailEntity before, TrafficDetailEntity afterData) {
-		return Optional.of(afterData.getTimeLeft() + SCHEDULER_INTERVAL - before.getTimeLeft());
+		return Optional.of(afterData.getTimeLeft() + interval - before.getTimeLeft());
 	}
 }
