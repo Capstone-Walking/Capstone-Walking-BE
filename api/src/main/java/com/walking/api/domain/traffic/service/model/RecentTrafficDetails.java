@@ -8,15 +8,13 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import org.springframework.beans.factory.annotation.Value;
 
 @Getter
 @ToString
 @RequiredArgsConstructor
 public class RecentTrafficDetails {
 
-	@Value("${walking.batch.schedular.interval}")
-	private int interval;
+	private final int interval;
 
 	private final List<TrafficDetailEntity> trafficDetails;
 

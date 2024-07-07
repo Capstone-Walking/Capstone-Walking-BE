@@ -26,6 +26,9 @@ public class TrafficCyclePredictor {
 	@Value("${walking.predict.dataInterval}")
 	private int predictInterval;
 
+	@Value("${walking.batch.schedular.interval:70}")
+	private int interval;
+
 	private final TrafficRepository trafficRepository;
 	private final TrafficDetailRepository trafficDetailRepository;
 
@@ -94,6 +97,6 @@ public class TrafficCyclePredictor {
 				.stream()
 				.collect(
 						Collectors.toMap(
-								Map.Entry::getKey, entry -> new RecentTrafficDetails(entry.getValue())));
+								Map.Entry::getKey, entry -> new RecentTrafficDetails(interval, entry.getValue())));
 	}
 }
