@@ -10,6 +10,11 @@ spring:
       username: root
       password: root
       driver-class-name: com.mysql.cj.jdbc.Driver
+      maximum-pool-size: 5
+      minimum-idle: 3
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
     schedular:
       interval: 70
     chunk:

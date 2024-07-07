@@ -2,6 +2,7 @@ package com.walking.batch.config;
 
 import static com.walking.batch.config.BatchConfig.BEAN_NAME_PREFIX;
 
+import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.batch.BatchDataSourceScriptDatabaseInitializer;
@@ -32,7 +33,7 @@ public class BatchDataSourceConfig {
 	@Bean(name = DATASOURCE_NAME)
 	@ConfigurationProperties(prefix = "spring.batch.datasource")
 	public DataSource dataSource() {
-		return DataSourceBuilder.create().build();
+		return DataSourceBuilder.create().type(HikariDataSource.class).build();
 	}
 
 	@Bean(name = TRANSACTION_MANAGER_NAME)
