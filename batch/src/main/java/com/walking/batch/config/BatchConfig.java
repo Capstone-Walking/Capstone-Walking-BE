@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.batch.BatchAutoConfiguration;
 import org.springframework.boot.autoconfigure.batch.BatchProperties;
 import org.springframework.boot.autoconfigure.batch.JobLauncherApplicationRunner;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +31,6 @@ public class BatchConfig {
 	public static final String PROPERTY_PREFIX = SERVICE_NAME + "." + MODULE_NAME;
 
 	@Bean
-	@ConditionalOnMissingBean
 	public JobLauncherApplicationRunner jobLauncherApplicationRunner(
 			JobLauncher jobLauncher,
 			JobExplorer jobExplorer,

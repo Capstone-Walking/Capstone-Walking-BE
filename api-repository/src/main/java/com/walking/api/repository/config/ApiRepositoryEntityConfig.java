@@ -1,14 +1,10 @@
 package com.walking.api.repository.config;
 
-import static com.walking.api.repository.config.ApiRepositoryDataSourceConfig.DATASOURCE_NAME;
-import static com.walking.data.config.DataJpaConfig.ENTITY_MANAGER_FACTORY_BUILDER;
-
+import com.walking.api.repository.config.jpa.HibernatePropertyMapProvider;
 import com.walking.data.DataConfig;
-import com.walking.data.config.HibernatePropertyMapProvider;
 import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.cfg.AvailableSettings;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
@@ -30,8 +26,8 @@ public class ApiRepositoryEntityConfig {
 
 	@Bean(name = ENTITY_MANAGER_FACTORY_NAME)
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-			@Qualifier(value = DATASOURCE_NAME) DataSource dataSource,
-			@Qualifier(value = ENTITY_MANAGER_FACTORY_BUILDER) EntityManagerFactoryBuilder builder,
+			DataSource dataSource,
+			EntityManagerFactoryBuilder builder,
 			ConfigurableListableBeanFactory beanFactory) {
 
 		LocalContainerEntityManagerFactoryBean build =

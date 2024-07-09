@@ -1,5 +1,7 @@
 package com.walking.batch.traffic.job;
 
+import static com.walking.batch.config.BatchDataSourceConfig.TRANSACTION_MANAGER_NAME;
+
 import com.walking.batch.traffic.service.TrafficColorApiServiceV2;
 import com.walking.batch.traffic.service.TrafficTimeLeftApiServiceV2;
 import com.walking.batch.traffic.step.dto.TrafficDetailDto;
@@ -37,7 +39,7 @@ public class TrafficInfoJobConfig {
 	private final int chunkSize;
 
 	public TrafficInfoJobConfig(
-			@Qualifier("batchApiTransactionManager") PlatformTransactionManager txm,
+			@Qualifier(TRANSACTION_MANAGER_NAME) PlatformTransactionManager txm,
 			@Value("${spring.batch.chunk.size}") int chunkSize,
 			JobBuilderFactory jobBuilderFactory,
 			StepBuilderFactory stepBuilderFactory,

@@ -1,6 +1,0 @@
-api:
-    datasource:
-        jdbc-url: ${DB_HOSTNAME}/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-        username: ${DB_USERNAME}
-        password: ${DB_PASSWORD}
-        driver-class-name: com.mysql.cj.jdbc.Driver

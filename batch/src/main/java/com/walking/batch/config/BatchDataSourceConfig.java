@@ -23,12 +23,10 @@ public class BatchDataSourceConfig {
 	private static final String BASE_PROPERTY_PREFIX = BatchConfig.PROPERTY_PREFIX;
 
 	// bean name for jpa datasource configuration
-	public static final String ENTITY_BEAN_NAME_PREFIX = BatchConfig.BEAN_NAME_PREFIX;
+	public static final String ENTITY_BEAN_NAME_PREFIX = BEAN_NAME_PREFIX;
 	public static final String TRANSACTION_MANAGER_NAME =
 			ENTITY_BEAN_NAME_PREFIX + "TransactionManager";
 	public static final String DATASOURCE_NAME = ENTITY_BEAN_NAME_PREFIX + "DataSource";
-	private static final String BATCH_DATA_SOURCE_SCRIPT_DATABASE_INITIALIZER_BEAN_NAME =
-			BEAN_NAME_PREFIX + "BatchDataSourceScriptDatabaseInitializer";
 
 	@Bean(name = DATASOURCE_NAME)
 	@ConfigurationProperties(prefix = "spring.batch.datasource")
@@ -41,10 +39,9 @@ public class BatchDataSourceConfig {
 		return new DataSourceTransactionManager(dataSource());
 	}
 
-	@Bean(name = BATCH_DATA_SOURCE_SCRIPT_DATABASE_INITIALIZER_BEAN_NAME)
+	@Bean
 	BatchDataSourceScriptDatabaseInitializer batchDataSourceInitializer(
-			@Qualifier(value = DATASOURCE_NAME) DataSource dataSource,
-			@Qualifier(value = BatchPropertyConfig.PROPERTY_BEAN_NAME) BatchProperties properties) {
+			@Qualifier(DATASOURCE_NAME) DataSource dataSource, BatchProperties properties) {
 		return new BatchDataSourceScriptDatabaseInitializer(dataSource, properties.getJdbc());
 	}
 }

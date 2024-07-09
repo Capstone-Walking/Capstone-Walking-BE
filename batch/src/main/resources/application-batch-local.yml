@@ -1,34 +1,27 @@
 spring:
-  datasource:
-    jdbc-url: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  batch:
-    datasource:
-      jdbcUrl: jdbc:mysql://localhost:13306/batch?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
-      username: root
-      password: root
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      maximum-pool-size: 5
-      minimum-idle: 3
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
-    schedular:
-      interval: 70
-    chunk:
-      size: 1000
-    jdbc:
-      initialize-schema: always
-    job:
-      enabled: false
-      names: ${job.name:NONE}
+    batch:
+        datasource:
+            jdbcUrl: jdbc:mysql://localhost:13306/batch?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+            username: root
+            password: root
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            maximum-pool-size: 5
+            minimum-idle: 3
+            connection-timeout: 30000
+            idle-timeout: 600000
+            max-lifetime: 1800000
+        chunk:
+            size: 1000
+        jdbc:
+            initialize-schema: always
+        job:
+            enabled: false
+            names: ${job.name:NONE}
 
 api:
-  traffic:
-    seoul:
-      apiKey: a16184ea-533f-4b10-b2c1-1a67757fcd93
-      baseUrl: http://t-data.seoul.go.kr
-      colorPath: /apig/apiman-gateway/tapi/v2xSignalPhaseInformation/1.0
-      timeLeftPath: /apig/apiman-gateway/tapi/v2xSignalPhaseTimingInformation/1.0
+    traffic:
+        seoul:
+            apiKey: a16184ea-533f-4b10-b2c1-1a67757fcd93
+            baseUrl: http://t-data.seoul.go.kr
+            colorPath: /apig/apiman-gateway/tapi/v2xSignalPhaseInformation/1.0
+            timeLeftPath: /apig/apiman-gateway/tapi/v2xSignalPhaseTimingInformation/1.0

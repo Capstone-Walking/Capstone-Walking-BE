@@ -41,21 +41,3 @@ security:
         exposed-headers: ${CORS_EXPOSED_HEADERS}
         allow-credentials: ${CORS_ALLOW_CREDENTIALS}
         max-age: ${CORS_MAX_AGE}
-
-# api docs config
-springdoc:
-    swagger-ui:
-        url: /docs/openapi3.yaml
-        path: /swagger
-
-logging:
-    level:
-        com.walking: DEBUG
-        org.springframework.cache: TRACE
-        org:
-            hibernate:
-                SQL: DEBUG
-                type:
-                    descriptor:
-                        sql:
-                            BasicBinder: TRACE

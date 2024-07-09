@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 @EnableAutoConfiguration(
@@ -16,10 +17,8 @@ import org.springframework.context.annotation.Configuration;
 			DataSourceTransactionManagerAutoConfiguration.class,
 		})
 public class ApiRepositoryDataSourceConfig {
-
-	public static final String DATASOURCE_NAME = ApiRepositoryConfig.BEAN_NAME_PREFIX + "DataSource";
-
-	@Bean(name = DATASOURCE_NAME)
+	@Primary
+	@Bean
 	@ConfigurationProperties(prefix = "api.datasource")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();

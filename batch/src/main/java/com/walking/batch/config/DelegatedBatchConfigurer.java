@@ -1,5 +1,8 @@
 package com.walking.batch.config;
 
+import static com.walking.batch.config.BatchDataSourceConfig.DATASOURCE_NAME;
+import static com.walking.batch.config.BatchDataSourceConfig.TRANSACTION_MANAGER_NAME;
+
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -9,21 +12,16 @@ import org.springframework.boot.autoconfigure.transaction.TransactionManagerCust
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Component(value = DelegatedBatchConfigurer.DELEGATED_BATCH_CONFIGURER_BEAN_NAME)
+@Component
 public class DelegatedBatchConfigurer extends JpaBatchConfigurer {
-
-	public static final String DELEGATED_BATCH_CONFIGURER_BEAN_NAME =
-			BatchConfig.BEAN_NAME_PREFIX + "Configurer";
-
 	public PlatformTransactionManager transactionManager;
 
 	public DelegatedBatchConfigurer(
-			@Qualifier(value = BatchPropertyConfig.PROPERTY_BEAN_NAME) BatchProperties properties,
-			@Qualifier(value = BatchDataSourceConfig.DATASOURCE_NAME) DataSource dataSource,
+			BatchProperties properties,
+			@Qualifier(DATASOURCE_NAME) DataSource dataSource,
 			TransactionManagerCustomizers transactionManagerCustomizers,
 			EntityManagerFactory entityManagerFactory,
-			@Qualifier(value = BatchDataSourceConfig.TRANSACTION_MANAGER_NAME)
-					PlatformTransactionManager transactionManager) {
+			@Qualifier(TRANSACTION_MANAGER_NAME) PlatformTransactionManager transactionManager) {
 		super(properties, dataSource, transactionManagerCustomizers, entityManagerFactory);
 		this.transactionManager = transactionManager;
 	}
