@@ -1,0 +1,125 @@
+server:
+    port: 8080
+# spring config
+spring:
+    servlet:
+        multipart:
+            max-file-size: 50MB
+            max-request-size: 50MB
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true
+                dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
+                order_inserts: true
+                order_updates: true
+                jdbc:
+                    batch_size: ${JDBC_BATCH_SIZE:50}
+    batch:
+        datasource:
+            jdbcUrl: ${DB_HOSTNAME}/batch?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+            username: ${DB_USERNAME}
+            password: ${DB_PASSWORD}
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            maximum-pool-size: 5
+            minimum-idle: 3
+            connection-timeout: 30000
+            idle-timeout: 600000
+            max-lifetime: 1800000
+        chunk:
+            size: 1000
+        jdbc:
+            initialize-schema: always
+        job:
+            enabled: false
+            names: ${job.name:NONE}
+api:
+    datasource:
+        jdbc-url: ${DB_HOSTNAME}/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    traffic:
+        seoul:
+            apiKey: ${SEOUL_API_KEY}
+            baseUrl: http://t-data.seoul.go.kr
+            colorPath: /apig/apiman-gateway/tapi/v2xSignalPhaseInformation/1.0
+            timeLeftPath: /apig/apiman-gateway/tapi/v2xSignalPhaseTimingInformation/1.0
+
+walking:
+    batch:
+        schedular:
+            interval: ${SCHEDULER_INTERVAL}
+    predict:
+        dataInterval: ${DATA_INTERVAL}
+        maximumSearchCount: ${MAXIMUM_SEARCH_COUNT}
+    default:
+        profiles: ${WALKING_DEFAULT_PROFILES}
+
+s3:
+    url: ${S3_URL}
+    access-key: ${S3_ACCESS_KEY}
+    secret-key: ${S3_SECRET_KEY}
+    bucket-name: ${S3_BUCKET_NAME}
+    region: ${S3_REGION}
+
+
+# security config
+security:
+    jwt:
+        token:
+            validtime:
+                access: ${ACCESS_TOKEN_VALIDTIME}
+                refresh: ${REFRESH_TOKEN_VALIDTIME}
+            secretkey: ${TOKEN_SECRETKEY}
+    cors:
+        path-patterns: ${CORS_PATH_PATTERNS}
+        origin-patterns: ${CORS_ORIGIN_PATTERNS}
+        allowed-methods: ${CORS_ALLOWED_METHODS}
+        allowed-headers: ${CORS_ALLOWED_HEADERS}
+        exposed-headers: ${CORS_EXPOSED_HEADERS}
+        allow-credentials: ${CORS_ALLOW_CREDENTIALS}
+        max-age: ${CORS_MAX_AGE}
+
+client:
+    max-attempts: ${CLIENT_MAX_ATTEMPTS:3}
+    pool:
+        max-connect: ${CLIENT_MAX_CONNECT:100}
+        max-connect-per-route: ${CLIENT_MAX_CONNECT_PER_ROUTE:5}
+    timeout:
+        connect: ${CLIENT_CONNECT_TIMEOUT:5000}
+        read: ${CLIENT_READ_TIMEOUT:5000}
+    retry:
+        maxAttempts: ${MAX_ATTEMPTS}
+        backOffPeriod: ${BACK_OFF_PERIOD}
+
+kakao:
+    host: ${KAKO_HOST}
+    adminKey: ${KAKO_ADMIN_KEY}
+    uri:
+        token: ${KAKO_TOKEN_URI}
+        token_info: ${KAKO_TOKEN_INFO_URI}
+        me_info: ${KAKO_ME_INFO_URI}
+        unlink: ${KAKO_UNLINK_URI}
+    redirect_uri: ${KAKO_APP_REDIRECT_URI}
+    client_id: ${KAKO_APP_CLIENT_ID}
+
+# api docs config
+springdoc:
+    swagger-ui:
+        url: /docs/openapi3.yaml
+        path: /swagger
+
+logging:
+    level:
+        com.walking: DEBUG
+        org.springframework.cache: TRACE
+        org:
+            hibernate:
+                SQL: DEBUG
+                type:
+                    descriptor:
+                        sql:
+                            BasicBinder: TRACE

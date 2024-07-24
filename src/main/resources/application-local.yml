@@ -1,0 +1,125 @@
+server:
+    port: 8080
+# spring config
+spring:
+    servlet:
+        multipart:
+            max-file-size: 50MB
+            max-request-size: 50MB
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true
+                dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
+                order_inserts: true
+                order_updates: true
+                jdbc:
+                    batch_size: 50
+    batch:
+        datasource:
+            jdbcUrl: jdbc:mysql://localhost:13306/batch?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+            username: root
+            password: root
+            driver-class-name: com.mysql.cj.jdbc.Driver
+            maximum-pool-size: 5
+            minimum-idle: 3
+            connection-timeout: 30000
+            idle-timeout: 600000
+            max-lifetime: 1800000
+        chunk:
+            size: 1000
+        jdbc:
+            initialize-schema: always
+        job:
+            enabled: false
+            names: ${job.name:NONE}
+api:
+    datasource:
+        jdbc-url: jdbc:mysql://localhost:13306/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+        username: root
+        password: root
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    traffic:
+        seoul:
+            apiKey: a16184ea-533f-4b10-b2c1-1a67757fcd93
+            baseUrl: http://t-data.seoul.go.kr
+            colorPath: /apig/apiman-gateway/tapi/v2xSignalPhaseInformation/1.0
+            timeLeftPath: /apig/apiman-gateway/tapi/v2xSignalPhaseTimingInformation/1.0
+
+walking:
+    batch:
+        schedular:
+            interval: 70
+    predict:
+        dataInterval: 20
+        maximumSearchCount: 5
+    default:
+        profiles: "red, blue, green"
+
+minio:
+    url: http://localhost:9000
+    access-key: thisisroot
+    secret-key: thisisroot
+    bucket-name: picture
+
+
+
+# security config
+security:
+    jwt:
+        token:
+            validtime:
+                access: 31557600000
+                refresh: 31557600000
+            secretkey: jwtsecretKeyhastolonghowlongidontknow
+    cors:
+        path-patterns: "/**"
+        origin-patterns: "http://localhost:3000"
+        allowed-methods: "*"
+        allowed-headers: "*"
+        exposed-headers: "Set-Cookie, Authorization, Content-Type, X-Requested-With, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Origin, Access-Control-Allow-Credentials"
+        allow-credentials: true
+        max-age: 1800
+
+client:
+    max-attempts: 3
+    pool:
+        max-connect: 100
+        max-connect-per-route: 5
+    timeout:
+        connect: 5000
+        read: 5000
+    retry:
+        maxAttempts: 3
+        backOffPeriod: 2000
+
+kakao:
+    host: https://kauth.kakao.com
+    adminKey: adminKey
+    uri:
+        token: https://kauth.kakao.com/oauth/token
+        token_info: https://kapi.kakao.com/v1/user/access_token_info
+        me_info: https://kapi.kakao.com/v2/user/me
+        unlink: https://kapi.kakao.com/v1/user/unlink
+    redirect_uri: http://localhost:8080/api/v1/social/kakao
+    client_id: thisIsKaKaoClientId
+
+# api docs config
+springdoc:
+    swagger-ui:
+        url: /docs/openapi3.yaml
+        path: /swagger
+
+logging:
+    level:
+        com.walking: DEBUG
+        org.springframework.cache: TRACE
+        org:
+            hibernate:
+                SQL: DEBUG
+                type:
+                    descriptor:
+                        sql:
+                            BasicBinder: TRACE
