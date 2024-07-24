@@ -1,6 +1,6 @@
 package com.walking.api.web.dto.response.route;
 
-import com.walking.api.domain.traffic.dto.detail.FavoriteRouteDetail;
+import com.walking.api.traffic.dto.detail.FavoriteRouteDetail;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

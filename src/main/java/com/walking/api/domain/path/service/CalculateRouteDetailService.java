@@ -7,12 +7,12 @@ import com.walking.api.domain.path.model.SearchPath.PathPrimaryVO;
 import com.walking.api.domain.path.service.dto.CRDQuery;
 import com.walking.api.domain.path.service.dto.PathTrafficVO;
 import com.walking.api.domain.path.service.dto.RouteDetailVO;
-import com.walking.api.domain.traffic.dto.detail.PointDetail;
-import com.walking.api.domain.traffic.service.TrafficPredictService;
-import com.walking.api.domain.traffic.service.dto.TPQuery;
-import com.walking.api.domain.traffic.service.dto.TPVO;
-import com.walking.api.domain.traffic.service.model.PredictedTraffic;
 import com.walking.api.domain.util.JsonParser;
+import com.walking.api.traffic.dto.detail.PointDetail;
+import com.walking.api.traffic.service.TrafficPredictService;
+import com.walking.api.traffic.service.dto.TPQuery;
+import com.walking.api.traffic.service.dto.TPVO;
+import com.walking.api.traffic.service.model.PredictTargetTraffic;
 import com.walking.api.web.dto.support.TrafficDetailConverter;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -53,8 +53,8 @@ public class CalculateRouteDetailService {
 					.departureTimes(new ArrayList<>())
 					.timeToFirstTraffic(primaryData.getUntilTrafficTime())
 					.totalDistance(primaryData.getTotalDistance())
-					.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
-					.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
+					.startPoint(new PointDetail(startLat, startLng))
+					.endPoint(new PointDetail(endLat, endLng))
 					.traffics(new ArrayList<>())
 					.trafficIdsInPath(new ArrayList<>())
 					.paths(convertLineStringToPointDetailList(lineString))
@@ -71,8 +71,8 @@ public class CalculateRouteDetailService {
 					.departureTimes(new ArrayList<>())
 					.timeToFirstTraffic(primaryData.getUntilTrafficTime())
 					.totalDistance(primaryData.getTotalDistance())
-					.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
-					.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
+					.startPoint(new PointDetail(startLat, startLng))
+					.endPoint(new PointDetail(endLat, endLng))
 					.traffics(new ArrayList<>())
 					.trafficIdsInPath(new ArrayList<>())
 					.paths(convertLineStringToPointDetailList(lineString))
@@ -86,22 +86,19 @@ public class CalculateRouteDetailService {
 		List<Long> firstTrafficId = new ArrayList<>();
 		firstTrafficId.add(firstTraffic.getId());
 
-		TPVO predictResponse =
-				trafficPredictService.execute(TPQuery.builder().trafficIds(firstTrafficId).build());
+		TPVO predictResponse = trafficPredictService.execute(new TPQuery(firstTrafficId));
 
-		Map<Long, PredictedTraffic> firestPredictedDataMap = predictResponse.getPredictedData();
+		Map<Long, PredictTargetTraffic> firestPredictedDataMap = predictResponse.getPredictedData();
 
 		// 모든 신호등에 대해
 		TPVO allPredictResponse =
 				trafficPredictService.execute(
-						TPQuery.builder()
-								.trafficIds(
-										pathTrafficVo.getTrafficsInPath().stream()
-												.map(TrafficEntity::getId)
-												.collect(Collectors.toList()))
-								.build());
+						new TPQuery(
+								pathTrafficVo.getTrafficsInPath().stream()
+										.map(TrafficEntity::getId)
+										.collect(Collectors.toList())));
 
-		Map<Long, PredictedTraffic> AllPredictedDataMap = allPredictResponse.getPredictedData();
+		Map<Long, PredictTargetTraffic> AllPredictedDataMap = allPredictResponse.getPredictedData();
 
 		LocalDateTime now = LocalDateTime.now();
 		// 처음 내가 지나가는 신호등의 예측 출발시간 3개
@@ -120,8 +117,8 @@ public class CalculateRouteDetailService {
 				.departureTimes(departureTimes)
 				.timeToFirstTraffic(primaryData.getUntilTrafficTime())
 				.totalDistance(primaryData.getTotalDistance())
-				.startPoint(PointDetail.builder().lat(startLat).lng(startLng).build())
-				.endPoint(PointDetail.builder().lat(endLat).lng(endLng).build())
+				.startPoint(new PointDetail(startLat, startLng))
+				.endPoint(new PointDetail(endLat, endLng))
 				.traffics(TrafficDetailConverter.execute(new ArrayList<>(AllPredictedDataMap.values())))
 				.trafficIdsInPath(
 						pathTrafficVo.getTrafficsInPath().stream()
@@ -131,14 +128,15 @@ public class CalculateRouteDetailService {
 				.build();
 	}
 
-	private void removeNullInPredictedDataMap(Map<Long, PredictedTraffic> firestPredictedDataMap) {
+	private void removeNullInPredictedDataMap(
+			Map<Long, PredictTargetTraffic> firestPredictedDataMap) {
 		// 내가 지나는 전부를 신호등을 특정한다.
-		Iterator<Map.Entry<Long, PredictedTraffic>> iterator =
+		Iterator<Map.Entry<Long, PredictTargetTraffic>> iterator =
 				firestPredictedDataMap.entrySet().iterator();
 		while (iterator.hasNext()) {
-			Map.Entry<Long, PredictedTraffic> entry = iterator.next();
-			PredictedTraffic predictedTraffic = entry.getValue();
-			if (predictedTraffic.getRedCycle().isEmpty()) {
+			Map.Entry<Long, PredictTargetTraffic> entry = iterator.next();
+			PredictTargetTraffic predictTargetTraffic = entry.getValue();
+			if (predictTargetTraffic.getRedCycle() == null) {
 				iterator.remove(); // redCycle이 null인 경우, 해당 Entry를 Map에서 제거
 			}
 		}
@@ -147,20 +145,19 @@ public class CalculateRouteDetailService {
 	public static List<PointDetail> convertLineStringToPointDetailList(LineString lineString) {
 		List<PointDetail> points = new ArrayList<>();
 		for (Coordinate coord : lineString.getCoordinates()) {
-			points.add(
-					PointDetail.builder().lat(coord.y).lng(coord.x).build()); // y is latitude, x is longitude
+			points.add(new PointDetail(coord.y, coord.x));
 		}
 		return points;
 	}
 
 	private List<LocalDateTime> calDepartureTimes(
-			Map<Long, PredictedTraffic> predictedDataMap,
+			Map<Long, PredictTargetTraffic> predictedDataMap,
 			TrafficEntity firstTraffic,
 			Integer untilFirstTrafficTime,
 			LocalDateTime now) {
 
-		PredictedTraffic predictedTraffic = predictedDataMap.get(firstTraffic.getId());
-		predictedTraffic.isAllPredicted();
+		PredictTargetTraffic predictTargetTraffic = predictedDataMap.get(firstTraffic.getId());
+		predictTargetTraffic.isAllPredicted();
 
 		TrafficColor currentColor;
 		Float currentTimeLeft;
@@ -168,10 +165,18 @@ public class CalculateRouteDetailService {
 		Float greenCycle;
 
 		try {
-			currentColor = predictedTraffic.getCurrentColor().orElseThrow();
-			currentTimeLeft = predictedTraffic.getCurrentTimeLeft().orElseThrow();
-			redCycle = predictedTraffic.getRedCycle().orElseThrow();
-			greenCycle = predictedTraffic.getGreenCycle().orElseThrow();
+			currentColor =
+					predictTargetTraffic.getCurrentColor() == null
+							? TrafficColor.RED
+							: predictTargetTraffic.getCurrentColor();
+			currentTimeLeft =
+					predictTargetTraffic.getCurrentTimeLeft() == null
+							? 0
+							: predictTargetTraffic.getCurrentTimeLeft();
+			redCycle =
+					predictTargetTraffic.getRedCycle() == null ? 0 : predictTargetTraffic.getRedCycle();
+			greenCycle =
+					predictTargetTraffic.getGreenCycle() == null ? 0 : predictTargetTraffic.getGreenCycle();
 		} catch (NoSuchElementException e) {
 			return new ArrayList<>();
 		}

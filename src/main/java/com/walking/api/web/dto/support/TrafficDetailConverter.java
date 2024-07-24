@@ -3,12 +3,12 @@ package com.walking.api.web.dto.support;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.walking.api.data.entity.traffic.TrafficEntity;
-import com.walking.api.domain.traffic.dto.detail.FavoriteTrafficDetail;
-import com.walking.api.domain.traffic.dto.detail.PointDetail;
-import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
-import com.walking.api.domain.traffic.dto.detail.TrafficDetailInfo;
-import com.walking.api.domain.traffic.service.model.PredictedTraffic;
+import com.walking.api.traffic.dto.detail.FavoriteTrafficDetail;
+import com.walking.api.traffic.dto.detail.PointDetail;
+import com.walking.api.traffic.dto.detail.TrafficDetail;
+import com.walking.api.traffic.dto.detail.TrafficDetailInfo;
+import com.walking.api.traffic.service.model.PredictTargetTraffic;
+import com.walking.api.traffic.service.model.TargetTrafficVO;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,34 +20,37 @@ public class TrafficDetailConverter {
 	/**
 	 * PredictedData를 기반으로 TrafficDetail를 생성합니다.
 	 *
-	 * @param predictedTraffic 사이클 정보 와 현재 색상 및 잔여시간을 예측한 데이터
+	 * @param predictTargetTraffic 사이클 정보 와 현재 색상 및 잔여시간을 예측한 데이터
 	 * @return 예측 값을 바탕으로 만든 TrafficDetail
 	 */
 	public TrafficDetail execute(
-			PredictedTraffic predictedTraffic, Optional<FavoriteTrafficDetail> favoriteTrafficDetail) {
+			PredictTargetTraffic predictTargetTraffic,
+			Optional<FavoriteTrafficDetail> favoriteTrafficDetail) {
 
-		TrafficEntity trafficEntity = predictedTraffic.getTraffic();
+		TargetTrafficVO trafficEntity = predictTargetTraffic.getTraffic();
 		boolean isFavorite = false;
 		String viewName = trafficEntity.getName();
 
 		if (favoriteTrafficDetail.isPresent()
-				&& favoriteTrafficDetail.get().getId().equals(trafficEntity.getId())) {
+				&& favoriteTrafficDetail.get().getId() == (trafficEntity.getId())) {
 			isFavorite = true;
 			viewName = favoriteTrafficDetail.get().getName();
 		}
 
-		return TrafficDetail.builder()
-				.id(trafficEntity.getId())
-				.color(predictedTraffic.getCurrentColorDescription())
-				.timeLeft(predictedTraffic.getCurrentTimeLeft().orElse(null))
-				.point(
-						PointDetail.builder().lng(trafficEntity.getLng()).lat(trafficEntity.getLat()).build())
-				.redCycle(predictedTraffic.getRedCycle().orElse(null))
-				.greenCycle(predictedTraffic.getGreenCycle().orElse(null))
-				.detail(convertToTrafficDetailInfo(trafficEntity))
-				.isFavorite(isFavorite)
-				.viewName(viewName)
-				.build();
+		return new TrafficDetail(
+				trafficEntity.getId(),
+				predictTargetTraffic.getCurrentColorDescription() == null
+						? ""
+						: predictTargetTraffic.getCurrentColorDescription(),
+				predictTargetTraffic.getCurrentTimeLeft() == null
+						? 0
+						: predictTargetTraffic.getCurrentTimeLeft(),
+				new PointDetail(trafficEntity.getPoint().getY(), trafficEntity.getPoint().getX()),
+				predictTargetTraffic.getRedCycle() == null ? 0 : predictTargetTraffic.getRedCycle(),
+				predictTargetTraffic.getGreenCycle() == null ? 0 : predictTargetTraffic.getGreenCycle(),
+				convertToTrafficDetailInfo(trafficEntity),
+				isFavorite,
+				viewName);
 	}
 
 	/**
@@ -56,26 +59,22 @@ public class TrafficDetailConverter {
 	 * @param predictedData 사이클 정보 와 현재 색상 및 잔여시간을 예측한 데이터 리스트
 	 * @return 예측 값을 바탕으로 만든 TrafficDetail의 List
 	 */
-	public List<TrafficDetail> execute(List<PredictedTraffic> predictedData) {
-
+	public List<TrafficDetail> execute(List<PredictTargetTraffic> predictedData) {
 		return predictedData.stream()
 				.map(
 						predictedDatum ->
-								TrafficDetail.builder()
-										.id(predictedDatum.getTraffic().getId())
-										.color(predictedDatum.getCurrentColorDescription())
-										.timeLeft(predictedDatum.getCurrentTimeLeft().orElse(null))
-										.point(
-												PointDetail.builder()
-														.lng(predictedDatum.getTraffic().getLng())
-														.lat(predictedDatum.getTraffic().getLat())
-														.build())
-										.redCycle(predictedDatum.getRedCycle().orElse(null))
-										.greenCycle(predictedDatum.getGreenCycle().orElse(null))
-										.detail(convertToTrafficDetailInfo(predictedDatum.getTraffic()))
-										.isFavorite(false)
-										.viewName(predictedDatum.getTraffic().getName())
-										.build())
+								new TrafficDetail(
+										predictedDatum.getTraffic().getId(),
+										predictedDatum.getCurrentColorDescription(),
+										predictedDatum.getCurrentTimeLeft(),
+										new PointDetail(
+												predictedDatum.getTraffic().getPoint().getY(),
+												predictedDatum.getTraffic().getPoint().getX()),
+										predictedDatum.getRedCycle(),
+										predictedDatum.getGreenCycle(),
+										convertToTrafficDetailInfo(predictedDatum.getTraffic()),
+										false,
+										predictedDatum.getTraffic().getName()))
 				.collect(Collectors.toList());
 	}
 
@@ -85,10 +84,9 @@ public class TrafficDetailConverter {
 	 * @param trafficEntity
 	 * @return
 	 */
-	private static TrafficDetailInfo convertToTrafficDetailInfo(TrafficEntity trafficEntity) {
+	private static TrafficDetailInfo convertToTrafficDetailInfo(TargetTrafficVO trafficEntity) {
 		ObjectMapper objectMapper = new ObjectMapper();
-		TrafficDetailInfo trafficDetailInfo =
-				TrafficDetailInfo.builder().trafficId(-1L).apiSource("ERROR").direction("ERROR").build();
+		TrafficDetailInfo trafficDetailInfo = new TrafficDetailInfo(-1L, "ERROR", "ERROR");
 		try {
 			trafficDetailInfo =
 					objectMapper.readValue(trafficEntity.getDetail(), TrafficDetailInfo.class);

@@ -1,23 +1,23 @@
 package com.walking.api.web.controller.traffic;
 
-import com.walking.api.domain.traffic.dto.AddFavoriteTrafficUseCaseIn;
-import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseIn;
-import com.walking.api.domain.traffic.dto.BrowseFavoriteTrafficsUseCaseOut;
-import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseIn;
-import com.walking.api.domain.traffic.dto.BrowseTrafficsUseCaseOut;
-import com.walking.api.domain.traffic.dto.DeleteFavoriteTrafficUseCaseIn;
-import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseIn;
-import com.walking.api.domain.traffic.dto.SearchTrafficsUseCaseOut;
-import com.walking.api.domain.traffic.dto.UpdateFavoriteTrafficUseCaseIn;
-import com.walking.api.domain.traffic.usecase.AddFavoriteTrafficUseCase;
-import com.walking.api.domain.traffic.usecase.BrowseFavoriteTrafficsUseCase;
-import com.walking.api.domain.traffic.usecase.DeleteFavoriteTrafficUseCase;
-import com.walking.api.domain.traffic.usecase.ReadTrafficsUseCase;
-import com.walking.api.domain.traffic.usecase.SearchTrafficsUseCase;
-import com.walking.api.domain.traffic.usecase.UpdateFavoriteTrafficUseCase;
 import com.walking.api.security.authentication.token.TokenUserDetails;
 import com.walking.api.security.authentication.token.TokenUserDetailsService;
 import com.walking.api.security.filter.token.AccessTokenResolver;
+import com.walking.api.traffic.dto.AddFavoriteTrafficUseCaseIn;
+import com.walking.api.traffic.dto.BrowseFavoriteTrafficsUseCaseIn;
+import com.walking.api.traffic.dto.BrowseFavoriteTrafficsUseCaseOut;
+import com.walking.api.traffic.dto.BrowseTrafficsUseCaseIn;
+import com.walking.api.traffic.dto.BrowseTrafficsUseCaseOut;
+import com.walking.api.traffic.dto.DeleteFavoriteTrafficUseCaseIn;
+import com.walking.api.traffic.dto.SearchTrafficsUseCaseIn;
+import com.walking.api.traffic.dto.SearchTrafficsUseCaseOut;
+import com.walking.api.traffic.dto.UpdateFavoriteTrafficUseCaseIn;
+import com.walking.api.traffic.usecase.AddFavoriteTrafficUseCase;
+import com.walking.api.traffic.usecase.BrowseFavoriteTrafficsUseCase;
+import com.walking.api.traffic.usecase.DeleteFavoriteTrafficUseCase;
+import com.walking.api.traffic.usecase.ReadTrafficsUseCase;
+import com.walking.api.traffic.usecase.SearchTrafficsUseCase;
+import com.walking.api.traffic.usecase.UpdateFavoriteTrafficUseCase;
 import com.walking.api.web.dto.request.point.ViewPointParam;
 import com.walking.api.web.dto.request.traffic.FavoriteTrafficBody;
 import com.walking.api.web.dto.request.traffic.PatchFavoriteTrafficNameBody;
@@ -65,12 +65,11 @@ public class TrafficController {
 	public ApiResponse<ApiResponse.SuccessBody<SearchTrafficsUseCaseOut>> searchTraffics(
 			@Valid ViewPointParam viewPointParam) {
 		SearchTrafficsUseCaseIn request =
-				SearchTrafficsUseCaseIn.builder()
-						.vblLng(viewPointParam.getVblLng())
-						.vblLat(viewPointParam.getVblLat())
-						.vtrLng(viewPointParam.getVtrLng())
-						.vtrLat(viewPointParam.getVtrLat())
-						.build();
+				new SearchTrafficsUseCaseIn(
+						viewPointParam.getVblLng(),
+						viewPointParam.getVblLat(),
+						viewPointParam.getVtrLng(),
+						viewPointParam.getVtrLat());
 		SearchTrafficsUseCaseOut response = searchTrafficsUseCase.execute(request);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
 	}
@@ -78,15 +77,14 @@ public class TrafficController {
 	@GetMapping("/{trafficId}")
 	public ApiResponse<ApiResponse.SuccessBody<BrowseTrafficsUseCaseOut>> readTraffic(
 			HttpServletRequest request, @PathVariable Long trafficId) {
-		BrowseTrafficsUseCaseIn useCaseRequest =
-				BrowseTrafficsUseCaseIn.builder().trafficId(trafficId).build();
+		BrowseTrafficsUseCaseIn useCaseRequest = new BrowseTrafficsUseCaseIn(trafficId, -1L);
 		String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
 		BrowseTrafficsUseCaseOut response = null;
 		if (Objects.nonNull(authorization)) {
 			String token = AccessTokenResolver.resolve(authorization);
 			UserDetails userDetails = tokenUserDetailsService.loadUserByUsername(token);
 			Long memberId = Long.valueOf(userDetails.getUsername());
-			useCaseRequest.setMemberId(memberId);
+			useCaseRequest = new BrowseTrafficsUseCaseIn(trafficId, memberId);
 		}
 		response = readTrafficsUseCase.execute(useCaseRequest);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
@@ -98,11 +96,8 @@ public class TrafficController {
 			@Valid @RequestBody FavoriteTrafficBody favoriteTrafficBody) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
 		addFavoriteTrafficUseCase.execute(
-				AddFavoriteTrafficUseCaseIn.builder()
-						.memberId(memberId)
-						.trafficId(favoriteTrafficBody.getTrafficId())
-						.trafficAlias(favoriteTrafficBody.getTrafficAlias())
-						.build());
+				new AddFavoriteTrafficUseCaseIn(
+						memberId, favoriteTrafficBody.getTrafficId(), favoriteTrafficBody.getTrafficAlias()));
 		return ApiResponseGenerator.success(HttpStatus.CREATED, MessageCode.RESOURCE_CREATED);
 	}
 
@@ -119,8 +114,7 @@ public class TrafficController {
 			throw new IllegalArgumentException("Authorization header is required.");
 		}
 
-		BrowseFavoriteTrafficsUseCaseIn useCaseRequest =
-				BrowseFavoriteTrafficsUseCaseIn.builder().memberId(memberId).build();
+		BrowseFavoriteTrafficsUseCaseIn useCaseRequest = new BrowseFavoriteTrafficsUseCaseIn(memberId);
 		BrowseFavoriteTrafficsUseCaseOut response =
 				browseFavoriteTrafficsUseCase.execute(useCaseRequest);
 		return ApiResponseGenerator.success(response, HttpStatus.OK, MessageCode.SUCCESS);
@@ -133,11 +127,8 @@ public class TrafficController {
 			@Valid @RequestBody PatchFavoriteTrafficNameBody patchFavoriteTrafficNameBody) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
 		updateFavoriteTrafficUseCase.execute(
-				UpdateFavoriteTrafficUseCaseIn.builder()
-						.memberId(memberId)
-						.favoriteTrafficId(trafficId)
-						.trafficAlias(patchFavoriteTrafficNameBody.getTrafficAlias())
-						.build());
+				new UpdateFavoriteTrafficUseCaseIn(
+						memberId, trafficId, patchFavoriteTrafficNameBody.getTrafficAlias()));
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_MODIFIED);
 	}
 
@@ -145,11 +136,7 @@ public class TrafficController {
 	public ApiResponse<ApiResponse.Success> deleteFavoriteTraffic(
 			@AuthenticationPrincipal TokenUserDetails userDetails, @Min(1) @PathVariable Long trafficId) {
 		Long memberId = Long.valueOf(userDetails.getUsername());
-		deleteFavoriteTrafficUseCase.execute(
-				DeleteFavoriteTrafficUseCaseIn.builder()
-						.memberId(memberId)
-						.favoriteTrafficId(trafficId)
-						.build());
+		deleteFavoriteTrafficUseCase.execute(new DeleteFavoriteTrafficUseCaseIn(memberId, trafficId));
 		return ApiResponseGenerator.success(HttpStatus.OK, MessageCode.RESOURCE_DELETED);
 	}
 }

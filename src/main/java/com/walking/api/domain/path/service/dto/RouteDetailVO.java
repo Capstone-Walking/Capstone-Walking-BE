@@ -1,7 +1,7 @@
 package com.walking.api.domain.path.service.dto;
 
-import com.walking.api.domain.traffic.dto.detail.PointDetail;
-import com.walking.api.domain.traffic.dto.detail.TrafficDetail;
+import com.walking.api.traffic.dto.detail.PointDetail;
+import com.walking.api.traffic.dto.detail.TrafficDetail;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;

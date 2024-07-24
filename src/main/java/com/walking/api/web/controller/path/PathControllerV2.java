@@ -15,9 +15,9 @@ import com.walking.api.domain.path.usecase.DeleteFavoriteRouteUseCase;
 import com.walking.api.domain.path.usecase.ReadFavoritesPathUseCase;
 import com.walking.api.domain.path.usecase.SavePathFavoritesUseCase;
 import com.walking.api.domain.path.usecase.UpdateRoutePathNameUseCase;
-import com.walking.api.domain.traffic.dto.detail.FavoriteRouteDetail;
-import com.walking.api.domain.traffic.dto.detail.PointDetail;
 import com.walking.api.security.authentication.token.TokenUserDetails;
+import com.walking.api.traffic.dto.detail.FavoriteRouteDetail;
+import com.walking.api.traffic.dto.detail.PointDetail;
 import com.walking.api.web.dto.request.OrderFilter;
 import com.walking.api.web.dto.request.path.FavoritePathBody;
 import com.walking.api.web.dto.request.path.PatchFavoritePathNameBody;
@@ -155,24 +155,15 @@ public class PathControllerV2 {
 				favoritesPaths.stream()
 						.map(
 								path ->
-										FavoriteRouteDetail.builder()
-												.id(path.getId())
-												.name(path.getName())
-												.startPoint(
-														PointDetail.builder()
-																.lat(path.getStartPoint().getX())
-																.lng(path.getStartPoint().getY())
-																.build())
-												.endPoint(
-														PointDetail.builder()
-																.lat(path.getEndPoint().getX())
-																.lng(path.getEndPoint().getY())
-																.build())
-												.createdAt(path.getCreatedAt())
-												.startAlias(path.getStartAlias())
-												.endAlias(path.getEndAlias())
-												.order(path.getOrder())
-												.build())
+										new FavoriteRouteDetail(
+												path.getId(),
+												path.getName(),
+												new PointDetail(path.getStartPoint().getX(), path.getStartPoint().getY()),
+												new PointDetail(path.getEndPoint().getX(), path.getEndPoint().getY()),
+												path.getCreatedAt(),
+												path.getStartAlias(),
+												path.getEndAlias(),
+												path.getOrder()))
 						.collect(Collectors.toList());
 		// BrowseFavoriteRouteResponse 객체 생성 및 반환
 		return BrowseFavoriteRouteResponse.builder().favoriteRoutes(favoritePoints).build();

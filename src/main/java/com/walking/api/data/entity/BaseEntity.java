@@ -44,6 +44,10 @@ public abstract class BaseEntity {
 	@Column(nullable = false)
 	private Boolean deleted = false;
 
+	public BaseEntity(Long id) {
+		this.id = id;
+	}
+
 	public void delete() {
 		this.deleted = true;
 	}

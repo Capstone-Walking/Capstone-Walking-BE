@@ -76,7 +76,8 @@ plugins {
 
 group = 'com.walking'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = "1.9"
+sourceCompatibility = "11"
+targetCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
@@ -169,4 +170,3 @@ dependencies {
     implementation "com.epages:restdocs-api-spec-mockmvc:${epagesRestDocsApiSpecVersion}"
     swaggerUI "org.webjars:swagger-ui:${swaggerUIVersion}"
 }
-targetCompatibility = JavaVersion.VERSION_1_9

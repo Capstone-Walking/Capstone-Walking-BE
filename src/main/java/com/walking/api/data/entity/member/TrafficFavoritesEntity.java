@@ -3,16 +3,11 @@ package com.walking.api.data.entity.member;
 import com.walking.api.data.entity.BaseEntity;
 import com.walking.api.data.entity.traffic.TrafficEntity;
 import javax.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.SQLDelete;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Entity
 @SuperBuilder(toBuilder = true)
 @Table(name = "traffic_favorites")
@@ -29,6 +24,12 @@ public class TrafficFavoritesEntity extends BaseEntity {
 
 	@Column(nullable = false, length = 50)
 	private String alias;
+
+	public TrafficFavoritesEntity(MemberEntity memberFk, TrafficEntity trafficFk, String alias) {
+		this.memberFk = memberFk;
+		this.trafficFk = trafficFk;
+		this.alias = alias;
+	}
 
 	// todo delete
 	public TrafficFavoritesEntity updateAlias(String alias) {

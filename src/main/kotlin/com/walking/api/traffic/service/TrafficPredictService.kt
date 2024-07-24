@@ -50,6 +50,8 @@ class TrafficPredictService(
             val predictTargetTraffic = PredictTargetTraffic(traffic)
             if (!recentTrafficDetails.isEmpty()) {
                 predictTargetTraffic.topTrafficDetail = recentTrafficDetails[0]
+                predictTargetTraffic.currentColor = recentTrafficDetails[0].color
+                predictTargetTraffic.currentTimeLeft = recentTrafficDetails[0].timeLeft
             }
             predictTargetTraffic.predictCycle(
                 RecentTrafficDetails(interval, recentTrafficDetails)
