@@ -17,7 +17,7 @@ public interface TrafficRepository extends JpaRepository<TrafficEntity, Long> {
 	// 주변 1km의 Polygon을 만들어 인덱스를 타도록
 	@Query(
 			value =
-					" WITH temp AS ( "
+					" WITH traffic_with_distance AS ( "
 							+ " SELECT *, ST_DISTANCE(t.point_value, ST_SRID(POINT(:longitude, :latitude), 4326)) AS distance "
 							+ " FROM traffic t "
 							+ " WHERE ST_Contains( "
@@ -27,10 +27,10 @@ public interface TrafficRepository extends JpaRepository<TrafficEntity, Long> {
 							+ ":latitude + 0.0113, ' ', :longitude - 0.009, ', ', "
 							+ ":latitude - 0.0113, ' ', :longitude - 0.009, ', ', "
 							+ ":latitude - 0.0113, ' ', :longitude + 0.009, '))'), 4326), t.point_value)) "
-							+ " SELECT * FROM temp t1 "
+							+ " SELECT * FROM traffic_with_distance t1 "
 							+ " WHERE distance = ("
 							+ " SELECT MIN(t2.distance) "
-							+ "  FROM temp t2)",
+							+ "  FROM traffic_with_distance t2)",
 			nativeQuery = true)
 	List<TrafficEntity> findClosetTrafficByLocation(
 			@Param("longitude") Double longitude, @Param("latitude") Double latitude);
@@ -46,25 +46,10 @@ public interface TrafficRepository extends JpaRepository<TrafficEntity, Long> {
 							+ ":latitude + 0.0113, ' ', :longitude - 0.009, ', ', "
 							+ ":latitude - 0.0113, ' ', :longitude - 0.009, ', ', "
 							+ ":latitude - 0.0113, ' ', :longitude + 0.009, '))'), 4326), t.point_value) "
-							+ " ORDER BY ST_DISTANCE(t.point_value, ST_SRID(POINT(:longitude, :latitude), 4326)) ASC limit 1 ",
+							+ " ORDER BY ST_DISTANCE(t.point_value, ST_SRID(POINT(:longitude, :latitude), 4326)) limit 1 ",
 			nativeQuery = true)
 	Optional<TrafficEntity> findClosestTraffic(
 			@Param("longitude") Double longitude, @Param("latitude") Double latitude);
-
-	@Query(
-			value =
-					"SELECT * FROM traffic "
-							+ "WHERE ST_Equals(point_value, "
-							+ "ST_PointFromText(CONCAT('POINT(', :lat, ' ', :lng, ')'), 4326))",
-			nativeQuery = true)
-	List<TrafficEntity> findByLocation(@Param("lat") Double lat, @Param("lng") Double lng);
-
-	@Query(
-			"SELECT t FROM TrafficEntity t "
-					+ "WHERE FUNCTION('ST_Distance_Sphere', t.point, "
-					+ "FUNCTION('ST_PointFromText', CONCAT('POINT(', :lat, ' ', :lng, ')'), 4326)) < :distance")
-	List<TrafficEntity> findByLocationAndDistance(
-			@Param("lat") Float lat, @Param("lng") Float lng, @Param("distance") Integer distance);
 
 	@Query(
 			value =

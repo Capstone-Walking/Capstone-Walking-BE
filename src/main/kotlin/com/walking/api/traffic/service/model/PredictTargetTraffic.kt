@@ -17,9 +17,12 @@ class PredictTargetTraffic(
 ) {
 
     /**
-     * 사이클 예측이 끝났는지 여부를 반환합니다.
+     * 사이클, 현재 신호 색상 및 잔여시간에 대해 모두 정상적으로 예측이 되었는지 판단합니다.
      */
-    val isPredictCycleSuccessful: Boolean
+    val isAllPredicted: Boolean
+        get() = isPredictCycleSuccessful && currentColor != null && currentTimeLeft!! > 0
+
+    private val isPredictCycleSuccessful: Boolean
         get() = isPredictedRedCycle && isPredictedGreenCycle
 
     private val isPredictedRedCycle: Boolean
@@ -27,12 +30,6 @@ class PredictTargetTraffic(
 
     private val isPredictedGreenCycle: Boolean
         get() = greenCycle != null
-
-    /**
-     * 사이클, 현재 신호 색상 및 잔여시간에 대해 모두 정상적으로 예측이 되었는지 판단합니다.
-     */
-    val isAllPredicted: Boolean
-        get() = isPredictCycleSuccessful && currentColor != null && currentTimeLeft!! > 0
 
     val currentColorDescription: String? =
         this.currentColor?.toString()

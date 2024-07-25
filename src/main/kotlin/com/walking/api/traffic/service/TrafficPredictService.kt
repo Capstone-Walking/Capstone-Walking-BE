@@ -48,7 +48,7 @@ class TrafficPredictService(
                 }
                 .collect(Collectors.toList())
             val predictTargetTraffic = PredictTargetTraffic(traffic)
-            if (!recentTrafficDetails.isEmpty()) {
+            if (recentTrafficDetails.isNotEmpty()) {
                 predictTargetTraffic.topTrafficDetail = recentTrafficDetails[0]
                 predictTargetTraffic.currentColor = recentTrafficDetails[0].color
                 predictTargetTraffic.currentTimeLeft = recentTrafficDetails[0].timeLeft
