@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.walking.api.data.entity.member.MemberEntity
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository
+import com.walking.api.repository.dao.traffic.TrafficRepository
 import com.walking.api.traffic.dto.BrowseTrafficsUseCaseIn
 import com.walking.api.traffic.dto.BrowseTrafficsUseCaseOut
 import com.walking.api.traffic.dto.detail.FavoriteTrafficDetail
@@ -18,6 +19,7 @@ import java.util.*
 @Service
 class ReadTrafficsUseCase(
     private val trafficFavoritesRepository: TrafficFavoritesRepository,
+    private val trafficRepository: TrafficRepository,
     private val objectMapper: ObjectMapper,
     private val trafficPredictService: TrafficPredictService
 ) {
@@ -53,15 +55,18 @@ class ReadTrafficsUseCase(
             return Optional.empty()
         }
         var detailInfo: TrafficDetailInfo? = null
+        val traffic = trafficRepository.findById(favoriteTraffic.get().trafficFk).orElseThrow()
         detailInfo = try {
-            objectMapper.readValue(
-                favoriteTraffic.get().trafficFk.detail,
-                TrafficDetailInfo::class.java
-            )
+            traffic.detail?.let {
+                objectMapper.readValue(
+                    it,
+                    TrafficDetailInfo::class.java
+                )
+            }
         } catch (e: JsonProcessingException) {
             throw RuntimeException(e)
         }
-        val point = favoriteTraffic.get().trafficFk.point
+        val point = traffic.point
         return Optional.of(
             FavoriteTrafficDetail(
                 favoriteTraffic.get().id,

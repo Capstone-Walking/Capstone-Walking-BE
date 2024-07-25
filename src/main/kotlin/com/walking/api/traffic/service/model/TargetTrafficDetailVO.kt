@@ -1,7 +1,7 @@
 package com.walking.api.traffic.service.model
 
-import com.walking.api.data.entity.traffic.constant.Direction
-import com.walking.api.data.entity.traffic.constant.TrafficColor
+import com.walking.api.data.entity.traffic.Direction
+import com.walking.api.data.entity.traffic.TrafficColor
 import java.time.OffsetDateTime
 
 data class TargetTrafficDetailVO(

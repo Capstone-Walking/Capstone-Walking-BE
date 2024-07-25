@@ -1,4 +1,4 @@
-package com.walking.api.data.entity.traffic.constant;
+package com.walking.api.data.entity.traffic;
 
 public enum TrafficColor {
 	RED,

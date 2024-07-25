@@ -1,7 +1,6 @@
 package com.walking.api.data.entity.path;
 
 import com.walking.api.data.entity.BaseEntity;
-import com.walking.api.data.entity.member.MemberEntity;
 import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -21,9 +20,8 @@ import org.locationtech.jts.geom.Point;
 @SQLDelete(sql = "UPDATE path_favorites SET deleted=true where id=?")
 public class PathFavoritesEntity extends BaseEntity {
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
-	private MemberEntity memberFk;
+	@Column(nullable = false)
+	private Long memberFk;
 
 	@Column(nullable = false, columnDefinition = "POINT SRID 4326")
 	private Point startPoint;
@@ -31,7 +29,7 @@ public class PathFavoritesEntity extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "POINT SRID 4326")
 	private Point endPoint;
 
-	@Column(nullable = false, columnDefinition = "LINESTRING SRID 0")
+	@Column(nullable = false, columnDefinition = "LINESTRING SRID 4326")
 	private LineString path;
 
 	@Column(nullable = false, length = 50)
@@ -46,8 +44,12 @@ public class PathFavoritesEntity extends BaseEntity {
 	@Column(nullable = false, name = "orders")
 	private Long order;
 
+	@Column(nullable = false)
 	private Integer untilFirstTrafficTime;
 
+	@Column(nullable = false)
 	private Integer totalTime;
+
+	@Column(nullable = false)
 	private Integer totalDistance;
 }

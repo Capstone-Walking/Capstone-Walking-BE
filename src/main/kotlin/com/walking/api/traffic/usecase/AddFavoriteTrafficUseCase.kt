@@ -1,8 +1,6 @@
 package com.walking.api.traffic.usecase
 
-import com.walking.api.data.entity.member.MemberEntity
 import com.walking.api.data.entity.member.TrafficFavoritesEntity
-import com.walking.api.data.entity.traffic.TrafficEntity
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository
 import com.walking.api.traffic.dto.AddFavoriteTrafficUseCaseIn
 import org.slf4j.LoggerFactory
@@ -14,8 +12,8 @@ class AddFavoriteTrafficUseCase(private val trafficFavoritesRepository: TrafficF
     @Transactional
     fun execute(request: AddFavoriteTrafficUseCaseIn): Boolean {
         val entity = TrafficFavoritesEntity(
-            MemberEntity(request.memberId),
-            TrafficEntity(request.trafficId),
+            request.memberId,
+            request.trafficId,
             request.trafficAlias
         )
         trafficFavoritesRepository.save(entity)

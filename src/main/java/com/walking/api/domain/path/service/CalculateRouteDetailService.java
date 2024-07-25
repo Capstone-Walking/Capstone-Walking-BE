@@ -1,8 +1,8 @@
 package com.walking.api.domain.path.service;
 
 import com.walking.api.data.entity.path.TrafficDirection;
+import com.walking.api.data.entity.traffic.TrafficColor;
 import com.walking.api.data.entity.traffic.TrafficEntity;
-import com.walking.api.data.entity.traffic.constant.TrafficColor;
 import com.walking.api.domain.path.model.SearchPath.PathPrimaryVO;
 import com.walking.api.domain.path.service.dto.CRDQuery;
 import com.walking.api.domain.path.service.dto.PathTrafficVO;

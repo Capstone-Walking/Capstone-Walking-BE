@@ -2,7 +2,6 @@ package com.walking.api.domain.path.usecase;
 
 // todo refactor path 패키지 내부 클래스를 사용하도록 수정
 
-import com.walking.api.data.entity.member.MemberEntity;
 import com.walking.api.data.entity.path.PathFavoritesEntity;
 import com.walking.api.data.entity.path.TrafficDirection;
 import com.walking.api.data.entity.path.TrafficInPathFavoritesEntity;
@@ -66,7 +65,7 @@ public class SavePathFavoritesUseCase {
 				pathFavoritesRepository.save(
 						PathFavoritesEntity.builder()
 								.path(lineString)
-								.memberFk(MemberEntity.builder().id(request.getMemberId()).build())
+								.memberFk(request.getMemberId())
 								.startPoint(createPoint(request.getStartLng(), request.getStartLat()))
 								.endPoint(createPoint(request.getEndLng(), request.getEndLat()))
 								.startAlias(request.getStartName())
@@ -80,7 +79,7 @@ public class SavePathFavoritesUseCase {
 
 		trafficInPathFavoritesRepository.save(
 				TrafficInPathFavoritesEntity.builder()
-						.pathFk(savedPathFavorites)
+						.pathFk(savedPathFavorites.getId())
 						.trafficPoints(traffics)
 						.trafficTypes(trafficDirections)
 						.build());

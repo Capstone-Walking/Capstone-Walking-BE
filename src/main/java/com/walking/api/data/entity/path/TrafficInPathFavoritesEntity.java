@@ -25,9 +25,8 @@ public class TrafficInPathFavoritesEntity extends BaseEntity {
 	@Convert(converter = PointListConverter.class)
 	private List<Point> trafficPoints;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
-	private PathFavoritesEntity pathFk;
+	@Column(nullable = false)
+	private Long pathFk;
 
 	@Convert(converter = TMapEnumListConverter.class)
 	private List<TrafficDirection> trafficTypes;

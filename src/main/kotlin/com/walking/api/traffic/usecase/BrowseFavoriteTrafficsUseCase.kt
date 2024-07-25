@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.walking.api.data.entity.member.MemberEntity
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository
+import com.walking.api.repository.dao.traffic.TrafficRepository
 import com.walking.api.traffic.dto.BrowseFavoriteTrafficsUseCaseIn
 import com.walking.api.traffic.dto.BrowseFavoriteTrafficsUseCaseOut
 import com.walking.api.traffic.dto.detail.FavoriteTrafficDetail
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class BrowseFavoriteTrafficsUseCase(
     private val trafficFavoritesRepository: TrafficFavoritesRepository,
+    private val trafficRepository: TrafficRepository,
     private val objectMapper: ObjectMapper
 ) {
     @Transactional
@@ -25,15 +27,18 @@ class BrowseFavoriteTrafficsUseCase(
         val details: MutableList<FavoriteTrafficDetail> = ArrayList()
         for (entity in trafficFavorites) {
             var detailInfo: TrafficDetailInfo? = null
+            val traffic = trafficRepository.findById(entity.trafficFk).orElseThrow()
             detailInfo = try {
-                objectMapper.readValue(
-                    entity.trafficFk.detail,
-                    TrafficDetailInfo::class.java
-                )
+                traffic.detail?.let {
+                    objectMapper.readValue(
+                        it,
+                        TrafficDetailInfo::class.java
+                    )
+                }
             } catch (e: JsonProcessingException) {
                 throw RuntimeException(e)
             }
-            val point = entity.trafficFk.point
+            val point = traffic.point
             details.add(
                 FavoriteTrafficDetail(
                     entity.id,

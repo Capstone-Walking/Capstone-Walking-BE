@@ -38,7 +38,7 @@ class TrafficPredictService(
                 .map { e: TrafficDetailEntity ->
                     TargetTrafficDetailVO(
                         e.id,
-                        e.traffic.id,
+                        e.traffic,
                         e.color,
                         e.timeLeft,
                         e.direction,
