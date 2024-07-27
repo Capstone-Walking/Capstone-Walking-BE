@@ -52,10 +52,6 @@ public class MemberEntity extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "json")
 	private String resource = "{}";
 
-	public MemberEntity(Long id) {
-		super(id);
-	}
-
 	public MemberEntity(String nickName, String profile, String certificationId) {
 		this.nickName = nickName;
 		this.profile = profile;

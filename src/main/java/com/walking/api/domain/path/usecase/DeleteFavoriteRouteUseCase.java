@@ -1,6 +1,5 @@
 package com.walking.api.domain.path.usecase;
 
-import com.walking.api.data.entity.member.MemberEntity;
 import com.walking.api.domain.path.dto.DeleteFavoriteRouteUseCaseIn;
 import com.walking.api.repository.dao.path.PathFavoritesRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +16,6 @@ public class DeleteFavoriteRouteUseCase {
 	private final PathFavoritesRepository pathFavoritesRepository;
 
 	public void execute(DeleteFavoriteRouteUseCaseIn in) {
-		pathFavoritesRepository.deleteByMemberFkAndId(
-				MemberEntity.builder().id(in.getMemberId()).build(), in.getPathId());
+		pathFavoritesRepository.deleteByMemberFkAndId(in.getMemberId(), in.getPathId());
 	}
 }

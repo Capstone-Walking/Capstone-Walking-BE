@@ -2,7 +2,6 @@ package com.walking.api.traffic.usecase
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.walking.api.data.entity.member.MemberEntity
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository
 import com.walking.api.repository.dao.traffic.TrafficRepository
 import com.walking.api.traffic.dto.BrowseFavoriteTrafficsUseCaseIn
@@ -21,9 +20,7 @@ class BrowseFavoriteTrafficsUseCase(
 ) {
     @Transactional
     fun execute(request: BrowseFavoriteTrafficsUseCaseIn): BrowseFavoriteTrafficsUseCaseOut {
-        val trafficFavorites = trafficFavoritesRepository.findByMemberFkAndDeletedFalse(
-            MemberEntity(request.memberId)
-        )
+        val trafficFavorites = trafficFavoritesRepository.findByMemberFkAndDeletedFalse(request.memberId)
         val details: MutableList<FavoriteTrafficDetail> = ArrayList()
         for (entity in trafficFavorites) {
             var detailInfo: TrafficDetailInfo? = null

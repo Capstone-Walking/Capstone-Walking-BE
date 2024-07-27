@@ -1,6 +1,5 @@
 package com.walking.api.domain.path.usecase;
 
-import com.walking.api.data.entity.member.MemberEntity;
 import com.walking.api.domain.path.dto.UpdateRoutePathNameUseCaseIn;
 import com.walking.api.repository.dao.path.PathFavoritesRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +18,6 @@ public class UpdateRoutePathNameUseCase {
 	@Transactional
 	public void execute(UpdateRoutePathNameUseCaseIn in) {
 		pathFavoritesRepository.updatePathName(
-				MemberEntity.builder().id(in.getMemberId()).build(),
-				in.getPathId(),
-				in.getName(),
-				in.getStartAlias(),
-				in.getEndAlias());
+				in.getMemberId(), in.getPathId(), in.getName(), in.getStartAlias(), in.getEndAlias());
 	}
 }

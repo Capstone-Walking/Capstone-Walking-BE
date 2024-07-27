@@ -1,6 +1,5 @@
 package com.walking.api.repository.dao.path;
 
-import com.walking.api.data.entity.member.MemberEntity;
 import com.walking.api.data.entity.path.PathFavoritesEntity;
 import com.walking.api.repository.dao.dto.response.PathFavoritesVo;
 import java.util.List;
@@ -19,7 +18,7 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 					+ " where pf.memberFk = :memberFk"
 					+ " order by pf.order desc ")
 	List<PathFavoritesVo> findPathFavoritesEntitiesByMemberFkOrderByOrderDesc(
-			@Param("memberFk") MemberEntity memberFk);
+			@Param("memberFk") Long memberFk);
 
 	@Query(
 			" select new  com.walking.api.repository.dao.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
@@ -27,15 +26,14 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 					+ " where pf.memberFk = :memberFk"
 					+ " order by pf.createdAt")
 	List<PathFavoritesVo> findPathFavoritesByMemberFkOrderByCreatedAt(
-			@Param("memberFk") MemberEntity memberFk);
+			@Param("memberFk") Long memberFk);
 
 	@Query(
 			" select new  com.walking.api.repository.dao.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
 					+ " from PathFavoritesEntity pf"
 					+ " where pf.memberFk = :memberFk"
 					+ " order by pf.name")
-	List<PathFavoritesVo> findPathFavoritesByMemberFkOrderByName(
-			@Param("memberFk") MemberEntity memberFk);
+	List<PathFavoritesVo> findPathFavoritesByMemberFkOrderByName(@Param("memberFk") Long memberFk);
 
 	@Query(
 			" select new  com.walking.api.repository.dao.dto.response.PathFavoritesVo(pf.id,pf.startPoint,pf.endPoint,pf.startAlias,pf.endAlias,pf.name,pf.createdAt)"
@@ -44,7 +42,7 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 					+ " and ( pf.name like concat('%',:name,'%') or pf.startAlias like concat('%',:name,'%')  or pf.endAlias like concat('%',:name,'%')) "
 					+ " order by pf.order desc")
 	List<PathFavoritesVo> findPathFavoritesByMemberFkAndFilterName(
-			@Param("memberFk") MemberEntity memberFk, @Param("name") String name);
+			@Param("memberFk") Long memberFk, @Param("name") String name);
 
 	@Query("select coalesce(max(pf.order) ,0)" + "from PathFavoritesEntity pf")
 	Long findMaxOrder();
@@ -55,11 +53,11 @@ public interface PathFavoritesRepository extends JpaRepository<PathFavoritesEnti
 			"update PathFavoritesEntity pf set pf.name = :name, pf.startAlias = :startAlias, pf.endAlias = :endAlias"
 					+ " where pf.memberFk = :memberFk and pf.id = :pathId")
 	Long updatePathName(
-			@Param("memberFk") MemberEntity memberFk,
+			@Param("memberFk") Long memberFk,
 			@Param("pathId") Long pathId,
 			@Param("name") String name,
 			@Param("startAlias") String startAlias,
 			@Param("endAlias") String endAlias);
 
-	void deleteByMemberFkAndId(MemberEntity memberId, Long pathId);
+	void deleteByMemberFkAndId(Long memberId, Long pathId);
 }

@@ -32,7 +32,7 @@ public class ReadFavoritesPathUseCase {
 		}
 		List<PathFavoritesVo> pathFavorites =
 				pathFavoritesRepository.findPathFavoritesByMemberFkAndFilterName(
-						memberRepository.findById(in.getMemberId()).get(), in.getName());
+						in.getMemberId(), in.getName());
 
 		return mappedFavoritesPathOrder(pathFavorites);
 	}
@@ -40,19 +40,16 @@ public class ReadFavoritesPathUseCase {
 	private List<ReadFavoritesPathUseCaseOut> doExecute(Long memberId, OrderFilter orderFilter) {
 		if (orderFilter == OrderFilter.NAME) {
 			return mappedFavoritesPathOrder(
-					pathFavoritesRepository.findPathFavoritesByMemberFkOrderByName(
-							memberRepository.findById(memberId).get()));
+					pathFavoritesRepository.findPathFavoritesByMemberFkOrderByName(memberId));
 		}
 		if (orderFilter == OrderFilter.CREATEDAT) {
 			return mappedFavoritesPathOrder(
-					pathFavoritesRepository.findPathFavoritesByMemberFkOrderByCreatedAt(
-							memberRepository.findById(memberId).get()));
+					pathFavoritesRepository.findPathFavoritesByMemberFkOrderByCreatedAt(memberId));
 		}
 
 		if (orderFilter == OrderFilter.ORDER) {
 			return mappedFavoritesPathOrder(
-					pathFavoritesRepository.findPathFavoritesEntitiesByMemberFkOrderByOrderDesc(
-							memberRepository.findById(memberId).get()));
+					pathFavoritesRepository.findPathFavoritesEntitiesByMemberFkOrderByOrderDesc(memberId));
 		}
 
 		throw new IllegalArgumentException("잘못된 OrderFilter입니다.");

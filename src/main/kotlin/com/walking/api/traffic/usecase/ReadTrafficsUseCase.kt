@@ -2,7 +2,6 @@ package com.walking.api.traffic.usecase
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.walking.api.data.entity.member.MemberEntity
 import com.walking.api.repository.dao.traffic.TrafficFavoritesRepository
 import com.walking.api.repository.dao.traffic.TrafficRepository
 import com.walking.api.traffic.dto.BrowseTrafficsUseCaseIn
@@ -49,7 +48,7 @@ class ReadTrafficsUseCase(
     ): Optional<FavoriteTrafficDetail> {
         val favoriteTraffic = trafficFavoritesRepository.findByIdAndMemberFkAndDeletedFalse(
             trafficId,
-            MemberEntity(memberId)
+            memberId
         )
         if (favoriteTraffic.isEmpty) {
             return Optional.empty()
