@@ -47,15 +47,8 @@ class TrafficPredictService(
                     )
                 }
                 .collect(Collectors.toList())
-            val predictTargetTraffic = PredictTargetTraffic(traffic)
-            if (recentTrafficDetails.isNotEmpty()) {
-                predictTargetTraffic.topTrafficDetail = recentTrafficDetails[0]
-                predictTargetTraffic.currentColor = recentTrafficDetails[0].color
-                predictTargetTraffic.currentTimeLeft = recentTrafficDetails[0].timeLeft
-            }
-            predictTargetTraffic.predictCycle(
-                RecentTrafficDetails(interval, recentTrafficDetails)
-            )
+            val predictTargetTraffic = PredictTargetTraffic(traffic, RecentTrafficDetails(interval, recentTrafficDetails))
+            predictTargetTraffic.predictCycle()
             trafficPredictTargets.addTraffic(predictTargetTraffic)
         }
         val now = OffsetDateTime.now()

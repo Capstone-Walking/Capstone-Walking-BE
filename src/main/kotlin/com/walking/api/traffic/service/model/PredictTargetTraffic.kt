@@ -9,39 +9,45 @@ import kotlin.math.abs
 
 class PredictTargetTraffic(
     val traffic: TargetTrafficVO,
+    val recentTrafficDetails: RecentTrafficDetails,
     var topTrafficDetail: TargetTrafficDetailVO? = null,
     var redCycle: Float? = null,
     var greenCycle: Float? = null,
     var currentColor: TrafficColor? = null,
     var currentTimeLeft: Float? = null
 ) {
+    constructor(traffic: TargetTrafficVO, recentTrafficDetails: RecentTrafficDetails) : this(traffic, recentTrafficDetails, null, null, null, null, null) {
+        this.topTrafficDetail = recentTrafficDetails.getTopTrafficDetail()
+        this.currentColor = recentTrafficDetails.getCurrentColor()
+        this.currentTimeLeft = recentTrafficDetails.getCurrentTimeLeft()
+    }
 
     /**
      * 사이클, 현재 신호 색상 및 잔여시간에 대해 모두 정상적으로 예측이 되었는지 판단합니다.
      */
-    val isAllPredicted: Boolean
-        get() = isPredictCycleSuccessful && currentColor != null && currentTimeLeft!! > 0
+    fun isAllPredicted(): Boolean {
+        return isPredictCycleSuccessful() && currentColor != null && currentTimeLeft!! > 0
+    }
 
-    private val isPredictCycleSuccessful: Boolean
-        get() = isPredictedRedCycle && isPredictedGreenCycle
+    private fun isPredictCycleSuccessful(): Boolean {
+        return isPredictedRedCycle() && isPredictedGreenCycle()
+    }
 
-    private val isPredictedRedCycle: Boolean
-        get() = redCycle != null
+    private fun isPredictedRedCycle(): Boolean {
+        return redCycle != null
+    }
 
-    private val isPredictedGreenCycle: Boolean
-        get() = greenCycle != null
+    private fun isPredictedGreenCycle(): Boolean {
+        return greenCycle != null
+    }
 
-    fun predictCycle(recentTrafficDetails: RecentTrafficDetails) {
-        if (!isPredictedGreenCycle) {
-            this.updateGreenCycle(recentTrafficDetails.predictGreenCycle())
-        }
-        if (!isPredictedRedCycle) {
-            this.updateRedCycle(recentTrafficDetails.predictRedCycle())
-        }
+    fun predictCycle() {
+        this.updateGreenCycle(recentTrafficDetails.predictGreenCycle())
+        this.updateRedCycle(recentTrafficDetails.predictRedCycle())
     }
 
     fun doPredict(standardTime: OffsetDateTime): Boolean {
-        if (!this.isPredictCycleSuccessful) {
+        if (!this.isPredictCycleSuccessful()) {
             return false
         }
         if (this.topTrafficDetail == null) {
@@ -84,20 +90,20 @@ class PredictTargetTraffic(
         return seconds + nanoSeconds / 1000000000.0f
     }
 
-    private fun updateRedCycle(redCycle: Optional<Float>) {
-        if (redCycle.isEmpty || redCycle.get() < 0 || redCycle.get() > 1000) {
+    private fun updateRedCycle(redCycle: Float?) {
+        if ((redCycle == null) || (redCycle < 0) || (redCycle > 1000)) {
             this.redCycle = null
             return
         }
-        this.redCycle = redCycle.orElse(null)
+        redCycle.also { this.redCycle = it }
     }
 
-    private fun updateGreenCycle(greenCycle: Optional<Float>) {
-        if (greenCycle.isEmpty || greenCycle.get() < 0 || greenCycle.get() > 1000) {
+    private fun updateGreenCycle(greenCycle: Float?) {
+        if ((greenCycle == null) || (greenCycle < 0) || (greenCycle > 1000)) {
             this.greenCycle = null
             return
         }
-        this.greenCycle = greenCycle.orElse(null)
+        greenCycle.also { this.greenCycle = it }
     }
 
     private fun updateCurrentColor(color: TrafficColor?) {

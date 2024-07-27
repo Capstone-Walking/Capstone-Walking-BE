@@ -1,14 +1,38 @@
 package com.walking.api.traffic.service.model
 
+import com.walking.api.data.entity.traffic.TrafficColor
 import java.time.Duration
 import java.time.OffsetDateTime
 import java.util.*
 import kotlin.math.max
 
 class RecentTrafficDetails(private val interval: Int, private val trafficDetails: List<TargetTrafficDetailVO>) {
+    fun getTopTrafficDetail(): TargetTrafficDetailVO? {
+        return if (trafficDetails.isNotEmpty()) {
+            trafficDetails[0]
+        } else {
+            null
+        }
+    }
 
-    fun predictRedCycle(): Optional<Float> {
-        var redCycle = Optional.empty<Float>()
+    fun getCurrentColor(): TrafficColor? {
+        return if (trafficDetails.isNotEmpty()) {
+            trafficDetails[0].color
+        } else {
+            null
+        }
+    }
+
+    fun getCurrentTimeLeft(): Float? {
+        return if (trafficDetails.isNotEmpty()) {
+            trafficDetails[0].timeLeft
+        } else {
+            null
+        }
+    }
+
+    fun predictRedCycle(): Float? {
+        var redCycle: Float? = null
         val iterator = trafficDetails.iterator()
         if (!iterator.hasNext()) {
             return redCycle
@@ -18,11 +42,9 @@ class RecentTrafficDetails(private val interval: Int, private val trafficDetails
                 val beforeData = iterator.next()
                 if (isGreenToRedPattern(beforeData, afterData)) {
                     val calculateCycle = calculateCycle(beforeData, afterData)
-                    if (redCycle.isPresent && calculateCycle.isPresent) {
+                    if (!Objects.isNull(redCycle)) {
                         /** redCycle을 정확히 계산하지 못하더라고 최대 redCycle을 저장하여 사용 */
-                        redCycle = Optional.of(
-                            max(redCycle.get().toDouble(), calculateCycle.get().toDouble()).toFloat()
-                        )
+                        redCycle = max(redCycle!!.toDouble(), calculateCycle.toDouble()).toFloat()
                     }
                     redCycle = calculateCycle
                     if (!checkMissingDataBetween(beforeData, afterData)) {
@@ -35,8 +57,8 @@ class RecentTrafficDetails(private val interval: Int, private val trafficDetails
         }
     }
 
-    fun predictGreenCycle(): Optional<Float> {
-        var greenCycle = Optional.empty<Float>()
+    fun predictGreenCycle(): Float? {
+        var greenCycle: Float? = null
         val iterator = trafficDetails.iterator()
         if (!iterator.hasNext()) {
             return greenCycle
@@ -46,11 +68,9 @@ class RecentTrafficDetails(private val interval: Int, private val trafficDetails
                 val beforeData = iterator.next()
                 if (isRedToGreenPattern(beforeData, afterData)) {
                     val calculateCycle = calculateCycle(beforeData, afterData)
-                    if (greenCycle.isPresent && calculateCycle.isPresent) {
-                        greenCycle = Optional.of(
-                            max(greenCycle.get().toDouble(), calculateCycle.get().toDouble())
-                                .toFloat()
-                        )
+                    if (!Objects.isNull(greenCycle)) {
+                        /** greenCycle을 정확히 계산하지 못하더라고 최대 greenCycle을 저장하여 사용 */
+                        greenCycle = max(greenCycle!!.toDouble(), calculateCycle.toDouble()).toFloat()
                     }
                     greenCycle = calculateCycle
                     if (!checkMissingDataBetween(beforeData, afterData)) {
@@ -89,7 +109,7 @@ class RecentTrafficDetails(private val interval: Int, private val trafficDetails
         return differenceInSeconds > 0 && differenceInSeconds < interval + bias
     }
 
-    fun getDifferenceInSeconds(start: OffsetDateTime?, end: OffsetDateTime?): Float {
+    private fun getDifferenceInSeconds(start: OffsetDateTime?, end: OffsetDateTime?): Float {
         val duration = Duration.between(start, end)
         val seconds = duration.seconds
         val nanoSeconds = duration.nano
@@ -99,7 +119,7 @@ class RecentTrafficDetails(private val interval: Int, private val trafficDetails
     private fun calculateCycle(
         before: TargetTrafficDetailVO,
         afterData: TargetTrafficDetailVO
-    ): Optional<Float> {
-        return Optional.of(afterData.timeLeft + interval - before.timeLeft)
+    ): Float {
+        return afterData.timeLeft + interval - before.timeLeft
     }
 }
