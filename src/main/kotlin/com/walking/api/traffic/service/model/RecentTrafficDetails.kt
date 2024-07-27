@@ -10,49 +10,57 @@ class RecentTrafficDetails(private val interval: Int, private val trafficDetails
     fun predictRedCycle(): Optional<Float> {
         var redCycle = Optional.empty<Float>()
         val iterator = trafficDetails.iterator()
-        var afterData = iterator.next()
-        while (iterator.hasNext()) {
-            val beforeData = iterator.next()
-            if (isGreenToRedPattern(beforeData, afterData)) {
-                val calculateCycle = calculateCycle(beforeData, afterData)
-                if (redCycle.isPresent && calculateCycle.isPresent) {
-                    /** redCycle을 정확히 계산하지 못하더라고 최대 redCycle을 저장하여 사용 */
-                    redCycle = Optional.of(
-                        max(redCycle.get().toDouble(), calculateCycle.get().toDouble()).toFloat()
-                    )
+        if (!iterator.hasNext()) {
+            return redCycle
+        } else {
+            var afterData = iterator.next()
+            while (iterator.hasNext()) {
+                val beforeData = iterator.next()
+                if (isGreenToRedPattern(beforeData, afterData)) {
+                    val calculateCycle = calculateCycle(beforeData, afterData)
+                    if (redCycle.isPresent && calculateCycle.isPresent) {
+                        /** redCycle을 정확히 계산하지 못하더라고 최대 redCycle을 저장하여 사용 */
+                        redCycle = Optional.of(
+                            max(redCycle.get().toDouble(), calculateCycle.get().toDouble()).toFloat()
+                        )
+                    }
+                    redCycle = calculateCycle
+                    if (!checkMissingDataBetween(beforeData, afterData)) {
+                        break
+                    }
                 }
-                redCycle = calculateCycle
-                if (!checkMissingDataBetween(beforeData, afterData)) {
-                    break
-                }
+                afterData = beforeData
             }
-            afterData = beforeData
+            return redCycle
         }
-        return redCycle
     }
 
     fun predictGreenCycle(): Optional<Float> {
         var greenCycle = Optional.empty<Float>()
         val iterator = trafficDetails.iterator()
-        var afterData = iterator.next()
-        while (iterator.hasNext()) {
-            val beforeData = iterator.next()
-            if (isRedToGreenPattern(beforeData, afterData)) {
-                val calculateCycle = calculateCycle(beforeData, afterData)
-                if (greenCycle.isPresent && calculateCycle.isPresent) {
-                    greenCycle = Optional.of(
-                        max(greenCycle.get().toDouble(), calculateCycle.get().toDouble())
-                            .toFloat()
-                    )
+        if (!iterator.hasNext()) {
+            return greenCycle
+        } else {
+            var afterData = iterator.next()
+            while (iterator.hasNext()) {
+                val beforeData = iterator.next()
+                if (isRedToGreenPattern(beforeData, afterData)) {
+                    val calculateCycle = calculateCycle(beforeData, afterData)
+                    if (greenCycle.isPresent && calculateCycle.isPresent) {
+                        greenCycle = Optional.of(
+                            max(greenCycle.get().toDouble(), calculateCycle.get().toDouble())
+                                .toFloat()
+                        )
+                    }
+                    greenCycle = calculateCycle
+                    if (!checkMissingDataBetween(beforeData, afterData)) {
+                        break
+                    }
                 }
-                greenCycle = calculateCycle
-                if (!checkMissingDataBetween(beforeData, afterData)) {
-                    break
-                }
+                afterData = beforeData
             }
-            afterData = beforeData
+            return greenCycle
         }
-        return greenCycle
     }
 
     private fun isGreenToRedPattern(

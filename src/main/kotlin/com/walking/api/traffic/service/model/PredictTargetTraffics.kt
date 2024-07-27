@@ -13,8 +13,9 @@ class PredictTargetTraffics {
     fun doAllPredict(standardTime: OffsetDateTime): Map<Long, PredictTargetTraffic> {
         val predictedMap: MutableMap<Long, PredictTargetTraffic> = HashMap()
         for (predictTargetTraffic in traffics) {
-            predictTargetTraffic.doPredict(standardTime)
-            predictedMap[predictTargetTraffic.traffic.id] = predictTargetTraffic
+            if (predictTargetTraffic.doPredict(standardTime)) {
+                predictedMap[predictTargetTraffic.traffic.id] = predictTargetTraffic
+            }
         }
         return predictedMap
     }
