@@ -11,7 +11,7 @@ public interface TrafficDetailRepository extends JpaRepository<TrafficDetailEnti
 
 	@Query(
 			value =
-					"SELECT * FROM traffic_detail WHERE traffic_detail.traffic_id = :trafficId ORDER BY traffic_detail.time_left_reg_dt DESC",
+					"SELECT * FROM traffic_detail WHERE traffic_detail.traffic_id = :trafficId ORDER BY traffic_detail.time_left_reg_dt DESC limit 30",
 			nativeQuery = true)
 	List<TrafficDetailEntity> findTopWhereTrafficIdOrderByTimeLeftRegDtDesc(Long trafficId);
 }

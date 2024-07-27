@@ -31,9 +31,6 @@ class PredictTargetTraffic(
     private val isPredictedGreenCycle: Boolean
         get() = greenCycle != null
 
-    val currentColorDescription: String? =
-        this.currentColor?.toString()
-
     fun predictCycle(recentTrafficDetails: RecentTrafficDetails) {
         if (!isPredictedGreenCycle) {
             this.updateGreenCycle(recentTrafficDetails.predictGreenCycle())

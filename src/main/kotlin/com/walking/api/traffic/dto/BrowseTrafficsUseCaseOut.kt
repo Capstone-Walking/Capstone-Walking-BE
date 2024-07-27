@@ -35,7 +35,7 @@ data class BrowseTrafficsUseCaseOut(
 
             return TrafficDetail(
                 id = trafficEntity.id,
-                color = traffic.currentColorDescription ?: "",
+                color = traffic.currentColor.toString(),
                 timeLeft = traffic.currentTimeLeft!!,
                 point = PointDetail(trafficEntity.point.y, trafficEntity.point.x),
                 redCycle = traffic.redCycle!!,

@@ -50,14 +50,14 @@ class SearchTrafficsUseCase(
             .map { predictedDatum: PredictTargetTraffic ->
                 TrafficDetail(
                     predictedDatum.traffic.id,
-                    predictedDatum.currentColorDescription!!,
-                    predictedDatum.currentTimeLeft!!,
+                    predictedDatum.currentColor.toString(),
+                    predictedDatum.currentTimeLeft ?: 0f,
                     PointDetail(
                         predictedDatum.traffic.point.getY(),
                         predictedDatum.traffic.point.getX()
                     ),
-                    predictedDatum.redCycle!!,
-                    predictedDatum.greenCycle!!,
+                    predictedDatum.redCycle ?: 0f,
+                    predictedDatum.greenCycle ?: 0f,
                     convertToTrafficDetailInfo(predictedDatum.traffic),
                     false,
                     predictedDatum.traffic.name
@@ -70,9 +70,11 @@ class SearchTrafficsUseCase(
         val objectMapper = ObjectMapper()
         var trafficDetailInfo = TrafficDetailInfo(-1L, "ERROR", "ERROR")
         trafficDetailInfo = try {
-            objectMapper.readValue(
-                trafficEntity.detail,
-                TrafficDetailInfo::class.java
+            val readValue = objectMapper.readValue(trafficEntity.detail, Map::class.java)
+            TrafficDetailInfo(
+                readValue["trafficId"] as Int,
+                readValue["apiSource"] as String,
+                readValue["direction"] as String
             )
         } catch (e: JsonMappingException) {
             throw RuntimeException("Convert to TrafficDetailInfo fail", e)
