@@ -39,7 +39,15 @@ class ReadTrafficsUseCase(
                 favoriteTrafficDetail = memberFavoriteTrafficDetail
             }
         }
-        return BrowseTrafficsUseCaseOut(predictTargetTraffic!!, favoriteTrafficDetail.orElse(null))
+
+        return if (predictTargetTraffic == null) {
+            BrowseTrafficsUseCaseOut(trafficId)
+        } else {
+            BrowseTrafficsUseCaseOut(
+                predictTargetTraffic,
+                favoriteTrafficDetail.orElse(null)
+            )
+        }
     }
 
     private fun getFavoriteTrafficDetail(

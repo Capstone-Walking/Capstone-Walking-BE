@@ -46,7 +46,11 @@ class RecentTrafficDetails(
                 /** green -> red 패턴 확인 */
                 if (isGreenToRedPattern(beforeData, afterData)) {
                     /** beforeData와 afterData 사이의 시간 차이를 확인 */
-                    if (!checkMissingDataBetween(beforeData.timeLeftRegDt, afterData.timeLeftRegDt)) {
+                    if (checkMissingDataBetween(
+                            beforeData.timeLeftRegDt,
+                            afterData.timeLeftRegDt
+                        )
+                    ) {
                         redCycle = calculateCycle(beforeData, afterData)
                         break
                     }
@@ -67,7 +71,7 @@ class RecentTrafficDetails(
             while (iterator.hasNext()) {
                 val beforeData = iterator.next()
                 if (isRedToGreenPattern(beforeData, afterData)) {
-                    if (!checkMissingDataBetween(beforeData.timeLeftRegDt, afterData.timeLeftRegDt)) {
+                    if (checkMissingDataBetween(beforeData.timeLeftRegDt, afterData.timeLeftRegDt)) {
                         greenCycle = calculateCycle(beforeData, afterData)
                         break
                     }

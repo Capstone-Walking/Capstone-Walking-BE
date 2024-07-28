@@ -17,6 +17,20 @@ data class BrowseTrafficsUseCaseOut(
         convertTrafficDetail(traffic, favoriteTrafficDetail)
     )
 
+    constructor(trafficId: Long) : this(
+        TrafficDetail(
+            id = trafficId,
+            color = "",
+            timeLeft = 0f,
+            point = PointDetail(0.0, 0.0),
+            redCycle = 0f,
+            greenCycle = 0f,
+            detail = TrafficDetailInfo(-1L, "", ""),
+            isFavorite = false,
+            viewName = "ERROR"
+        )
+    )
+
     companion object {
         fun convertTrafficDetail(
             traffic: PredictTargetTraffic,
