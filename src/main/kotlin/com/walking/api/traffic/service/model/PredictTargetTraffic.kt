@@ -2,6 +2,7 @@ package com.walking.api.traffic.service.model
 
 import com.walking.api.data.entity.traffic.TrafficColor
 import com.walking.api.data.entity.traffic.TrafficColor.*
+import org.apache.commons.logging.LogFactory
 import java.time.Duration
 import java.time.OffsetDateTime
 
@@ -13,6 +14,7 @@ class PredictTargetTraffic(
     var greenCycle: Float?,
     var redCycle: Float?
 ) {
+    private val log = LogFactory.getLog(PredictTargetTraffic::class.java)
     constructor(
         traffic: TargetTrafficVO,
         recentTrafficDetails: RecentTrafficDetails
@@ -50,6 +52,8 @@ class PredictTargetTraffic(
 
         /** 현재 시간과 가장 최근의 신호등 정보 조회 API 호출 시간 사이의 차이를 구합니다.  */
         val gapTimeBetweenLastTrafficDetailAndNow = getDifferenceInSeconds(topTrafficDetail.timeLeftRegDt, standardTime)
+        log.info("Gap Time: $gapTimeBetweenLastTrafficDetailAndNow")
+        log.info("Standard Time: $standardTime, Last Traffic Detail Time: ${topTrafficDetail.timeLeftRegDt}")
 
         /**
          * green/red 사이클 기반으로 가장 최근의 신호등 정보 조회 API 호출 시간과 현재 시간 사이의 가려진 정보를 구합니다.
@@ -84,13 +88,14 @@ class PredictTargetTraffic(
                 gapTime -= redCycle!!
             }
         }
-
+        log.info("Predicted Gap Time: $gapTime")
         currentColor = color
         currentTimeLeft = if (color.isRed) {
             (gapTime + greenCycle!!)
         } else {
             (gapTime + redCycle!!)
         }
+        log.info("Predicted Color: $color, Predicted Time Left: $currentTimeLeft")
 
         if (currentTimeLeft < 0) {
             currentTimeLeft = 0f
