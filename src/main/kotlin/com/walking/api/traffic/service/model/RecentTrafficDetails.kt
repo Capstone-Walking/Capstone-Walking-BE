@@ -47,18 +47,20 @@ class RecentTrafficDetails(
             var afterData = iterator.next()
             while (iterator.hasNext()) {
                 val beforeData = iterator.next()
-                /** green -> red 패턴 확인 */
-                if (isGreenToRedPattern(beforeData, afterData)) {
-                    /** beforeData와 afterData 사이의 시간 차이를 확인 */
-                    if (checkMissingDataBetween(
-                            beforeData.timeLeftRegDt,
-                            afterData.timeLeftRegDt
-                        )
-                    ) {
-                        redCycle = calculateCycle(beforeData, afterData)
-                        log.info("redCycle: $redCycle")
-                        log.info("beforeData: ${beforeData.id}, ${beforeData.timeLeft}, afterData: ${afterData.id}, ${afterData.timeLeft}")
-                        break
+                if (isValidTimeLeft(beforeData, afterData)) {
+                    /** green -> red 패턴 확인 */
+                    if (isGreenToRedPattern(beforeData, afterData)) {
+                        /** beforeData와 afterData 사이의 시간 차이를 확인 */
+                        if (checkMissingDataBetween(
+                                beforeData.timeLeftRegDt,
+                                afterData.timeLeftRegDt
+                            )
+                        ) {
+                            redCycle = calculateCycle(beforeData, afterData)
+                            log.info("redCycle: $redCycle")
+                            log.info("beforeData: ${beforeData.id}, ${beforeData.timeLeft}, afterData: ${afterData.id}, ${afterData.timeLeft}")
+                            break
+                        }
                     }
                 }
                 afterData = beforeData
@@ -76,18 +78,27 @@ class RecentTrafficDetails(
             var afterData = iterator.next()
             while (iterator.hasNext()) {
                 val beforeData = iterator.next()
-                if (isRedToGreenPattern(beforeData, afterData)) {
-                    if (checkMissingDataBetween(beforeData.timeLeftRegDt, afterData.timeLeftRegDt)) {
-                        greenCycle = calculateCycle(beforeData, afterData)
-                        log.info("greenCycle: $greenCycle")
-                        log.info("beforeData: ${beforeData.id}, ${beforeData.timeLeft}, afterData: ${afterData.id}, ${afterData.timeLeft}")
-                        break
+                if (isValidTimeLeft(beforeData, afterData)) {
+                    if (isRedToGreenPattern(beforeData, afterData)) {
+                        if (checkMissingDataBetween(beforeData.timeLeftRegDt, afterData.timeLeftRegDt)) {
+                            greenCycle = calculateCycle(beforeData, afterData)
+                            log.info("greenCycle: $greenCycle")
+                            log.info("beforeData: ${beforeData.id}, ${beforeData.timeLeft}, afterData: ${afterData.id}, ${afterData.timeLeft}")
+                            break
+                        }
                     }
                 }
                 afterData = beforeData
             }
             return greenCycle
         }
+    }
+
+    private fun isValidTimeLeft(
+        beforeData: TargetTrafficDetailVO,
+        afterData: TargetTrafficDetailVO
+    ): Boolean {
+        return (!beforeData.timeLeft.equals(3600.1f)) && (!afterData.timeLeft.equals(3600.1f))
     }
 
     private fun isGreenToRedPattern(
