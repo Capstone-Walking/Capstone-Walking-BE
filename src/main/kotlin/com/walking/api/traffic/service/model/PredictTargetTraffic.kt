@@ -44,6 +44,10 @@ class PredictTargetTraffic(
 
         var color = currentColor
 
+        if (topTrafficDetail.timeLeft >= 3600.1) {
+            return false
+        }
+
         /** 현재 시간과 가장 최근의 신호등 정보 조회 API 호출 시간 사이의 차이를 구합니다.  */
         val gapTimeBetweenLastTrafficDetailAndNow = getDifferenceInSeconds(topTrafficDetail.timeLeftRegDt, standardTime)
 
