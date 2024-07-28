@@ -79,6 +79,12 @@ class PredictTargetTraffic(
          * 남은 시간의 경우 -10s + 20s = 10s 남았습니다.
          * */
         var gapTime = gapTimeBetweenLastTrafficDetailAndNow - topTrafficDetail.timeLeft
+        color = if (color.isRed) {
+            GREEN
+        } else {
+            RED
+        }
+
         while (gapTime >= 0) {
             if (color.isRed) {
                 color = GREEN
