@@ -91,6 +91,11 @@ class PredictTargetTraffic(
         } else {
             (gapTime + redCycle!!)
         }
+
+        if (currentTimeLeft < 0) {
+            currentTimeLeft = 0f
+        }
+
         return true
     }
 

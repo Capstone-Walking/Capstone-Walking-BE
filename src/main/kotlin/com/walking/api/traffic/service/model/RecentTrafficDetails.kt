@@ -1,6 +1,7 @@
 package com.walking.api.traffic.service.model
 
 import com.walking.api.data.entity.traffic.TrafficColor
+import org.apache.juli.logging.LogFactory
 import java.time.Duration
 import java.time.OffsetDateTime
 
@@ -9,6 +10,9 @@ class RecentTrafficDetails(
     /** timeLeftRegDt를 기준으로 정렬된 최근 trafficDetail 데이터 */
     private val trafficDetails: List<TargetTrafficDetailVO>
 ) {
+
+    private val log = LogFactory.getLog(RecentTrafficDetails::class.java)
+
     fun getTopTrafficDetail(): TargetTrafficDetailVO? {
         return if (trafficDetails.isNotEmpty()) {
             trafficDetails[0]
@@ -52,6 +56,8 @@ class RecentTrafficDetails(
                         )
                     ) {
                         redCycle = calculateCycle(beforeData, afterData)
+                        log.info("redCycle: $redCycle")
+                        log.info("beforeData: ${beforeData.id}, ${beforeData.timeLeft}, afterData: ${afterData.id}, ${afterData.timeLeft}")
                         break
                     }
                 }
@@ -73,6 +79,8 @@ class RecentTrafficDetails(
                 if (isRedToGreenPattern(beforeData, afterData)) {
                     if (checkMissingDataBetween(beforeData.timeLeftRegDt, afterData.timeLeftRegDt)) {
                         greenCycle = calculateCycle(beforeData, afterData)
+                        log.info("greenCycle: $greenCycle")
+                        log.info("beforeData: ${beforeData.id}, ${beforeData.timeLeft}, afterData: ${afterData.id}, ${afterData.timeLeft}")
                         break
                     }
                 }
