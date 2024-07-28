@@ -5,6 +5,7 @@ import com.walking.api.data.entity.traffic.TrafficColor.*
 import org.apache.commons.logging.LogFactory
 import java.time.Duration
 import java.time.OffsetDateTime
+import kotlin.math.abs
 
 class PredictTargetTraffic(
     val traffic: TargetTrafficVO,
@@ -44,8 +45,6 @@ class PredictTargetTraffic(
         }
         val topTrafficDetail = topTrafficDetail!!
 
-        var color = currentColor
-
         if (topTrafficDetail.timeLeft >= 3600.1) {
             return false
         }
@@ -60,48 +59,49 @@ class PredictTargetTraffic(
          * ex)
          * Last Traffic Detail Time: 2021-08-01 12:00:00
          * Last Traffic Detail Time Left: 10s
-         * Current Time: 2021-08-01 12:01:20
+         * Current Time: 2021-08-01 12:01:25
+         * Current Color: RED
          *
-         * 2021-08-01 12:00:10 ~ 2021-08-01 12:01:20 사이의 가려진 정보를 구합니다.
+         * 2021-08-01 12:00:10 ~ 2021-08-01 12:01:25 사이의 가려진 정보를 구합니다.
          *
          * RedCycle: 10s
          * GreenCycle: 20s
          *
-         * 2021-08-01 12:00:00 RED, Time Left: 10s, Gap Time: 80s
-         * 2021-08-01 12:00:10 GREEN, Gap Time: 80s - 10s = 70s
-         * 2021-08-01 12:00:30 RED, Gap Time: 70s - 20s = 50s
-         * 2021-08-01 12:00:40 GREEN, Gap Time: 50s - 10s = 40s
-         * 2021-08-01 12:01:00 RED, Gap Time: 40s - 20s = 20s
-         * 2021-08-01 12:01:10 GREEN, Gap Time: 20s - 10s = 10s
-         * 2021-08-01 12:01:30 RED, Gap Time: 10s - 20s = -10s
+         * 2021-08-01 12:00:00 RED, Time Left: 10s, Gap Time: 85s
+         * 2021-08-01 12:00:10 GREEN, Gap Time: 85s - 10s = 75s // Left Time을 소진하고 color를 바꿔준다.
+         * 2021-08-01 12:00:30 RED, Gap Time: 75s - 20s = 55s
+         * 2021-08-01 12:00:40 GREEN, Gap Time: 55s - 10s = 45s
+         * 2021-08-01 12:01:00 RED, Gap Time: 45s - 20s = 25s
+         * 2021-08-01 12:01:10 GREEN, Gap Time: 25s - 10s = 15s
+         * 2021-08-01 12:01:30 RED, Gap Time: 15s - 20s = -5s
          *
-         * 2021-08-01 12:01:20에는 GREEN이어야 합니다.
-         * 남은 시간의 경우 -10s + 20s = 10s 남았습니다.
+         * 2021-08-01 12:01:25에는 GREEN이어야 합니다.
+         * 남은 시간의 경우 5s가 남았어야 합니다.
          * */
         var gapTime = gapTimeBetweenLastTrafficDetailAndNow - topTrafficDetail.timeLeft
-        color = if (color.isRed) {
+        var color = if (currentColor.isRed) {
             GREEN
         } else {
             RED
         }
 
-        while (gapTime >= 0) {
+        while (gapTime > 0) {
             if (color.isRed) {
                 color = GREEN
-                gapTime -= greenCycle!!
+                gapTime -= redCycle!!
             } else {
                 color = RED
-                gapTime -= redCycle!!
+                gapTime -= greenCycle!!
             }
         }
         log.info("Predicted Gap Time: $gapTime")
-        currentColor = color
-        currentTimeLeft = if (color.isRed) {
-            (gapTime + greenCycle!!)
+        currentColor = if (color.isRed) {
+            GREEN
         } else {
-            (gapTime + redCycle!!)
+            RED
         }
-        log.info("Predicted Color: $color, Predicted Time Left: $currentTimeLeft")
+        currentTimeLeft = abs(gapTime)
+        log.info("Predicted Color: $currentColor, Predicted Time Left: $currentTimeLeft")
 
         if (currentTimeLeft < 0) {
             currentTimeLeft = 0f
