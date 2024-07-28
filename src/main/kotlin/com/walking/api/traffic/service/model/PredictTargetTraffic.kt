@@ -4,79 +4,89 @@ import com.walking.api.data.entity.traffic.TrafficColor
 import com.walking.api.data.entity.traffic.TrafficColor.*
 import java.time.Duration
 import java.time.OffsetDateTime
-import java.util.*
-import kotlin.math.abs
 
 class PredictTargetTraffic(
     val traffic: TargetTrafficVO,
-    val recentTrafficDetails: RecentTrafficDetails,
-    var topTrafficDetail: TargetTrafficDetailVO? = null,
-    var redCycle: Float? = null,
-    var greenCycle: Float? = null,
-    var currentColor: TrafficColor? = null,
-    var currentTimeLeft: Float? = null
+    private var topTrafficDetail: TargetTrafficDetailVO?,
+    var currentColor: TrafficColor,
+    var currentTimeLeft: Float,
+    var greenCycle: Float?,
+    var redCycle: Float?
 ) {
-    constructor(traffic: TargetTrafficVO, recentTrafficDetails: RecentTrafficDetails) : this(traffic, recentTrafficDetails, null, null, null, null, null) {
-        this.topTrafficDetail = recentTrafficDetails.getTopTrafficDetail()
-        this.currentColor = recentTrafficDetails.getCurrentColor()
-        this.currentTimeLeft = recentTrafficDetails.getCurrentTimeLeft()
-    }
+    constructor(
+        traffic: TargetTrafficVO,
+        recentTrafficDetails: RecentTrafficDetails
+    ) : this(
+        traffic,
+        recentTrafficDetails.getTopTrafficDetail(),
+        recentTrafficDetails.getCurrentColor(),
+        recentTrafficDetails.getCurrentTimeLeft(),
+        recentTrafficDetails.predictGreenCycle(),
+        recentTrafficDetails.predictRedCycle()
+    )
 
     /**
      * 사이클, 현재 신호 색상 및 잔여시간에 대해 모두 정상적으로 예측이 되었는지 판단합니다.
      */
     fun isAllPredicted(): Boolean {
-        return isPredictCycleSuccessful() && currentColor != null && currentTimeLeft!! > 0
-    }
-
-    private fun isPredictCycleSuccessful(): Boolean {
-        return isPredictedRedCycle() && isPredictedGreenCycle()
-    }
-
-    private fun isPredictedRedCycle(): Boolean {
-        return redCycle != null
-    }
-
-    private fun isPredictedGreenCycle(): Boolean {
-        return greenCycle != null
-    }
-
-    fun predictCycle() {
-        this.updateGreenCycle(recentTrafficDetails.predictGreenCycle())
-        this.updateRedCycle(recentTrafficDetails.predictRedCycle())
+        return ((redCycle != null) && (greenCycle != null)) && (currentTimeLeft > 0)
     }
 
     fun doPredict(standardTime: OffsetDateTime): Boolean {
-        if (!this.isPredictCycleSuccessful()) {
-            return false
-        }
-        if (this.topTrafficDetail == null) {
+        if (!((redCycle != null) && (greenCycle != null))) {
             return false
         }
 
-        var color = this.currentColor
-        val topTimeLeft = topTrafficDetail!!.timeLeft
-        val gapTime = this.getDifferenceInSeconds(this.topTrafficDetail!!.timeLeftRegDt, standardTime)
-        if (gapTime > 60 * 60) {
-            this.updateCurrentColor(DARK)
-            this.updateCurrentTimeLeft(0f)
+        if (topTrafficDetail == null) {
             return false
         }
-        var seconds = gapTime - topTimeLeft
-        while (seconds >= 0) {
-            if (color!!.isRed) {
+        val topTrafficDetail = topTrafficDetail!!
+
+        var color = currentColor
+
+        /** 현재 시간과 가장 최근의 신호등 정보 조회 API 호출 시간 사이의 차이를 구합니다.  */
+        val gapTimeBetweenLastTrafficDetailAndNow = getDifferenceInSeconds(topTrafficDetail.timeLeftRegDt, standardTime)
+
+        /**
+         * green/red 사이클 기반으로 가장 최근의 신호등 정보 조회 API 호출 시간과 현재 시간 사이의 가려진 정보를 구합니다.
+         * ex)
+         * Last Traffic Detail Time: 2021-08-01 12:00:00
+         * Last Traffic Detail Time Left: 10s
+         * Current Time: 2021-08-01 12:01:20
+         *
+         * 2021-08-01 12:00:10 ~ 2021-08-01 12:01:20 사이의 가려진 정보를 구합니다.
+         *
+         * RedCycle: 10s
+         * GreenCycle: 20s
+         *
+         * 2021-08-01 12:00:00 RED, Time Left: 10s, Gap Time: 80s
+         * 2021-08-01 12:00:10 GREEN, Gap Time: 80s - 10s = 70s
+         * 2021-08-01 12:00:30 RED, Gap Time: 70s - 20s = 50s
+         * 2021-08-01 12:00:40 GREEN, Gap Time: 50s - 10s = 40s
+         * 2021-08-01 12:01:00 RED, Gap Time: 40s - 20s = 20s
+         * 2021-08-01 12:01:10 GREEN, Gap Time: 20s - 10s = 10s
+         * 2021-08-01 12:01:30 RED, Gap Time: 10s - 20s = -10s
+         *
+         * 2021-08-01 12:01:20에는 GREEN이어야 합니다.
+         * 남은 시간의 경우 -10s + 20s = 10s 남았습니다.
+         * */
+        var gapTime = gapTimeBetweenLastTrafficDetailAndNow - topTrafficDetail.timeLeft
+        while (gapTime >= 0) {
+            if (color.isRed) {
                 color = GREEN
-                val cycleOfNextColor = this.getCycleByColor(GREEN)
-                seconds -= cycleOfNextColor!!
+                gapTime -= greenCycle!!
             } else {
                 color = RED
-                val cycleOfNextColor = this.getCycleByColor(RED)
-                seconds -= cycleOfNextColor!!
+                gapTime -= redCycle!!
             }
         }
 
-        this.updateCurrentColor(color)
-        this.updateCurrentTimeLeft(abs(seconds))
+        currentColor = color
+        currentTimeLeft = if (color.isRed) {
+            (gapTime + greenCycle!!)
+        } else {
+            (gapTime + redCycle!!)
+        }
         return true
     }
 
@@ -88,40 +98,5 @@ class PredictTargetTraffic(
         val seconds = duration.seconds
         val nanoSeconds = duration.nano
         return seconds + nanoSeconds / 1000000000.0f
-    }
-
-    private fun updateRedCycle(redCycle: Float?) {
-        if ((redCycle == null) || (redCycle < 0) || (redCycle > 1000)) {
-            this.redCycle = null
-            return
-        }
-        redCycle.also { this.redCycle = it }
-    }
-
-    private fun updateGreenCycle(greenCycle: Float?) {
-        if ((greenCycle == null) || (greenCycle < 0) || (greenCycle > 1000)) {
-            this.greenCycle = null
-            return
-        }
-        greenCycle.also { this.greenCycle = it }
-    }
-
-    private fun updateCurrentColor(color: TrafficColor?) {
-        currentColor = color
-    }
-
-    private fun updateCurrentTimeLeft(timeLeft: Float?) {
-        currentTimeLeft = timeLeft
-    }
-
-    private fun getCycleByColor(color: TrafficColor): Float? {
-        if (color.isGreen) {
-            return greenCycle
-        }
-        return if (color.isRed) {
-            redCycle
-        } else {
-            -1f
-        }
     }
 }

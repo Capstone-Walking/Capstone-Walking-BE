@@ -165,14 +165,9 @@ public class CalculateRouteDetailService {
 		Float greenCycle;
 
 		try {
-			currentColor =
-					predictTargetTraffic.getCurrentColor() == null
-							? TrafficColor.RED
-							: predictTargetTraffic.getCurrentColor();
-			currentTimeLeft =
-					predictTargetTraffic.getCurrentTimeLeft() == null
-							? 0
-							: predictTargetTraffic.getCurrentTimeLeft();
+			predictTargetTraffic.getCurrentColor();
+			currentColor = predictTargetTraffic.getCurrentColor();
+			currentTimeLeft = predictTargetTraffic.getCurrentTimeLeft();
 			redCycle =
 					predictTargetTraffic.getRedCycle() == null ? 0 : predictTargetTraffic.getRedCycle();
 			greenCycle =

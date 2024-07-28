@@ -39,12 +39,8 @@ public class TrafficDetailConverter {
 
 		return new TrafficDetail(
 				trafficEntity.getId(),
-				predictTargetTraffic.getCurrentColor() == null
-						? ""
-						: predictTargetTraffic.getCurrentColor().toString(),
-				predictTargetTraffic.getCurrentTimeLeft() == null
-						? 0
-						: predictTargetTraffic.getCurrentTimeLeft(),
+				predictTargetTraffic.getCurrentColor().toString(),
+				predictTargetTraffic.getCurrentTimeLeft(),
 				new PointDetail(trafficEntity.getPoint().getY(), trafficEntity.getPoint().getX()),
 				predictTargetTraffic.getRedCycle() == null ? 0 : predictTargetTraffic.getRedCycle(),
 				predictTargetTraffic.getGreenCycle() == null ? 0 : predictTargetTraffic.getGreenCycle(),

@@ -24,16 +24,19 @@ class TrafficPredictService(
     @Transactional
     fun execute(requestDto: TPQuery): TPVO {
         val trafficIds = requestDto.trafficIds
+
+        /** trafficIds를 통해 traffic 데이터를 가져옵니다.  */
         val traffics = trafficRepository.findAllInIds(trafficIds).stream()
             .map { e: TrafficEntity ->
                 TargetTrafficVO(e.id, e.name, e.point, e.detail)
             }
             .collect(Collectors.toList())
+
         val trafficPredictTargets = PredictTargetTraffics()
         for (traffic in traffics) {
-            /** trafficId를 통해 traffic_detail 데이터를 가져옵니다.  */
+            /** traffic의 id를 통해 최근 30개의 trafficDetail 데이터를 가져옵니다.  */
             val recentTrafficDetails = trafficDetailRepository
-                .findTopWhereTrafficIdOrderByTimeLeftRegDtDesc(traffic.id)
+                .findTopWhereTrafficIdOrderByTimeLeftRegDtDesc(traffic.id, 30)
                 .stream()
                 .map { e: TrafficDetailEntity ->
                     TargetTrafficDetailVO(
@@ -47,10 +50,12 @@ class TrafficPredictService(
                     )
                 }
                 .collect(Collectors.toList())
+
+            /** traffic과 traffic_detail 데이터를 통해 PredictTargetTraffic을 생성합니다.  */
             val predictTargetTraffic = PredictTargetTraffic(traffic, RecentTrafficDetails(interval, recentTrafficDetails))
-            predictTargetTraffic.predictCycle()
             trafficPredictTargets.addTraffic(predictTargetTraffic)
         }
+
         val now = OffsetDateTime.now()
         val predictedMap = trafficPredictTargets.doAllPredict(now)
         return TPVO(predictedMap)
