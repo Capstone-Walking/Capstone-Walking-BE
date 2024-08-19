@@ -45,65 +45,6 @@ cd ./scripts/env
 ./gradlew api:bootRun --args='--spring.profiles.active=local'
 ```
 
-## 프로젝트 구조
-
-```
-📦 walking-be
- ┣ 📂 api: API 서버 모듈
- ┣ 📂 data: DB 스키마 정의 모듈
- ┣ 📂 api-repository: API 서버와 DB 서버 연결 모듈
- ┣ 📂 member-api: 회원 관련 API 모듈
- ┣ 📂 image-store: 이미지 관련 API 모듈
- ┣ 📂 batch: 배치 기능 모듈
-```
-
-해당 프로젝트는 멀티모듈을 사용하여 위와 같은 모듈로 구성되어 있습니다.
-
-### 멀티모듈을 선택한 이유
-
-- 각 모듈을 다른 언어로 개발할 수 있도록 하기 위함 (예: Java, Kotlin)
-- 각 모듈별로 역할을 분리하여 개발 및 유지보수가 용이하도록 하기 위함 (예: Member API)
-- 각 모듈별로 독립적인 개발 및 테스트가 가능하도록 하기 위함
-- 각 모듈별로 의존성을 최소화하기 위함
-
-### 모듈 연관 관계
-
-- `api` 모듈은 `api-repository`, `member-api`, `batch` 모듈에 의존합니다.
-- `api-repository` 모듈은 `data` 모듈에 의존합니다.
-- `member-api` 모듈은 `api-repository`, `image-store` 모듈에 의존합니다.
-- `batch` 모듈은 `data` 모듈에 의존합니다.
-  - `batch`를 모듈로 구현한 이유는 배치 서버를 현재는 별도로 구성하지 않고, API 서버에서 `batch` 모듈을 실행하고 있는데 추후 이를 별도의 배치 서버로 분리할 수 있도록 하기 위함입니다.
-
-## 프로젝트 기술 스택
-
-### 공통 기술 스택
-- Spring Boot 2.7.5
-- Gradle
-- Docker
-- Git
-
-### API 모듈
-- Java 11
-- Spring Web
-- Spring Security
-
-### Data 모듈
-- Java 11
-- Spring Data JPA
-
-### API-Repository 모듈
-- Java 11
-- Spring Data JPA
-
-### Member API 모듈
-- Kotlin
-- Spring Web
-- Spring Cache
-
-### Image Store 모듈
-- Kotlin
-- S3/Minio(prod/local)
-
 ## 프로젝트 인프라 구성
 
 인프라 레포지토리 바로가기: [walking-infra](https://github.com/Capstone-Walking/Capstone-Walking-IaC)
