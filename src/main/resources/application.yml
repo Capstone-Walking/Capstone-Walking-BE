@@ -1,0 +1,39 @@
+server:
+    port: 8080
+spring:
+    datasource:
+        url: ${DB_HOSTNAME}/api?allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&zeroDateTimeBehavior=convertToNull
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                format_sql: true
+                dialect: org.hibernate.spatial.dialect.mysql.MySQLSpatialDialect
+                order_inserts: true
+                order_updates: true
+                jdbc:
+                    batch_size: 50
+    batch:
+        jdbc:
+            initialize-schema: always
+        job:
+            enabled: false
+            name: ${job.name:NONE}
+        chunk:
+            size: ${BATCH_CHUNK_SIZE:1000}
+
+api:
+    seoul:
+        apiKey: ${SEOUL_API_KEY}
+        baseUrl: https://t-data.seoul.go.kr
+        colorPath: /apig/apiman-gateway/tapi/v2xSignalPhaseInformation/1.0
+        leftTimePath: /apig/apiman-gateway/tapi/v2xSignalPhaseTimingInformation/1.0
+        interval: ${SCHEDULER_INTERVAL}
+
+logging:
+    level:
+        root: debug
